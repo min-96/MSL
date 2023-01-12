@@ -8,6 +8,5 @@ public class MslBackApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MslBackApplication.class, args);
-		System.out.println("hello3");
 	}
 }
