@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.controller;
 
+import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class PostController {
 
         postService.registerPost(requestDto.toEntity());
 
-        return ResponseEntity.ok().body(HttpStatus.OK);
+        return ResponseEntity.ok().body(ResponseDto.of(
+                HttpStatus.OK
+        ));
     }
 }
