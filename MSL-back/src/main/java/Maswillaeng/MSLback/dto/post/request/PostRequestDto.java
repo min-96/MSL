@@ -1,6 +1,6 @@
 package Maswillaeng.MSLback.dto.post.request;
 
-import Maswillaeng.MSLback.domain.post.Post;
+import Maswillaeng.MSLback.domain.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

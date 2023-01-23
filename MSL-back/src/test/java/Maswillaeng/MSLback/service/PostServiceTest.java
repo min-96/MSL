@@ -1,7 +1,7 @@
 package Maswillaeng.MSLback.service;
 
-import Maswillaeng.MSLback.domain.post.Post;
-import Maswillaeng.MSLback.domain.post.PostRepository;
+import Maswillaeng.MSLback.domain.entity.Post;
+import Maswillaeng.MSLback.domain.repository.PostRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

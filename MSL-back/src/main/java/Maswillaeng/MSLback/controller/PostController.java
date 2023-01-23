@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.controller;
 
+import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
@@ -41,6 +42,16 @@ public class PostController {
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK, postList));
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<?> getPost(@PathVariable Long postId) {
+
+        Post post = postService.getPostById(postId);
+
+        return ResponseEntity.ok().body(ResponseDto.of(
+                HttpStatus.OK, new PostResponseDto(post)
+        ));
     }
 
 }

@@ -19,14 +19,10 @@ public class ResponseDto<T> {
 
     public static ResponseDto<?> of(HttpStatus httpStatus) {
         int status = httpStatus.value();
-
         return new ResponseDto<>(status);
     }
 
     public static <T> ResponseDto<T> of(HttpStatus httpStatus, T data) {
-
         return new ResponseDto<>(httpStatus.value(), data);
     }
-
-
 }

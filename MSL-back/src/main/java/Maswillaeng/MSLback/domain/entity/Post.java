@@ -1,4 +1,4 @@
-package Maswillaeng.MSLback.domain.post;
+package Maswillaeng.MSLback.domain.entity;
 
 import Maswillaeng.MSLback.domain.BaseEntity;
 import lombok.AccessLevel;
