@@ -4,6 +4,7 @@ import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
+import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import Maswillaeng.MSLback.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,6 +52,16 @@ public class PostController {
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK, new PostResponseDto(post)
+        ));
+    }
+
+    // 업데이트가 반환값이 필요한가?
+    // 포스트 아이디는 바디에선 필요 없다
+    @PutMapping
+    public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) {
+        postService.updatePost(updateDto);
+        return ResponseEntity.ok().body(ResponseDto.of(
+                HttpStatus.OK
         ));
     }
 

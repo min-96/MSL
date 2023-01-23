@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.domain.entity;
 
 import Maswillaeng.MSLback.domain.BaseEntity;
+import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,5 +32,11 @@ public class Post extends BaseEntity {
         this.thumbnail = thumbnail;
         this.title = title;
         this.content = content;
+    }
+
+    public void updatePost(PostUpdateDto postUpdateDto) {
+        this.thumbnail = postUpdateDto.getThumbnail();
+        this.title = postUpdateDto.getTitle();
+        this.content = postUpdateDto.getContent();
     }
 }
