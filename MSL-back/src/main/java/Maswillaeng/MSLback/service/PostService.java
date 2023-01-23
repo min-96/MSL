@@ -34,12 +34,12 @@ public class PostService {
     @Transactional(readOnly = true)
     public Post getPostById(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("해당 포스트를 찾지 못했습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
     }
 
     public void updatePost(PostUpdateDto updateDto) {
         Post post = postRepository.findById(updateDto.getPostId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 포스트를 찾지 못했습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
         post.updatePost(updateDto);
     }
 }

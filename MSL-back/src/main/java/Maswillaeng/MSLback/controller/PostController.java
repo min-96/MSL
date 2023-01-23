@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.domain.entity.Post;
+import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
 public class PostController {
 
     private final PostService postService;
+    private final PostRepository postRepository;
 
     @PostMapping
     public ResponseEntity<?> savePost(@RequestBody @Valid PostRequestDto requestDto) {
@@ -60,6 +62,14 @@ public class PostController {
     @PutMapping
     public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) {
         postService.updatePost(updateDto);
+        return ResponseEntity.ok().body(ResponseDto.of(
+                HttpStatus.OK
+        ));
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
+        postRepository.deleteById(postId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
         ));
