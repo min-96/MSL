@@ -42,4 +42,11 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
         post.updatePost(updateDto);
     }
+
+    public void deletePost(Long postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new EntityNotFoundException("존재하지 않는 게시물입니다.");
+        }
+        postRepository.deleteById(postId);
+    }
 }
