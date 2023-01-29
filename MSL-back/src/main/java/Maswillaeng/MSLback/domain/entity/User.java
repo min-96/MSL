@@ -66,6 +66,10 @@ public class User extends BaseTimeEntity {
         this.withdrawAt = null;
     }
 
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
 //    public void addPost(Post post) {
 //        posts.add(post);
 //    }
