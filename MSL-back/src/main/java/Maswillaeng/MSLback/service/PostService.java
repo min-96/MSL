@@ -22,6 +22,7 @@ public class PostService {
     public void registerPost(Post post) {
 
         postRepository.save(post);
+//        post.getUser().addPost(post);
     }
 
     @Transactional(readOnly = true)
@@ -40,7 +41,7 @@ public class PostService {
     public void updatePost(PostUpdateDto updateDto) {
         Post post = postRepository.findById(updateDto.getPostId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
-        post.updatePost(updateDto);
+        post.update(updateDto);
     }
 
     public void deletePost(Long postId) {
