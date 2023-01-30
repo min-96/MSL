@@ -81,6 +81,7 @@ public class User extends BaseTimeEntity {
 
     public void withdraw() {
         this.withdrawYn = 1;
+        this.withdrawAt = LocalDateTime.now();
     }
 
 //    public void addPost(Post post) {
