@@ -5,6 +5,7 @@ import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserInfoResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
+import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
@@ -12,13 +13,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.HashMap;
 
 @RequiredArgsConstructor
@@ -58,5 +57,22 @@ public class UserController {
     public ResponseEntity<?> getUserInfo() {
         User user = UserContext.currentMember.get();
         return ResponseEntity.ok().body(UserInfoResponseDto.of(user));
+    }
+
+    @AuthCheck
+    @PutMapping("/user")
+    public ResponseEntity<Object> updateUserInfo(
+                         @RequestBody @Valid UserUpdateRequestDto requestDto) {
+        User user = UserContext.currentMember.get();
+        userService.updateUser(user, requestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @AuthCheck
+    @DeleteMapping("/user")
+    public ResponseEntity<Object> userWithDraw() {
+        User user = UserContext.currentMember.get();
+        userService.userWithdraw(user);
+        return ResponseEntity.ok().build();
     }
 }

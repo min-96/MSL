@@ -37,6 +37,11 @@ public class AuthCheckAspect {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException("해당하는 유저를 찾을 수 없습니다.")
         );
+
+        if (user.getWithdrawYn() == 1) {
+            throw new EntityNotFoundException("탈퇴한 회원입니다.");
+        }
+
         UserContext.currentMember.set(user);
         return pjp.proceed();
     }

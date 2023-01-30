@@ -22,6 +22,7 @@ public class JwtTokenProvider implements InitializingBean {
     private String REFRESH_KEY;
 
     private final long ACCESS_TOKEN_VALID_TIME = 1000 * 60 * 60; // 1시간
+//    private final long ACCESS_TOKEN_VALID_TIME = 1; // 만료 테스트
     private final long REFRESH_TOKEN_VALID_TIME = 1000 * 60 * 60 * 24; // 24시간
 
     @Override
@@ -68,13 +69,16 @@ public class JwtTokenProvider implements InitializingBean {
 
     public boolean isValidAccessToken(String token) {
         try {
-            Claims claims = this.getAccessClaims(token);
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
             return true;
-        } catch (JwtException e) {
-            log.error("access token tampered");
-            return false;
         } catch (NullPointerException e) {
             log.error("access token is null");
+            return false;
+        } catch (ExpiredJwtException e) {
+            log.error("access token expired.");
+            return false;
+        } catch (JwtException e) {
+            log.error("access token tampered");
             return false;
         }
     }
@@ -94,14 +98,10 @@ public class JwtTokenProvider implements InitializingBean {
 
 
     private Claims getAccessClaims(String token) {
-        try {
-            token = token.substring(7);
-            return Jwts.parser().setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(token).getBody();
-        } catch (ExpiredJwtException e) {
-            log.error("access token expired.");
-            return e.getClaims();
-        }
+        token = token.substring(7);
+        isValidAccessToken(token);
+        return Jwts.parser().setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token).getBody();
     }
 
     private Claims getRefreshClaims(String token) {

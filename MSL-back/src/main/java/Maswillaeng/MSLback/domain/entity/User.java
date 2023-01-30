@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.domain.entity;
 
 import Maswillaeng.MSLback.domain.BaseTimeEntity;
+import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,7 +47,7 @@ public class User extends BaseTimeEntity {
     @Column(length = 100)
     private String introduction;
 
-    @ColumnDefault("1")
+    @ColumnDefault("0")
     private int withdrawYn;
 
     private LocalDateTime withdrawAt;
@@ -62,12 +63,24 @@ public class User extends BaseTimeEntity {
         this.refreshToken = null;
         this.userImage = userImage;
         this.introduction = introduction;
-        this.withdrawYn = 1;
+        this.withdrawYn = 0;
         this.withdrawAt = null;
     }
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void update(UserUpdateRequestDto requestDto) {
+        this.password = requestDto.getPassword();
+        this.phoneNumber = requestDto.getPhoneNumber();
+        this.nickName = requestDto.getNickName();
+        this.userImage = requestDto.getUserImage();
+        this.introduction = requestDto.getIntroduction();
+    }
+
+    public void withdraw() {
+        this.withdrawYn = 1;
     }
 
 //    public void addPost(Post post) {
