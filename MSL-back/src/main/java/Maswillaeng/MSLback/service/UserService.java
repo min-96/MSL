@@ -54,4 +54,9 @@ public class UserService {
     public void userWithdraw(User user) {
         user.withdraw();
     }
+
+    public boolean joinDuplicate(User user) {
+        return userRepository.existsByNickName(user.getNickName()) ||
+                userRepository.existsByEmail(user.getEmail());
+    }
 }
