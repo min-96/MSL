@@ -45,4 +45,6 @@ public class AuthCheckAspect {
         UserContext.currentMember.set(user);
         return pjp.proceed();
     }
+
+
 }

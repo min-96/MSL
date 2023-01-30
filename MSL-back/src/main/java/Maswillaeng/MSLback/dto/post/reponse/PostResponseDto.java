@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 public class PostResponseDto {
     private Long postId;
+
+    private String nickname;
     private String thumbnail;
     private String title;
     private String content;
@@ -18,5 +20,6 @@ public class PostResponseDto {
         thumbnail = post.getThumbnail();
         title = post.getTitle();
         content = post.getContent();
+        nickname = post.getUser().getNickName();
     }
 }

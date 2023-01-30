@@ -18,7 +18,7 @@ public class UserJoinDto {
 
     private String userImage;
 
-    private String Introduction;
+    private String introduction;
 
     public User toEntity() {
         return User.builder()
@@ -27,7 +27,7 @@ public class UserJoinDto {
                 .phoneNumber(phoneNumber)
                 .nickName(nickName)
                 .userImage(userImage)
-                .introduction(Introduction)
+                .introduction(introduction)
                 .build();
     }
 }

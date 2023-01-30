@@ -55,7 +55,7 @@ public class PostService {
     }
 
     public Page<Post> getUserPostList(User user, int currentPage) {
-        return postRepository.findById(user.getId(), PageRequest.of(
+        return postRepository.findByUser(user, PageRequest.of(
         currentPage - 1, 20, Sort.Direction.DESC, "createdAt"));
     }
 }

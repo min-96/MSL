@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.dto.post.request;
 
 import Maswillaeng.MSLback.domain.entity.Post;
+import Maswillaeng.MSLback.domain.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,8 +21,9 @@ public class PostRequestDto {
     private String content;
 
 
-    public Post toEntity() {
+    public Post toEntity(User user) {
         return Post.builder()
+                .user(user)
                 .title(title)
                 .thumbnail(thumbnail)
                 .content(content)
