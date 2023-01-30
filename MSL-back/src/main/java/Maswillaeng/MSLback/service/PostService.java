@@ -1,7 +1,10 @@
 package Maswillaeng.MSLback.service;
 
 import Maswillaeng.MSLback.domain.entity.Post;
+import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.PostRepository;
+import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
+import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -49,5 +52,10 @@ public class PostService {
             throw new EntityNotFoundException("존재하지 않는 게시물입니다.");
         }
         postRepository.deleteById(postId);
+    }
+
+    public Page<Post> getUserPostList(User user, int currentPage) {
+        return postRepository.findById(user.getId(), PageRequest.of(
+        currentPage - 1, 20, Sort.Direction.DESC, "createdAt"));
     }
 }

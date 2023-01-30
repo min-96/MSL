@@ -1,12 +1,16 @@
 package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.domain.entity.Post;
+import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
+import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import Maswillaeng.MSLback.service.PostService;
+import Maswillaeng.MSLback.utils.auth.AuthCheck;
+import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -17,7 +21,6 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/post")
 public class PostController {
 
     private final PostService postService;
@@ -34,7 +37,7 @@ public class PostController {
     }
 
     // page라는 주소가 필요한가? 없어도 될듯
-    @GetMapping("page")
+    @GetMapping("/post/page")
     public ResponseEntity<?> getPostList(@RequestParam int currentPage) {
 
 
@@ -47,7 +50,7 @@ public class PostController {
                 HttpStatus.OK, postList));
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping("/post/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
 
         Post post = postService.getPostById(postId);
@@ -59,7 +62,7 @@ public class PostController {
 
     // 업데이트가 반환값이 필요한가?
     // 포스트 아이디는 바디에선 필요 없다
-    @PutMapping
+    @PutMapping("/post")
     public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) {
         postService.updatePost(updateDto);
         return ResponseEntity.ok().body(ResponseDto.of(
@@ -67,12 +70,21 @@ public class PostController {
         ));
     }
 
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/post/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
         ));
+    }
+
+    @AuthCheck
+    @GetMapping("/userPostList")
+    public ResponseEntity<?> getUserPostList(@RequestParam int currentPage) {
+        User user = UserContext.currentMember.get();
+        return ResponseEntity.ok().body(
+                postService.getUserPostList(user, currentPage)
+                            .map(UserPostResponseDto::new));
     }
 
 }
