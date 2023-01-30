@@ -29,7 +29,7 @@ public class PostService {
     public Page<Post> getPostList(int currentPage) {
 
         return postRepository.findAll(PageRequest.of(
-                        currentPage - 1, 10, Sort.Direction.DESC, "createdAt"));
+                        currentPage - 1, 20, Sort.Direction.DESC, "createdAt"));
     }
 
     @Transactional(readOnly = true)

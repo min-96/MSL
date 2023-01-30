@@ -26,12 +26,8 @@ public class JwtTokenProvider implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] key = new byte[32];
-        secureRandom.nextBytes(key);
-        SECRET_KEY = Base64.getEncoder().encodeToString(key);
-        secureRandom.nextBytes(key);
-        REFRESH_KEY = Base64.getEncoder().encodeToString(key);
+        SECRET_KEY = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
+        REFRESH_KEY = Base64.getEncoder().encodeToString(REFRESH_KEY.getBytes());
     }
 
     public String createAccessToken(Long userId, String role) {
@@ -67,7 +63,7 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
     public Long getUserId(String token) {
-        return (Long) getAccessClaims(token).get("userId");
+        return Long.valueOf(String.valueOf(getAccessClaims(token).get("userId")));
     }
 
     public boolean isValidAccessToken(String token) {
@@ -99,6 +95,7 @@ public class JwtTokenProvider implements InitializingBean {
 
     private Claims getAccessClaims(String token) {
         try {
+            token = token.substring(7);
             return Jwts.parser().setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
