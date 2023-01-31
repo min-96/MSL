@@ -48,11 +48,15 @@ public class UserService {
     }
 
     public void updateUser(User user, UserUpdateRequestDto requestDto) {
-        user.update(requestDto);
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+        findUser.update(requestDto);
     }
 
     public void userWithdraw(User user) {
-        user.withdraw();
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+        findUser.withdraw();
     }
 
     public boolean joinDuplicate(User user) {

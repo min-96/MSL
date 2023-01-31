@@ -25,7 +25,7 @@ public class PostService {
     public void registerPost(Post post) {
 
         postRepository.save(post);
-//        post.getUser().addPost(post);
+        post.getUser().addPost(post);
     }
 
     @Transactional(readOnly = true)

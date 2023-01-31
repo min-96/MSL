@@ -84,7 +84,7 @@ public class User extends BaseTimeEntity {
         this.withdrawAt = LocalDateTime.now();
     }
 
-//    public void addPost(Post post) {
-//        posts.add(post);
-//    }
+    public void addPost(Post post) {
+        posts.add(post);
+    }
 }
