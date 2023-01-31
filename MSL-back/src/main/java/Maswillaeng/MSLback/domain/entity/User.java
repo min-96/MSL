@@ -10,8 +10,6 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,9 +20,6 @@ public class User extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-
-    @OneToMany(mappedBy = "user")
-    private List<Post> posts = new ArrayList<>();
 
     @Column(nullable = false, length = 30, unique = true)
     private String email;
@@ -82,9 +77,5 @@ public class User extends BaseTimeEntity {
     public void withdraw() {
         this.withdrawYn = 1;
         this.withdrawAt = LocalDateTime.now();
-    }
-
-    public void addPost(Post post) {
-        posts.add(post);
     }
 }

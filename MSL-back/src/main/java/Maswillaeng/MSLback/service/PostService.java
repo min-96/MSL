@@ -3,6 +3,7 @@ package Maswillaeng.MSLback.service;
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.PostRepository;
+import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
@@ -25,19 +26,18 @@ public class PostService {
     public void registerPost(Post post) {
 
         postRepository.save(post);
-        post.getUser().addPost(post);
     }
 
     @Transactional(readOnly = true)
     public Page<Post> getPostList(int currentPage) {
 
-        return postRepository.findAll(PageRequest.of(
+        return postRepository.findAllFetchJoin(PageRequest.of(
                         currentPage - 1, 20, Sort.Direction.DESC, "createdAt"));
     }
 
     @Transactional(readOnly = true)
     public Post getPostById(Long postId) {
-        return postRepository.findById(postId)
+        return postRepository.findByIdFetchJoin(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
     }
 
