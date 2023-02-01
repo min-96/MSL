@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.xml.bind.ValidationException;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -41,17 +43,24 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
     }
 
-    public void updatePost(PostUpdateDto updateDto) {
+    public void updatePost(User currentUser, PostUpdateDto updateDto) throws ValidationException {
         Post post = postRepository.findById(updateDto.getPostId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
-        post.update(updateDto);
+        if (Objects.equals(currentUser.getId(), post.getUser().getId())) {
+            post.update(updateDto);
+        } else {
+            throw new ValidationException("접근 권한 없음");
+        }
     }
 
-    public void deletePost(Long postId) {
-        if (!postRepository.existsById(postId)) {
-            throw new EntityNotFoundException("존재하지 않는 게시물입니다.");
+    public void deletePost(User currentUser, Long postId) throws ValidationException {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
+        if (Objects.equals(currentUser.getId(), post.getUser().getId())) {
+            postRepository.delete(post);
+        } else {
+            throw new ValidationException("접근 권한 없음");
         }
-        postRepository.deleteById(postId);
     }
 
     public Page<Post> getUserPostList(User user, int currentPage) {

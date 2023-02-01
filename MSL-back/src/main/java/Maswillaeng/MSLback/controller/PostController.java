@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.xml.bind.ValidationException;
 
 @RequiredArgsConstructor
 @RestController
@@ -61,8 +62,9 @@ public class PostController {
     // 검증해야한다면 nickname이나 userId를 받아야 할듯
     @AuthCheck
     @PutMapping("/post")
-    public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) {
-        postService.updatePost(updateDto);
+    public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws ValidationException {
+        User user = UserContext.currentMember.get();
+        postService.updatePost(user, updateDto);
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
         ));
@@ -71,8 +73,9 @@ public class PostController {
     // 이것도 검증 필요한지
     @AuthCheck
     @DeleteMapping("/post/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<?> deletePost(@PathVariable Long postId) throws ValidationException {
+        User user = UserContext.currentMember.get();
+        postService.deletePost(user, postId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
         ));
