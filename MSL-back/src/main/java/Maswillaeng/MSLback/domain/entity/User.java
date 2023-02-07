@@ -9,6 +9,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -47,6 +49,15 @@ public class User extends BaseTimeEntity {
 
     private LocalDateTime withdrawAt;
 
+    @OneToMany(mappedBy = "user")
+    private List<Comment> commentList = new ArrayList<>(); // 회원이 탈퇴해도 댓글은 그대로 유지할 것인가?
+
+    @OneToMany(mappedBy = "follower")
+    private List<Follow> followerList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "following")
+    private List<Follow> followingList = new ArrayList<>();
+
     public void destroyRefreshToken(){
         this.refreshToken = null;
     }
@@ -59,11 +70,9 @@ public class User extends BaseTimeEntity {
         this.phoneNumber = phoneNumber;
         this.nickName = nickName;
         this.role = RoleType.USER;
-        this.refreshToken = null;
         this.userImage = userImage;
         this.introduction = introduction;
         this.withdrawYn = 0;
-        this.withdrawAt = null;
     }
 
     public void updateRefreshToken(String refreshToken) {

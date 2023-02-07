@@ -31,17 +31,28 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+    private Long hits; // int가 21억까지 표현 가능한데 조회수가 21억을 넘을 일이 있을까?
+
     @Builder
     public Post(String thumbnail, String title, String content, User user) {
         this.thumbnail = thumbnail;
         this.title = title;
         this.content = content;
         this.user = user;
+        this.hits = 1L;
     }
 
     public void update(PostUpdateDto postUpdateDto) {
         this.thumbnail = postUpdateDto.getThumbnail();
         this.title = postUpdateDto.getTitle();
         this.content = postUpdateDto.getContent();
+    }
+
+    // 연관관계 편의 메서드
+    private void changeCategory(Category category) {
+        this.category = category;
     }
 }
