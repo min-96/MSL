@@ -3,22 +3,22 @@ package Maswillaeng.MSLback.controller;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
-import Maswillaeng.MSLback.dto.user.reponse.UserInfoResponseDto;
+import Maswillaeng.MSLback.dto.user.reponse.UserLoginResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
+import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.HashMap;
 
 @RequiredArgsConstructor
 @RestController
@@ -57,46 +57,61 @@ public class UserController {
         }
     }
 
-    // 로직이 컨트롤러에 너무 많이 노출되어있다
-    // 이런 방식이 옳은가?
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto requestDto) {
-        LoginResponseDto dto = userService.login(requestDto);
 
-        ResponseCookie accessToken = ResponseCookie.from("ACCESS_TOKEN", dto.getAccessToken())
-                .httpOnly(true).build();
-//
-//        Cookie refreshCookie = new Cookie("REFRESH_TOKEN", dto.getRefreshToken());
-//        refreshCookie.setHttpOnly(true);
-//        response.addCookie(refreshCookie);
-        HashMap<String, String> user = new HashMap<>();
-        user.put("nickName", dto.getNickName());
-        user.put("userImage", dto.getUserImage());
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, accessToken.toString()).body(user);
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto request, HttpServletResponse response) throws Exception {
+        LoginResponseDto dto = userService.login(request);
+
+        ResponseCookie AccessToken = ResponseCookie.from("ACCESS_TOKEN", dto.getTokenResponseDto().getACCESS_TOKEN())
+                .path("/")
+                .httpOnly(true)
+                .maxAge(JwtTokenProvider.ACCESS_TOKEN_VALID_TIME)
+                .build();
+
+        ResponseCookie RefreshToken = ResponseCookie.from("REFRESH_TOKEN", dto.getTokenResponseDto().getREFRESH_TOKEN())
+                .path("/updateToken")
+                .maxAge(JwtTokenProvider.REFRESH_TOKEN_VALID_TIME)
+                .httpOnly(true)
+                .build();
+
+        response.addHeader("Set-Cookie", AccessToken.toString());
+        response.addHeader("Set-Cookie", RefreshToken.toString());
+
+        return ResponseEntity.ok().body(
+                new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
     }
 
-    @AuthCheck
+
+
+    @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/user")
     public ResponseEntity<?> getUserInfo() {
-        User user = UserContext.currentMember.get();
-        return ResponseEntity.ok().body(UserInfoResponseDto.of(user));
+        return ResponseEntity.ok().body(
+                userService.getUser(UserContext.userId.get()));
     }
 
-    @AuthCheck
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @GetMapping("/updateToken")
+    public ResponseEntity<Object> updateAccessToken(@CookieValue("ACCESS_TOKEN") String accessToken, @CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
+
+        return ResponseEntity.ok().body(userService.updateAccessToken(accessToken, refreshToken));
+    }
+
+    @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/user")
     public ResponseEntity<Object> updateUserInfo(
-                         @RequestBody @Valid UserUpdateRequestDto requestDto) {
-        User user = UserContext.currentMember.get();
-        userService.updateUser(user, requestDto);
+            @RequestBody @Valid UserUpdateRequestDto requestDto) {
+        if (requestDto.getPassword() == null && requestDto.getNickName() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        userService.updateUser(UserContext.userId.get(), requestDto);
         return ResponseEntity.ok().build();
     }
 
-    @AuthCheck
+    @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/user")
     public ResponseEntity<Object> userWithDraw() {
-        User user = UserContext.currentMember.get();
-        userService.userWithdraw(user);
+        userService.userWithdraw(UserContext.userId.get());
         return ResponseEntity.ok().build();
     }
 }

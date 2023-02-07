@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @Getter
 @AllArgsConstructor
@@ -15,11 +17,17 @@ public class UserPostResponseDto {
     private String title;
     private String content;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime modifiedAt;
+
     public UserPostResponseDto(Post post) {
-        this.postId = post.getId();
-        this.nickName = post.getUser().getNickName();
-        this.ThumbNail = post.getThumbnail();
-        this.title = post.getTitle();
-        this.content = post.getContent();
+        postId = post.getId();
+        nickName = post.getUser().getNickName();
+        ThumbNail = post.getThumbnail();
+        title = post.getTitle();
+        content = post.getContent();
+        createdAt = post.getCreatedAt();
+        modifiedAt = post.getModifiedAt();
     }
 }

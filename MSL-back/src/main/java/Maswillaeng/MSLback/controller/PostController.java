@@ -1,8 +1,6 @@
 package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.domain.entity.Post;
-import Maswillaeng.MSLback.domain.entity.User;
-import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
@@ -26,11 +24,11 @@ public class PostController {
 
     private final PostService postService;
 
-    @AuthCheck
+    @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/post")
     public ResponseEntity<?> savePost(@RequestBody @Valid PostRequestDto requestDto) {
-        User user = UserContext.currentMember.get();
-        postService.registerPost(requestDto.toEntity(user));
+
+        postService.registerPost(UserContext.userId.get(), requestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
@@ -41,7 +39,7 @@ public class PostController {
     public ResponseEntity<?> getPostList(@RequestParam int currentPage) {
 
         Page<PostResponseDto> postList = postService.getPostList(currentPage)
-                                        .map(PostResponseDto::new);
+                .map(PostResponseDto::new);
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK, postList));
@@ -58,36 +56,31 @@ public class PostController {
     }
 
 
-    // 프론트에서 검증하고 줄텐데, 백에서도 검증을 해야하나?
-    // 검증해야한다면 nickname이나 userId를 받아야 할듯
-    @AuthCheck
+    @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/post")
-    public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws ValidationException {
-        User user = UserContext.currentMember.get();
-        postService.updatePost(user, updateDto);
+    public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws Exception {
+
+        postService.updatePost(UserContext.userId.get(), updateDto);
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
         ));
     }
 
-    // 이것도 검증 필요한지
-    @AuthCheck
+    @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/post/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId) throws ValidationException {
-        User user = UserContext.currentMember.get();
-        postService.deletePost(user, postId);
+        postService.deletePost(UserContext.userId.get(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
         ));
     }
 
-    @AuthCheck
+    @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/userPostList")
     public ResponseEntity<?> getUserPostList(@RequestParam int currentPage) {
-        User user = UserContext.currentMember.get();
         return ResponseEntity.ok().body(
-                postService.getUserPostList(user, currentPage)
-                            .map(UserPostResponseDto::new));
+                postService.getUserPostList(UserContext.userId.get(), currentPage)
+                        .map(UserPostResponseDto::new));
     }
 
 }

@@ -6,6 +6,7 @@ import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
+import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,10 +25,11 @@ import java.util.Objects;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public void registerPost(Post post) {
-
-        postRepository.save(post);
+    public void registerPost(Long userId, PostRequestDto postRequestDto) {
+        User user = userRepository.findById(userId).get();
+        postRepository.save(postRequestDto.toEntity(user));
     }
 
     @Transactional(readOnly = true)
@@ -43,28 +45,28 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
     }
 
-    public void updatePost(User currentUser, PostUpdateDto updateDto) throws ValidationException {
-        Post post = postRepository.findById(updateDto.getPostId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
-        if (Objects.equals(currentUser.getId(), post.getUser().getId())) {
-            post.update(updateDto);
+    public void updatePost(Long userId, PostUpdateDto updateDto) throws Exception {
+        Post selectedPost = postRepository.findById(updateDto.getPostId()).get();
+
+        if (Objects.equals(selectedPost.getUser().getId(), userId)) {
+            selectedPost.update(updateDto);
+//            postRepository.save(selectedPost);
         } else {
-            throw new ValidationException("접근 권한 없음");
+            throw new Exception("접근 권한 없음");
         }
     }
 
-    public void deletePost(User currentUser, Long postId) throws ValidationException {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
-        if (Objects.equals(currentUser.getId(), post.getUser().getId())) {
+    public void deletePost(Long userId, Long postId) throws ValidationException {
+        Post post = postRepository.findById(postId).get();
+        if (Objects.equals(userId, post.getUser().getId())) {
             postRepository.delete(post);
         } else {
             throw new ValidationException("접근 권한 없음");
         }
     }
 
-    public Page<Post> getUserPostList(User user, int currentPage) {
-        return postRepository.findByUser(user, PageRequest.of(
+    public Page<Post> getUserPostList(Long userId, int currentPage) {
+        return postRepository.findByUserIdFetchJoin(userId, PageRequest.of(
         currentPage - 1, 20, Sort.Direction.DESC, "createdAt"));
     }
 }

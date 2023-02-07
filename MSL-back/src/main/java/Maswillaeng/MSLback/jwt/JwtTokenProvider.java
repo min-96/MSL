@@ -1,5 +1,7 @@
 package Maswillaeng.MSLback.jwt;
 
+import Maswillaeng.MSLback.domain.entity.RoleType;
+import Maswillaeng.MSLback.domain.entity.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,99 +20,62 @@ public class JwtTokenProvider implements InitializingBean {
 
     @Value("${secret.access}")
     private String SECRET_KEY;
-    @Value("${secret.refresh}")
-    private String REFRESH_KEY;
 
-    private final long ACCESS_TOKEN_VALID_TIME = 1000 * 60 * 60; // 1시간
+    public static final long ACCESS_TOKEN_VALID_TIME = 1000 * 60 * 60; // 1시간
 //    private final long ACCESS_TOKEN_VALID_TIME = 1; // 만료 테스트
-    private final long REFRESH_TOKEN_VALID_TIME = 1000 * 60 * 60 * 24; // 24시간
+    public static final long REFRESH_TOKEN_VALID_TIME = 1000 * 60 * 60 * 24; // 24시간
 
     @Override
     public void afterPropertiesSet() throws Exception {
         SECRET_KEY = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
-        REFRESH_KEY = Base64.getEncoder().encodeToString(REFRESH_KEY.getBytes());
+
     }
 
-    public String createAccessToken(Long userId, String role) {
-        Claims claims = Jwts.claims();
+
+    public String createAccessToken(Long userId, RoleType roleType) {
+        Claims claims = Jwts.claims();//.setSubject(userPk); // JWT payload 에 저장되는 정보단위
         claims.put("userId", userId);
-        claims.put("role", role);
+        claims.put("role", roleType);
 
         Date now = new Date();
-        Date expiredDate = new Date(now.getTime() + ACCESS_TOKEN_VALID_TIME);
+        return Jwts.builder()
+                .setClaims(claims) // 정보 저장
+                .setIssuedAt(now) // 토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_VALID_TIME)) // set Expire Time
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)  // 사용할 암호화 알고리즘과
+                .compact();
+    }
+
+
+    public String createRefreshToken() {
+        Claims claims = Jwts.claims();
+
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME);
 
         return Jwts.builder()
-              .setClaims(claims)
-                .setIssuedAt(now) // 토큰 생성 시간
-                .setExpiration(expiredDate) // 토큰 만료 시간
+                .setClaims(claims)
+                .setExpiration(expiration)
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
-    public String createRefreshToken(Long userId, String role) {
-        Claims claims = Jwts.claims();
-        claims.put("userId", userId);
-        claims.put("role", role); // 리프레쉬 토큰에 유저 정보가 필요한가?
 
-        Date now = new Date();
-        Date expiredDate = new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now) // 토큰 생성 시간
-                .setExpiration(expiredDate) // 토큰 만료 시간
-                .signWith(SignatureAlgorithm.HS256, REFRESH_KEY)
-                .compact();
+    public Claims getClaims(String token){
+        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return claims;
     }
 
-    public Long getUserId(String token) {
-        return Long.valueOf(String.valueOf(getAccessClaims(token).get("userId")));
-    }
-
-    public boolean isValidAccessToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
-            return true;
-        } catch (NullPointerException e) {
-            log.error("access token is null");
-            return false;
-        } catch (ExpiredJwtException e) {
-            log.error("access token expired.");
-            return false;
-        } catch (JwtException e) {
-            log.error("access token tampered");
-            return false;
-        }
-    }
-
-    public boolean isValidRefreshToken(String token) {
-        try {
-            Claims claims = this.getRefreshClaims(token);
-            return true;
-        } catch (JwtException e) {
-            log.error("refresh token tampered");
-            return false;
-        } catch (NullPointerException e) {
-            log.error("refresh token is null");
-            return false;
-        }
+    public Long getUserId(String token){
+        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return Long.parseLong(String.valueOf(claims.get("userId")));
     }
 
 
-    private Claims getAccessClaims(String token) {
-        token = token.substring(7);
-        isValidAccessToken(token);
-        return Jwts.parser().setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token).getBody();
+
+    public boolean isValidToken(String token) {
+        Claims accessClaims =getClaims(token);
+        return true;
     }
 
-    private Claims getRefreshClaims(String token) {
-        try {
-            return Jwts.parser().setSigningKey(REFRESH_KEY)
-                    .parseClaimsJws(token).getBody();
-        } catch (ExpiredJwtException e) {
-            log.error("refresh token expired");
-            return e.getClaims();
-        }
-    }
 }

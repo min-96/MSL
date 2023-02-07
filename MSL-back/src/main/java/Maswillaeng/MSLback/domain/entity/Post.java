@@ -1,6 +1,5 @@
 package Maswillaeng.MSLback.domain.entity;
 
-import Maswillaeng.MSLback.domain.BaseTimeEntity;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import lombok.AccessLevel;
 import lombok.Builder;
