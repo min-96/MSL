@@ -4,6 +4,7 @@ import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import io.jsonwebtoken.Claims;
+import jdk.internal.org.objectweb.asm.Handle;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,12 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        HandlerMethod handlerMethod;
 
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        if (!(handler instanceof HandlerMethod))
+            return true;
+        handlerMethod = (HandlerMethod)handler;
+//
         AuthCheck auth = handlerMethod.getMethodAnnotation(AuthCheck.class);
         if (auth == null) {
             System.out.println("auth = " + auth);
