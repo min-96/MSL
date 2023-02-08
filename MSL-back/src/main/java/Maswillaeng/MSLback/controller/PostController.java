@@ -35,8 +35,8 @@ public class PostController {
         ));
     }
 
-    @GetMapping("/post/page")
-    public ResponseEntity<?> getPostList(@RequestParam int currentPage) {
+    @GetMapping("/post/page/{currentPage}")
+    public ResponseEntity<?> getPostList(@PathVariable int currentPage) {
 
         Page<PostResponseDto> postList = postService.getPostList(currentPage)
                 .map(PostResponseDto::new);

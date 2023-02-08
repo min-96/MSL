@@ -20,6 +20,8 @@ public class JwtTokenFilter implements Filter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -28,6 +30,15 @@ public class JwtTokenFilter implements Filter {
         String refreshToken = new String();
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
+
+        // Test api중 h2-console 사용할때 자동으로 쿠키가 저장되어 /updateToken으로 넘어감
+        String uri = req.getRequestURI();
+        System.out.println(uri);
+        if(uri.contains("/h2-console")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         Cookie[] cookies = req.getCookies();
         if(cookies!=null) {
             log.info("accessToken = " + accessToken);
