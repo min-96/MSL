@@ -41,6 +41,4 @@ public class UserService {
         User findUser = userRepository.findById(userId).get();
         findUser.withdraw();
     }
-
-
 }

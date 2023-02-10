@@ -11,14 +11,29 @@ import org.springframework.http.HttpStatus;
 public class ResponseDto<T> {
 
     private int status;
+    private String message;
     private T data;
 
     public ResponseDto(int status) {
         this.status = status;
     }
 
+    public ResponseDto(int status, String message) {
+        this.status = status;
+        this.message = message;
+    }
+
+    public ResponseDto(int status, T data) {
+        this.status = status;
+        this.data = data;
+    }
+
     public static ResponseDto<?> of(HttpStatus httpStatus) {
         return new ResponseDto<>(httpStatus.value());
+    }
+
+    public static ResponseDto<?> of(HttpStatus httpStatus, String message) {
+        return new ResponseDto<>(httpStatus.value(), message);
     }
 
     public static <T> ResponseDto<T> of(HttpStatus httpStatus, T data) {

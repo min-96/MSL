@@ -77,4 +77,8 @@ public class AuthService {
                 userRepository.existsByEmail(user.getEmail());
     }
 
+    public void removeRefreshToken(Long userId) {
+        User user = userRepository.findById(userId).get();
+        user.destroyRefreshToken();
+    }
 }

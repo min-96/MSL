@@ -22,7 +22,7 @@ spring:
     open-in-view: false
 
 secret:
-  access: access-mslbacksecretkeymslbacksecretkey
+  access: mslbacksecretkeymslbacksecretkey
 
 import:
   key: 5161304000601633

@@ -2,6 +2,7 @@ package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
+import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserLoginResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
@@ -10,6 +11,7 @@ import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.service.AuthService;
 import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
+import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -44,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign")
-    public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) {
+    public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) throws Exception {
         User user = userJoinDto.toEntity();
         if (authService.joinDuplicate(user)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -78,6 +80,16 @@ public class AuthController {
 
         return ResponseEntity.ok().body(
                 new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
+    }
+
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @DeleteMapping("/logout")
+    public ResponseEntity<Object> logout() {
+        authService.removeRefreshToken(UserContext.userId.get());
+        return ResponseEntity.ok().body(ResponseDto.of(
+                HttpStatus.OK,
+                "로그아웃 성공")
+        );
     }
 
     //TODO : 토큰을 그냥 바디에 담아준다?

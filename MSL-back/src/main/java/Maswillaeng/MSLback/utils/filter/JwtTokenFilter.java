@@ -33,7 +33,6 @@ public class JwtTokenFilter implements Filter {
 
         // Test api중 h2-console 사용할때 자동으로 쿠키가 저장되어 /updateToken으로 넘어감
         String uri = req.getRequestURI();
-        System.out.println(uri);
         if(uri.contains("/h2-console")) {
             chain.doFilter(request, response);
             return;
@@ -46,7 +45,6 @@ public class JwtTokenFilter implements Filter {
                 log.info("cookie.getName = " + cookie.getName());
                 switch (cookie.getName()) {
                     case "ACCESS_TOKEN":
-                        System.out.println("cookie = " + cookie.getValue());
                         accessToken = cookie.getValue();
                         break;
                     case "REFRESH_TOKEN":
