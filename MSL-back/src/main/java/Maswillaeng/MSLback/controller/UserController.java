@@ -27,59 +27,11 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    @GetMapping("/duplicate-email")
-    public ResponseEntity<Object> duplicateEmail(@RequestParam String email) {
-        if (userRepository.existsByEmail(email)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
-    }
-
-    @GetMapping("/duplicate-nickname")
-    public ResponseEntity<Object> duplicateNickname(@RequestParam String nickname) {
-        if (userRepository.existsByNickName(nickname)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
-    }
-
-    // 프론트에서 어디까지 검증을 해주는가?
-    @PostMapping("/sign")
-    public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) {
-        User user = userJoinDto.toEntity();
-        if (userService.joinDuplicate(user)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } else {
-            userService.join(user);
-            return ResponseEntity.ok().build();
-        }
-    }
 
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto request, HttpServletResponse response) throws Exception {
-        LoginResponseDto dto = userService.login(request);
 
-        ResponseCookie AccessToken = ResponseCookie.from("ACCESS_TOKEN", dto.getTokenResponseDto().getACCESS_TOKEN())
-                .path("/")
-                .httpOnly(true)
-                .maxAge(JwtTokenProvider.ACCESS_TOKEN_VALID_TIME)
-                .build();
 
-        ResponseCookie RefreshToken = ResponseCookie.from("REFRESH_TOKEN", dto.getTokenResponseDto().getREFRESH_TOKEN())
-                .path("/updateToken")
-                .maxAge(JwtTokenProvider.REFRESH_TOKEN_VALID_TIME)
-                .httpOnly(true)
-                .build();
 
-        response.addHeader("Set-Cookie", AccessToken.toString());
-        response.addHeader("Set-Cookie", RefreshToken.toString());
-
-        return ResponseEntity.ok().body(
-                new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
-    }
 
 
 
@@ -90,12 +42,7 @@ public class UserController {
                 userService.getUser(UserContext.userId.get()));
     }
 
-    @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/updateToken")
-    public ResponseEntity<Object> updateAccessToken(@CookieValue("ACCESS_TOKEN") String accessToken, @CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
 
-        return ResponseEntity.ok().body(userService.updateAccessToken(accessToken, refreshToken));
-    }
 
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/user")
