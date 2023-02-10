@@ -7,6 +7,7 @@ import Maswillaeng.MSLback.dto.user.reponse.UserLoginResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
+import Maswillaeng.MSLback.service.AuthService;
 import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class AuthController {
     private final UserService userService;
+    private final AuthService authService;
     private final UserRepository userRepository;
 
     @GetMapping("/duplicate-email")
@@ -44,10 +46,10 @@ public class AuthController {
     @PostMapping("/sign")
     public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) {
         User user = userJoinDto.toEntity();
-        if (userService.joinDuplicate(user)) {
+        if (authService.joinDuplicate(user)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
-            userService.join(user);
+            authService.join(user);
             return ResponseEntity.ok().build();
         }
     }
@@ -55,7 +57,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request,
                                    HttpServletResponse response) throws Exception {
-        LoginResponseDto dto = userService.login(request);
+        LoginResponseDto dto = authService.login(request);
 
         ResponseCookie AccessToken = ResponseCookie.from(
                 "ACCESS_TOKEN", dto.getTokenResponseDto().getACCESS_TOKEN())
@@ -85,7 +87,7 @@ public class AuthController {
                                                     @CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
 
         return ResponseEntity.ok().body(
-                userService.updateAccessToken(accessToken, refreshToken));
+                authService.updateAccessToken(accessToken, refreshToken));
     }
 
 }
