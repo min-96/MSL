@@ -6,6 +6,7 @@ import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
+import Maswillaeng.MSLback.utils.auth.AESEncryption;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,11 @@ import javax.persistence.EntityNotFoundException;
 public class AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AESEncryption aesEncryption;
 
-    public void join(User user) {
+    public void join(User user) throws Exception {
+        String encryptPwd = aesEncryption.encrypt(user.getPassword());
+        user.encryptPassword(encryptPwd);
         userRepository.save(user);
     }
 

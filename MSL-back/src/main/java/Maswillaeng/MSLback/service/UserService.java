@@ -23,9 +23,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-
-
-
     @Transactional(readOnly = true)
     public UserInfoResponseDto getUser(Long userId) {
         User user = userRepository.findById(userId).get();
