@@ -7,10 +7,14 @@ import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AESEncryption;
+import jdk.vm.ci.meta.Local;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 @RequiredArgsConstructor
 @Service
@@ -80,5 +84,17 @@ public class AuthService {
     public void removeRefreshToken(Long userId) {
         User user = userRepository.findById(userId).get();
         user.destroyRefreshToken();
+    }
+
+    // TODO : 생일 데이터가 어떤 형식으로 오는지 보고 고쳐야함
+    public void adultIdentify(String birth) throws Exception {
+        LocalDate birthDate = LocalDate.parse(birth, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        int userAge = LocalDate.now().getYear() - birthDate.getYear();
+        if (birthDate.getDayOfYear() > LocalDate.now().getDayOfYear()) {
+            userAge--;
+        }
+        if (userAge < 18) {
+            throw new Exception("성인이 아닙니다");
+        }
     }
 }

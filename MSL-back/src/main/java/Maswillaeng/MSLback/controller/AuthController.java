@@ -3,12 +3,14 @@ package Maswillaeng.MSLback.controller;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
+import Maswillaeng.MSLback.dto.user.reponse.ImportResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserLoginResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.service.AuthService;
+import Maswillaeng.MSLback.service.ExternalHttpService;
 import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
@@ -19,13 +21,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @RestController
 public class AuthController {
-    private final UserService userService;
     private final AuthService authService;
     private final UserRepository userRepository;
+    private final ExternalHttpService externalHttpService;
 
     @GetMapping("/duplicate-email")
     public ResponseEntity<Object> duplicateEmail(@RequestParam String email) {
@@ -102,4 +105,14 @@ public class AuthController {
                 authService.updateAccessToken(accessToken, refreshToken));
     }
 
+    @PostMapping("/certifications")
+    public ResponseEntity<Objects> impUid(@RequestBody String uid) throws Exception {
+
+        String access_token = String.valueOf(externalHttpService.importGetToken());
+        ResponseEntity<ImportResponseDto> dto = externalHttpService.importGetCertifications(uid, access_token);
+        authService.adultIdentify(dto.getBody().getBirth());
+//        authService.saveUserBirthAndCI(dto); // TODO : 유저에 어떤 필드 추가할건지 정확히 정한 후 작성
+
+        return ResponseEntity.ok().build();
+    }
 }
