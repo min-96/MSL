@@ -1,4 +1,4 @@
-package Maswillaeng.MSLback.dto.comment;
+package Maswillaeng.MSLback.dto.comment.request;
 
 import Maswillaeng.MSLback.domain.entity.Comment;
 import Maswillaeng.MSLback.domain.entity.Post;
