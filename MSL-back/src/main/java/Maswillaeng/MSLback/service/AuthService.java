@@ -9,6 +9,7 @@ import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AESEncryption;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;

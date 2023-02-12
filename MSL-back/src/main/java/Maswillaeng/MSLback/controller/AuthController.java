@@ -80,11 +80,6 @@ public class AuthController {
                 .sameSite("Lax")
                 .build();
 
-//        response.addHeader("Set-Cookie", AccessToken.toString());
-//        response.addHeader("Set-Cookie", RefreshToken.toString());
-
-//        return ResponseEntity.ok().body(
-//                new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
         return ResponseEntity.ok()
                 .header("Set-Cookie", AccessToken.toString())
                 .header("Set-Cookie", RefreshToken.toString())
@@ -94,8 +89,12 @@ public class AuthController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/logout")
     public ResponseEntity<Object> logout() {
-        authService.removeRefreshToken(UserContext.userId.get());
-        return ResponseEntity.ok().body(ResponseDto.of(
+        Long userId = UserContext.userId.get();
+        authService.removeRefreshToken(userId);
+        return ResponseEntity.ok()
+                .header("Set-Cookie", "ACCESS_TOKEN=")
+                .header("Set-Cookie", "REFRESH_TOKEN=")
+                .body(ResponseDto.of(
                 HttpStatus.OK,
                 "로그아웃 성공")
         );
@@ -111,14 +110,13 @@ public class AuthController {
                 authService.updateAccessToken(accessToken, refreshToken));
     }
 
-    @PostMapping("/certifications")
+    @PostMapping("/certifications") // 쓸일 없음
     public ResponseEntity<Objects> impUid(@RequestBody String imp_uid) throws Exception {
 
         System.out.println("imp_uid = " + imp_uid);
         String access_token = String.valueOf(externalHttpService.importGetToken());
         ResponseEntity<ImportResponseDto> dto = externalHttpService.importGetCertifications(imp_uid, access_token);
         authService.adultIdentify(dto.getBody().getBirth());
-//        authService.saveUserBirthAndCI(dto); // TODO : 유저에 어떤 필드 추가할건지 정확히 정한 후 작성
 
         return ResponseEntity.ok().build();
     }
