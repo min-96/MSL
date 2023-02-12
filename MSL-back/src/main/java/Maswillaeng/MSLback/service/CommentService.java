@@ -9,9 +9,12 @@ import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.comment.request.CommentRequestDto;
 import Maswillaeng.MSLback.dto.comment.request.CommentUpdateRequestDto;
+import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.xml.bind.ValidationException;
 
 @RequiredArgsConstructor
 @Service
@@ -35,10 +38,25 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public void updateComment(CommentUpdateRequestDto dto) {
+    public void updateComment(CommentUpdateRequestDto dto) throws ValidationException {
         Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(
                 () -> new EntityNotFoundException("댓글이 존재하지 않습니다")
         );
+        validateUser(UserContext.userId.get(), comment);
         comment.updateComment(dto.getContent());
+    }
+
+    public void deleteComment(Long commentId) throws ValidationException {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new EntityNotFoundException("댓글이 존재하지 않습니다")
+        );
+        validateUser(UserContext.userId.get(), comment);
+        commentRepository.delete(comment);
+    }
+
+    public void validateUser(Long userId, Comment comment) throws ValidationException {
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new ValidationException("권한이 없습니다");
+        }
     }
 }

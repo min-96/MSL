@@ -8,10 +8,9 @@ import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.xml.bind.ValidationException;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,12 +30,23 @@ public class CommentController {
 
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/comment")
-    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) {
+    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) throws ValidationException {
 
         commentService.updateComment(updateRequestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 "댓글 수정 성공", null
+        ));
+    }
+
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) throws ValidationException {
+
+        commentService.deleteComment(commentId);
+
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "댓글 삭제 성공", null
         ));
     }
 }
