@@ -2,6 +2,7 @@ package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.dto.comment.request.CommentRequestDto;
 import Maswillaeng.MSLback.dto.comment.request.CommentUpdateRequestDto;
+import Maswillaeng.MSLback.dto.comment.request.RecommentRequestDto;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.service.CommentService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
@@ -25,6 +26,17 @@ public class CommentController {
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 "댓글 등록 성공", null // TODO 댓글 입력시 응답 다시 확인
+        ));
+    }
+
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @PostMapping("/recomment")
+    public ResponseEntity<?> saveRecomment(@RequestBody RecommentRequestDto recommentRequestDto) {
+
+        commentService.registerRecomment(UserContext.userId.get(), recommentRequestDto);
+
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "댓글 등록 성공", null // TODO 대댓글 입력시 응답 다시 확인
         ));
     }
 

@@ -9,6 +9,7 @@ import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.comment.request.CommentRequestDto;
 import Maswillaeng.MSLback.dto.comment.request.CommentUpdateRequestDto;
+import Maswillaeng.MSLback.dto.comment.request.RecommentRequestDto;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,5 +59,19 @@ public class CommentService {
         if (!comment.getUser().getId().equals(userId)) {
             throw new ValidationException("권한이 없습니다");
         }
+    }
+
+    public void registerRecomment(Long userId, RecommentRequestDto dto) {
+        Comment parentComment = commentRepository.findById(dto.getParentId()).orElseThrow(
+                () -> new EntityNotFoundException("댓글이 존재하지 않습니다.")
+        );
+        User user = userRepository.findById(userId).get();
+        Comment recomment = Comment.builder()
+                .post(parentComment.getPost())
+                .user(user)
+                .content(dto.getContent())
+                .parent(parentComment)
+                .build();
+        commentRepository.save(recomment);
     }
 }
