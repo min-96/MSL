@@ -7,14 +7,12 @@ import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AESEncryption;
-import jdk.vm.ci.meta.Local;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @RequiredArgsConstructor
 @Service
@@ -55,19 +53,19 @@ public class AuthService {
     // TODO : 추후수정
     public TokenResponseDto updateAccessToken(String access_token, String refresh_token) throws Exception {
         String updateAccessToken;
-        if(access_token!=null){
+        if (access_token != null) {
             // Claims claimsToken =  jwtTokenProvider.getRefreshClaims(refresh_token);
             Long userId = jwtTokenProvider.getUserId(access_token);
             User user = userRepository.findById(userId).get();
             String OriginalRefreshToken = user.getRefreshToken();
-            if(OriginalRefreshToken.equals(refresh_token)){
+            if (OriginalRefreshToken.equals(refresh_token)) {
                 updateAccessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
-            }else{
+            } else {
                 user.destroyRefreshToken();
                 userRepository.save(user);
                 throw new Exception("변조된 토큰");
             }
-        }else
+        } else
             throw new Exception("access Token이 없습니다");
 
         return TokenResponseDto.builder()

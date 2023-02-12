@@ -28,6 +28,15 @@ public class ResponseDto<T> {
         this.data = data;
     }
 
+    public ResponseDto(String message, T data) {
+        this.message = message;
+        this.data = data;
+    }
+
+    public static <T> ResponseDto<T> of(String message, T data) {
+        return new ResponseDto<>(message, data);
+    }
+
     public static ResponseDto<?> of(HttpStatus httpStatus) {
         return new ResponseDto<>(httpStatus.value());
     }
