@@ -12,22 +12,19 @@ public class UserJoinDto {
 
     private String password;
 
-    private String phoneNumber;
+//    private String phoneNumber;
 
     private String nickName;
 
     private String userImage;
 
-    private String introduction;
-
     public User toEntity() {
         return User.builder()
                 .email(email)
                 .password(password)
-                .phoneNumber(phoneNumber)
+//                .phoneNumber(phoneNumber)
                 .nickName(nickName)
                 .userImage(userImage)
-                .introduction(introduction)
                 .build();
     }
 }

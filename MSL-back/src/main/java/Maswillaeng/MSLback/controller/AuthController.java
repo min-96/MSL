@@ -30,8 +30,8 @@ public class AuthController {
     private final UserRepository userRepository;
     private final ExternalHttpService externalHttpService;
 
-    @GetMapping("/duplicate-email")
-    public ResponseEntity<Object> duplicateEmail(@RequestParam String email) {
+    @PostMapping("/duplicate-email")
+    public ResponseEntity<Object> duplicateEmail(@RequestBody String email) {
         if (userRepository.existsByEmail(email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
@@ -39,8 +39,8 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/duplicate-nickname")
-    public ResponseEntity<Object> duplicateNickname(@RequestParam String nickname) {
+    @PostMapping("/duplicate-nickname")
+    public ResponseEntity<Object> duplicateNickname(@RequestBody String nickname) {
         if (userRepository.existsByNickName(nickname)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
@@ -51,6 +51,8 @@ public class AuthController {
     @PostMapping("/sign")
     public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) throws Exception {
         User user = userJoinDto.toEntity();
+        System.out.println("user = " + user);
+        System.out.println("userEmail = " + user.getEmail());
         if (authService.joinDuplicate(user)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
