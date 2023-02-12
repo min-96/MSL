@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 public class ImportResponseDto {
     private String birth;
-    private String unique_key;
+    private String unique_key; // CI key
 }

@@ -51,8 +51,6 @@ public class AuthController {
     @PostMapping("/sign")
     public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) throws Exception {
         User user = userJoinDto.toEntity();
-        System.out.println("user = " + user);
-        System.out.println("userEmail = " + user.getEmail());
         if (authService.joinDuplicate(user)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
@@ -71,24 +69,30 @@ public class AuthController {
                 .path("/")
                 .httpOnly(true)
                 .maxAge(JwtTokenProvider.ACCESS_TOKEN_VALID_TIME)
+                .sameSite("Lax")
                 .build();
 
         ResponseCookie RefreshToken = ResponseCookie.from(
                 "REFRESH_TOKEN", dto.getTokenResponseDto().getREFRESH_TOKEN())
-                .path("/updateToken")
+                .path("/")
                 .maxAge(JwtTokenProvider.REFRESH_TOKEN_VALID_TIME)
                 .httpOnly(true)
+                .sameSite("Lax")
                 .build();
 
-        response.addHeader("Set-Cookie", AccessToken.toString());
-        response.addHeader("Set-Cookie", RefreshToken.toString());
+//        response.addHeader("Set-Cookie", AccessToken.toString());
+//        response.addHeader("Set-Cookie", RefreshToken.toString());
 
-        return ResponseEntity.ok().body(
-                new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
+//        return ResponseEntity.ok().body(
+//                new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
+        return ResponseEntity.ok()
+                .header("Set-Cookie", AccessToken.toString())
+                .header("Set-Cookie", RefreshToken.toString())
+                .body(new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @DeleteMapping("/logout")
+    @PostMapping("/logout")
     public ResponseEntity<Object> logout() {
         authService.removeRefreshToken(UserContext.userId.get());
         return ResponseEntity.ok().body(ResponseDto.of(
@@ -108,10 +112,11 @@ public class AuthController {
     }
 
     @PostMapping("/certifications")
-    public ResponseEntity<Objects> impUid(@RequestBody String uid) throws Exception {
+    public ResponseEntity<Objects> impUid(@RequestBody String imp_uid) throws Exception {
 
+        System.out.println("imp_uid = " + imp_uid);
         String access_token = String.valueOf(externalHttpService.importGetToken());
-        ResponseEntity<ImportResponseDto> dto = externalHttpService.importGetCertifications(uid, access_token);
+        ResponseEntity<ImportResponseDto> dto = externalHttpService.importGetCertifications(imp_uid, access_token);
         authService.adultIdentify(dto.getBody().getBirth());
 //        authService.saveUserBirthAndCI(dto); // TODO : 유저에 어떤 필드 추가할건지 정확히 정한 후 작성
 
