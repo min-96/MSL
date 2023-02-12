@@ -27,7 +27,7 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    @GetMapping("/duplicate-email")
+    @PostMapping("/duplicate-email")
     public ResponseEntity<Object> duplicateEmail(@RequestParam String email) {
         if (userRepository.existsByEmail(email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -65,7 +65,7 @@ public class UserController {
         ResponseCookie AccessToken = ResponseCookie.from("ACCESS_TOKEN", dto.getTokenResponseDto().getACCESS_TOKEN())
                 .path("/")
                 .httpOnly(true)
-                .maxAge(JwtTokenProvider.ACCESS_TOKEN_VALID_TIME)
+                .maxAge(JwtTokenProvider.REFRESH_TOKEN_VALID_TIME)
                 .build();
 
         ResponseCookie RefreshToken = ResponseCookie.from("REFRESH_TOKEN", dto.getTokenResponseDto().getREFRESH_TOKEN())
