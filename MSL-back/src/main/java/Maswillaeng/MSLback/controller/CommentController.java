@@ -3,6 +3,7 @@ package Maswillaeng.MSLback.controller;
 import Maswillaeng.MSLback.dto.comment.request.CommentRequestDto;
 import Maswillaeng.MSLback.dto.comment.request.CommentUpdateRequestDto;
 import Maswillaeng.MSLback.dto.comment.request.RecommentRequestDto;
+import Maswillaeng.MSLback.dto.comment.response.CommentResponseDto;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.service.CommentService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.bind.ValidationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,10 +22,10 @@ public class CommentController {
     private final CommentService commentService;
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/comment")
+    @PostMapping("/api/comment")
     public ResponseEntity<?> saveComment(@RequestBody CommentRequestDto commentRequestDto) {
 
-        commentService.registerComment(UserContext.userId.get(), commentRequestDto);
+        commentService.registerComment(UserContext.userData.get().getUserId(), commentRequestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 "댓글 등록 성공", null // TODO 댓글 입력시 응답 다시 확인
@@ -33,7 +36,7 @@ public class CommentController {
     @PostMapping("/recomment")
     public ResponseEntity<?> saveRecomment(@RequestBody RecommentRequestDto recommentRequestDto) {
 
-        commentService.registerRecomment(UserContext.userId.get(), recommentRequestDto);
+        commentService.registerRecomment(UserContext.userData.get().getUserId(), recommentRequestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 "댓글 등록 성공", null // TODO 대댓글 입력시 응답 다시 확인
@@ -61,4 +64,18 @@ public class CommentController {
                 "댓글 삭제 성공", null
         ));
     }
+
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @GetMapping("/api/recomment/{parentId}")
+    public ResponseEntity<?> getRecommentList(@PathVariable Long parentId) {
+
+        List<CommentResponseDto> list = commentService.getRecommentList(parentId)
+                .stream().map(CommentResponseDto::new).collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "대댓글 조회 성공",
+                list
+        ));
+    }
+
 }

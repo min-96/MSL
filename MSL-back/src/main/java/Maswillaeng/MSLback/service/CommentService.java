@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.bind.ValidationException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -43,7 +44,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(
                 () -> new EntityNotFoundException("댓글이 존재하지 않습니다")
         );
-        validateUser(UserContext.userId.get(), comment);
+        validateUser(UserContext.userData.get().getUserId(), comment);
         comment.updateComment(dto.getContent());
     }
 
@@ -51,7 +52,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new EntityNotFoundException("댓글이 존재하지 않습니다")
         );
-        validateUser(UserContext.userId.get(), comment);
+        validateUser(UserContext.userData.get().getUserId(), comment);
         commentRepository.delete(comment);
     }
 
@@ -73,5 +74,10 @@ public class CommentService {
                 .parent(parentComment)
                 .build();
         commentRepository.save(recomment);
+    }
+
+    public List<Comment> getRecommentList(Long parentId) {
+
+        return commentRepository.findByParentId(parentId);
     }
 }
