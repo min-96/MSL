@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.ValidationException;
+import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -33,10 +34,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Post> getPostList(int currentPage) {
+    public List<Post> getPostList() {
 
-        return postRepository.findAllFetchJoin(PageRequest.of(
-                        currentPage - 1, 20, Sort.Direction.DESC, "createdAt"));
+        return postRepository.findAllFetchJoin();
     }
 
     @Transactional(readOnly = true)

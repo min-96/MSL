@@ -87,6 +87,10 @@ public class User extends BaseTimeEntity {
         this.introduction = requestDto.getIntroduction();
     }
 
+    public void encryptPassword(String encrypted) {
+        this.password = encrypted;
+    }
+
     public void withdraw() {
         this.withdrawYn = 1;
         this.withdrawAt = LocalDateTime.now();

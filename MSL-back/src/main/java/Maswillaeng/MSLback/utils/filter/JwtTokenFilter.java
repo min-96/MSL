@@ -1,6 +1,9 @@
 package Maswillaeng.MSLback.utils.filter;
 
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
+import Maswillaeng.MSLback.utils.auth.TokenUserData;
+import Maswillaeng.MSLback.utils.auth.UserContext;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +28,6 @@ public class JwtTokenFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        System.out.println("filter");
         String accessToken = new String();
         String refreshToken = new String();
         HttpServletRequest req = (HttpServletRequest) request;
@@ -33,20 +35,18 @@ public class JwtTokenFilter implements Filter {
 
         // Test api중 h2-console 사용할때 자동으로 쿠키가 저장되어 /updateToken으로 넘어감
         String uri = req.getRequestURI();
-        System.out.println(uri);
         if(uri.contains("/h2-console")) {
             chain.doFilter(request, response);
             return;
         }
 
         Cookie[] cookies = req.getCookies();
-        if(cookies!=null) {
+        if(cookies!=null) { // 쿠키가 존재한다면
             log.info("accessToken = " + accessToken);
             for (Cookie cookie : cookies) {
                 log.info("cookie.getName = " + cookie.getName());
                 switch (cookie.getName()) {
                     case "ACCESS_TOKEN":
-                        System.out.println("cookie = " + cookie.getValue());
                         accessToken = cookie.getValue();
                         break;
                     case "REFRESH_TOKEN":
@@ -55,7 +55,7 @@ public class JwtTokenFilter implements Filter {
             }
         }
 
-        if (!refreshToken.equals("")) {
+        if (!refreshToken.equals("")) { // 리프레시 토큰이 있다면
             try {
                 jwtTokenProvider.isValidToken(refreshToken);
             } catch (ExpiredJwtException exception) {
@@ -67,9 +67,18 @@ public class JwtTokenFilter implements Filter {
                 System.out.println("Token is null");
                 return;
             }
-        }else if(!accessToken.equals("")){
+        }
+        if(!accessToken.equals("")){
             try {
                 jwtTokenProvider.isValidToken(accessToken);
+                Claims claims = jwtTokenProvider.getClaims(accessToken);
+                Long userId = Long.parseLong(String.valueOf(claims.get("userId")));
+                String userRole = String.valueOf(claims.get("role"));
+                System.out.println("userId = " + userId);
+                System.out.println("userRole = " + userRole);
+                UserContext.userData.set(new TokenUserData(userId, userRole));
+                System.out.println("UserContext.userData.get().getUserId() = " + UserContext.userData.get().getUserId());
+
             } catch (ExpiredJwtException exception) {
                 res.sendRedirect("/updateToken");
             }catch (JwtException exception) {

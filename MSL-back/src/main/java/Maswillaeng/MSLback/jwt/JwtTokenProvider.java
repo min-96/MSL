@@ -28,7 +28,6 @@ public class JwtTokenProvider implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         SECRET_KEY = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
-
     }
 
 
