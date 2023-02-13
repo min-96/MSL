@@ -23,8 +23,6 @@ public class JwtTokenFilter implements Filter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -35,6 +33,7 @@ public class JwtTokenFilter implements Filter {
 
         // Test api중 h2-console 사용할때 자동으로 쿠키가 저장되어 /updateToken으로 넘어감
         String uri = req.getRequestURI();
+     
         if(uri.contains("/h2-console")) {
             chain.doFilter(request, response);
             return;
@@ -57,35 +56,33 @@ public class JwtTokenFilter implements Filter {
 
         if (!refreshToken.equals("")) { // 리프레시 토큰이 있다면
             try {
-                jwtTokenProvider.isValidToken(refreshToken);
+                Claims claims = jwtTokenProvider.getClaims(refreshToken);
+                UserContext.userData.set(new TokenUserData(claims));
             } catch (ExpiredJwtException exception) {
                 res.sendRedirect("/login");
             }catch (JwtException exception) {
-                System.out.println("Token Tampered");
+                ((HttpServletResponse) response).setStatus(401);
                 return;
             } catch (NullPointerException exception) {
+                ((HttpServletResponse) response).setStatus(401);
                 System.out.println("Token is null");
                 return;
             }
         }
-        if(!accessToken.equals("")){
+        else if(!accessToken.equals("")){
             try {
-                jwtTokenProvider.isValidToken(accessToken);
                 Claims claims = jwtTokenProvider.getClaims(accessToken);
-                Long userId = Long.parseLong(String.valueOf(claims.get("userId")));
-                String userRole = String.valueOf(claims.get("role"));
-                System.out.println("userId = " + userId);
-                System.out.println("userRole = " + userRole);
-                UserContext.userData.set(new TokenUserData(userId, userRole));
-                System.out.println("UserContext.userData.get().getUserId() = " + UserContext.userData.get().getUserId());
-
+                UserContext.userData.set(new TokenUserData(claims));
             } catch (ExpiredJwtException exception) {
-                res.sendRedirect("/updateToken");
+              res.setHeader("Set-Cookie" , "FROM="+uri);
+              res.sendRedirect("/updateToken");
             }catch (JwtException exception) {
                 System.out.println("Token Tampered");
+                ((HttpServletResponse) response).setStatus(401);
                 return;
             } catch (NullPointerException exception) {
                 System.out.println("Token is null");
+                ((HttpServletResponse) response).setStatus(401);
                 return;
             }
         }

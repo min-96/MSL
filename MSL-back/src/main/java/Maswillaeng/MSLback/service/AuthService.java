@@ -7,6 +7,7 @@ import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AESEncryption;
+import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public class AuthService {
         }
 
         String accessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
-        String refreshToken = jwtTokenProvider.createRefreshToken();
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
         user.updateRefreshToken(refreshToken);
         userRepository.save(user);
         TokenResponseDto token = TokenResponseDto.builder().
@@ -54,20 +55,18 @@ public class AuthService {
                 .build();
     }
 
-    public TokenResponseDto updateAccessToken(String access_token, String refresh_token) throws Exception {
+    public TokenResponseDto updateAccessToken(String refresh_token) throws Exception {
         String updateAccessToken;
 
-        // Claims claimsToken =  jwtTokenProvider.getRefreshClaims(refresh_token);
-        Long userId = jwtTokenProvider.getUserId(access_token);
-        User user = userRepository.findById(userId).get();
-        String OriginalRefreshToken = user.getRefreshToken();
-        if (OriginalRefreshToken.equals(refresh_token)) {
-            updateAccessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
-        } else {
-            user.destroyRefreshToken();
-            userRepository.save(user);
-            throw new Exception("변조된 토큰");
-        }
+           User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
+           String OriginalRefreshToken = user.getRefreshToken();
+           if (OriginalRefreshToken.equals(refresh_token)) {
+               updateAccessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
+           } else {
+               user.destroyRefreshToken();
+               userRepository.save(user);
+               throw new Exception("변조된 토큰");
+           }
 
         return TokenResponseDto.builder()
                 .ACCESS_TOKEN(updateAccessToken)

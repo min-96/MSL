@@ -4,7 +4,6 @@ import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.TokenUserData;
 import Maswillaeng.MSLback.utils.auth.UserContext;
-import io.jsonwebtoken.Claims;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,9 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 @ComponentScan
 @NoArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -42,7 +38,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         // 어노테이션 붙은 페이지를 비회원이 접근하려함
         if (token.equals("")) {
-            response.setStatus(401);
+            response.setStatus(403);
             return false;
         }
 
@@ -51,7 +47,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (auth.role().equals(AuthCheck.Role.USER)) {
             // USER 어노테이션 붙은곳에 도착한 계정이 USER 권한을 가지고있는지 체크하는거
             if (!userData.getUserRole().equals(AuthCheck.Role.USER.toString())) {
-                response.setStatus(401);
+                response.setStatus(403);
                 return false;
             }
         }
@@ -59,7 +55,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (auth.role().equals(AuthCheck.Role.ADMIN)) {
             // ADMIN 어놑테이션 붙은 컨트롤러에 접근한 계정이 AMDIN인지 확인
             if (!userData.getUserRole().equals(AuthCheck.Role.ADMIN.toString())) {
-                response.setStatus(401);
+                response.setStatus(403);
                 return false;
             }
         }
