@@ -10,13 +10,14 @@ import Maswillaeng.MSLback.service.PostService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,7 +29,7 @@ public class PostController {
     @PostMapping("/post")
     public ResponseEntity<?> savePost(@RequestBody @Valid PostRequestDto requestDto) {
 
-        postService.registerPost(UserContext.userId.get(), requestDto);
+        postService.registerPost(UserContext.userData.get().getUserId(), requestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
@@ -36,10 +37,10 @@ public class PostController {
     }
 
     @GetMapping("/post/page")
-    public ResponseEntity<?> getPostList(@RequestParam int currentPage) {
+    public ResponseEntity<?> getPostList() {
 
-        Page<PostResponseDto> postList = postService.getPostList(currentPage)
-                .map(PostResponseDto::new);
+        List<PostResponseDto> postList = postService.getPostList()
+                .stream().map(PostResponseDto::new).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK, postList));
@@ -49,7 +50,7 @@ public class PostController {
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
 
         Post post = postService.getPostById(postId);
-
+        System.out.println("UserContext.userData.get().getUserId() = " + UserContext.userData.get().getUserId());
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK, new PostResponseDto(post)
         ));
@@ -60,7 +61,7 @@ public class PostController {
     @PutMapping("/post")
     public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws Exception {
 
-        postService.updatePost(UserContext.userId.get(), updateDto);
+        postService.updatePost(UserContext.userData.get().getUserId(), updateDto);
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
         ));
@@ -69,7 +70,7 @@ public class PostController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/post/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId) throws ValidationException {
-        postService.deletePost(UserContext.userId.get(), postId);
+        postService.deletePost(UserContext.userData.get().getUserId(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
         ));
@@ -79,8 +80,10 @@ public class PostController {
     @GetMapping("/userPostList")
     public ResponseEntity<?> getUserPostList(@RequestParam int currentPage) {
         return ResponseEntity.ok().body(
-                postService.getUserPostList(UserContext.userId.get(), currentPage)
+                postService.getUserPostList(UserContext.userData.get().getUserId(), currentPage)
                         .map(UserPostResponseDto::new));
     }
+
+
 
 }
