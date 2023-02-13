@@ -11,7 +11,6 @@ import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.service.AuthService;
 import Maswillaeng.MSLback.service.ExternalHttpService;
-import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +67,7 @@ public class AuthController {
                 "ACCESS_TOKEN", dto.getTokenResponseDto().getACCESS_TOKEN())
                 .path("/")
                 .httpOnly(true)
-                .maxAge(JwtTokenProvider.ACCESS_TOKEN_VALID_TIME)
+                .maxAge(JwtTokenProvider.REFRESH_TOKEN_VALID_TIME)
                 .sameSite("Lax")
                 .build();
 
@@ -89,7 +88,7 @@ public class AuthController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/logout")
     public ResponseEntity<Object> logout() {
-        Long userId = UserContext.userId.get();
+        Long userId = UserContext.userData.get().getUserId();
         authService.removeRefreshToken(userId);
         return ResponseEntity.ok()
                 .header("Set-Cookie", "ACCESS_TOKEN=")
