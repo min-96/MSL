@@ -1,6 +1,5 @@
 package Maswillaeng.MSLback.controller;
 
-import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
@@ -22,7 +21,7 @@ public class UserController {
     @GetMapping("/user")
     public ResponseEntity<?> getUserInfo() {
         return ResponseEntity.ok().body(
-                userService.getUser(UserContext.userId.get()));
+                userService.getUser(UserContext.userData.get().getUserId()));
     }
 
 
@@ -33,14 +32,14 @@ public class UserController {
         if (requestDto.getPassword() == null && requestDto.getNickName() == null) {
             return ResponseEntity.badRequest().build();
         }
-        userService.updateUser(UserContext.userId.get(), requestDto);
+        userService.updateUser(UserContext.userData.get().getUserId(), requestDto);
         return ResponseEntity.ok().build();
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/user")
     public ResponseEntity<Object> userWithDraw() {
-        userService.userWithdraw(UserContext.userId.get());
+        userService.userWithdraw(UserContext.userData.get().getUserId());
         return ResponseEntity.ok().build();
     }
 }
