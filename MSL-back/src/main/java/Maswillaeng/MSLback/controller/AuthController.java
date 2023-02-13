@@ -59,8 +59,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto request,
-                                   HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto request) throws Exception {
         LoginResponseDto dto = authService.login(request);
 
         ResponseCookie AccessToken = ResponseCookie.from(

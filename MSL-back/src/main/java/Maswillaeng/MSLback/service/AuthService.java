@@ -29,10 +29,12 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public LoginResponseDto login(LoginRequestDto requestDto) {
+    public LoginResponseDto login(LoginRequestDto requestDto) throws Exception {
         User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
-        if (!user.getPassword().equals(requestDto.getPassword())) {
+        String encryptedPassword = aesEncryption.encrypt(requestDto.getPassword());
+
+        if (!user.getPassword().equals(encryptedPassword)) {
             throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
         } else if (user.getWithdrawYn() == 1) {
             throw new EntityNotFoundException("탈퇴한 회원입니다.");

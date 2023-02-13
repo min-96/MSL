@@ -28,7 +28,6 @@ public class JwtTokenFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        System.out.println("filter");
         String accessToken = new String();
         String refreshToken = new String();
         HttpServletRequest req = (HttpServletRequest) request;
