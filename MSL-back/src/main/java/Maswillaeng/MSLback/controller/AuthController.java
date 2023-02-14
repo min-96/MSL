@@ -112,7 +112,8 @@ public class AuthController {
         return ResponseEntity.status(302)
                 .header("Set-Cookie", "ACCESS_TOKEN=" + token.getACCESS_TOKEN())
                 .header("Set-Cookie", "FROM=; max-age=0; expires=0;")
-                .location(URI.create(from)).build();
+                .location(URI.create(from))
+                .build();
     }
 
     @PostMapping("/certifications") // 쓸일 없음

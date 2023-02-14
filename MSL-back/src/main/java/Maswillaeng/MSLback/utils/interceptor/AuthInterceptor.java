@@ -7,6 +7,7 @@ import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.Ordered;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @ComponentScan
 @NoArgsConstructor
-public class AuthInterceptor implements HandlerInterceptor {
+public class AuthInterceptor implements HandlerInterceptor, Ordered {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -62,4 +63,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         UserContext.remove(); // 쓰레드 로컬 지워주기.
     }
 
+    @Override
+    public int getOrder() {
+        return 2;
+    }
 }

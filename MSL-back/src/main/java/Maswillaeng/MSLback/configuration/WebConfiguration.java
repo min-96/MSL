@@ -1,10 +1,12 @@
 package Maswillaeng.MSLback.configuration;
 
 import Maswillaeng.MSLback.utils.interceptor.AuthInterceptor;
+import Maswillaeng.MSLback.utils.interceptor.ValidInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,7 +27,10 @@ public class WebConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public AuthInterceptor jwtTokenInterceptor() {
+    public ValidInterceptor validInterceptor() {
+        return new ValidInterceptor();}
+    @Bean
+    public AuthInterceptor authInterceptor() {
         return new AuthInterceptor();
     }
 
@@ -42,7 +47,8 @@ public class WebConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
        // List<String> excludes = Arrays.asList("/favicon.ico");
 
-        registry.addInterceptor(jwtTokenInterceptor());//.excludePathPatterns(excludes);
+        registry.addInterceptor(authInterceptor());//.excludePathPatterns(excludes);
+        registry.addInterceptor(validInterceptor());
     }
 
 
