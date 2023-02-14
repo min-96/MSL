@@ -46,9 +46,8 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     public void addInterceptors(InterceptorRegistry registry) {
        // List<String> excludes = Arrays.asList("/favicon.ico");
-
-        registry.addInterceptor(authInterceptor());//.excludePathPatterns(excludes);
         registry.addInterceptor(validInterceptor());
+        registry.addInterceptor(authInterceptor());//.excludePathPatterns(excludes);
     }
 
 
