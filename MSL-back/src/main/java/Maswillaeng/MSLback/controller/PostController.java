@@ -25,6 +25,11 @@ public class PostController {
 
     private final PostService postService;
 
+    @GetMapping("/")
+    public ResponseEntity<?> test(){
+        return ResponseEntity.ok().build();
+    }
+
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/post")
     public ResponseEntity<?> savePost(@RequestBody @Valid PostRequestDto requestDto) {

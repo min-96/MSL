@@ -32,6 +32,8 @@ public class JwtTokenFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         String uri = req.getRequestURI();
+
+        System.out.println(uri);
      
         if(uri.contains("/h2-console")) {
             chain.doFilter(request, response);
@@ -53,6 +55,7 @@ public class JwtTokenFilter implements Filter {
 
         if (!refreshToken.equals("")) { // 리프레시 토큰이 있다면
             try {
+                System.out.println("refresh Token");
                 Claims claims = jwtTokenProvider.getClaims(refreshToken);
                 UserContext.userData.set(new TokenUserData(claims));
             } catch (ExpiredJwtException exception) {
@@ -66,7 +69,13 @@ public class JwtTokenFilter implements Filter {
                 UserContext.userData.set(new TokenUserData(claims));
             } catch (ExpiredJwtException exception) {
               res.setHeader("Set-Cookie" , "FROM="+uri);
-              res.sendRedirect("/updateToken"); }
+//             res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000/");
+//             res.setHeader("Access-Control-Allow-Methods","GET");
+//             res.setHeader("Access-Control-Allow-Headers"," X-PINGOTHER, Content-Type");
+           //     res.setHeader("Access-Control-Allow-Origin" ,"*");
+              res.sendRedirect("/updateToken");
+              return;
+            }
             // TODO : 나중에 Exception Handler JwtException, NullPointerException 로 관리
 
         }
