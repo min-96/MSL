@@ -71,10 +71,4 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
 
-
-    public boolean isValidToken(String token) {
-        Claims accessClaims =getClaims(token);
-        return true;
-    }
-
 }

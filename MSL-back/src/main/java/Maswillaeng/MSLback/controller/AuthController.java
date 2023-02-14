@@ -102,8 +102,6 @@ public class AuthController {
         );
     }
 
-    //TODO : 토큰을 그냥 바디에 담아준다?
-   // @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/updateToken")
     public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken,
                                                     @CookieValue("FROM") String from ) throws Exception {

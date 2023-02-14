@@ -31,7 +31,6 @@ public class JwtTokenFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
-        // Test api중 h2-console 사용할때 자동으로 쿠키가 저장되어 /updateToken으로 넘어감
         String uri = req.getRequestURI();
      
         if(uri.contains("/h2-console")) {
@@ -41,9 +40,7 @@ public class JwtTokenFilter implements Filter {
 
         Cookie[] cookies = req.getCookies();
         if(cookies!=null) { // 쿠키가 존재한다면
-            log.info("accessToken = " + accessToken);
             for (Cookie cookie : cookies) {
-                log.info("cookie.getName = " + cookie.getName());
                 switch (cookie.getName()) {
                     case "ACCESS_TOKEN":
                         accessToken = cookie.getValue();
@@ -59,15 +56,9 @@ public class JwtTokenFilter implements Filter {
                 Claims claims = jwtTokenProvider.getClaims(refreshToken);
                 UserContext.userData.set(new TokenUserData(claims));
             } catch (ExpiredJwtException exception) {
-                res.sendRedirect("/login");
-            }catch (JwtException exception) {
-                ((HttpServletResponse) response).setStatus(401);
-                return;
-            } catch (NullPointerException exception) {
-                ((HttpServletResponse) response).setStatus(401);
-                System.out.println("Token is null");
-                return;
-            }
+                res.sendRedirect("/login"); }
+            // TODO : 나중에 Exception Handler JwtException, NullPointerException 로 관리 (401)
+
         }
         else if(!accessToken.equals("")){
             try {
@@ -75,19 +66,10 @@ public class JwtTokenFilter implements Filter {
                 UserContext.userData.set(new TokenUserData(claims));
             } catch (ExpiredJwtException exception) {
               res.setHeader("Set-Cookie" , "FROM="+uri);
-              res.sendRedirect("/updateToken");
-            }catch (JwtException exception) {
-                System.out.println("Token Tampered");
-                ((HttpServletResponse) response).setStatus(401);
-                return;
-            } catch (NullPointerException exception) {
-                System.out.println("Token is null");
-                ((HttpServletResponse) response).setStatus(401);
-                return;
-            }
-        }
+              res.sendRedirect("/updateToken"); }
+            // TODO : 나중에 Exception Handler JwtException, NullPointerException 로 관리
 
-        request.setAttribute("ACCESS_TOKEN" , accessToken);
+        }
 
         chain.doFilter(request, response);
     }
