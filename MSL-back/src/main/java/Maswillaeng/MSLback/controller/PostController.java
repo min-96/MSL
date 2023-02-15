@@ -39,11 +39,8 @@ public class PostController {
     @GetMapping("/post/page")
     public ResponseEntity<?> getPostList() {
 
-        List<PostResponseDto> postList = postService.getPostList()
-                .stream().map(PostResponseDto::new).collect(Collectors.toList());
-
         return ResponseEntity.ok().body(ResponseDto.of(
-                HttpStatus.OK, postList));
+                HttpStatus.OK, postService.getPostList()));
     }
 
     @GetMapping("/post/{postId}")
@@ -52,7 +49,7 @@ public class PostController {
         Post post = postService.getPostById(postId);
         System.out.println("UserContext.userData.get().getUserId() = " + UserContext.userData.get().getUserId());
         return ResponseEntity.ok().body(ResponseDto.of(
-                HttpStatus.OK, new PostResponseDto(post)
+                HttpStatus.OK, null // 잠깐 임시로
         ));
     }
 

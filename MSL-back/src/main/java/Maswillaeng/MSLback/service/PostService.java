@@ -5,12 +5,12 @@ import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
-import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +34,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<Post> getPostList() {
+    public List<PostResponseDto> getPostList() {
 
-        return postRepository.findAllFetchJoin();
+        return postRepository.findAllPostResponseDto(PageRequest.of(0, 500));
     }
 
     @Transactional(readOnly = true)

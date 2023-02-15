@@ -54,14 +54,14 @@ public class Post extends BaseTimeEntity {
     private List<HashTag> hashTagList = new ArrayList<>();
 
     @Builder
-    public Post(String thumbnail, String title, String content, User user, String category) {
+    public Post(String thumbnail, String title, String content, User user, Category category) {
         this.thumbnail = thumbnail;
         this.title = title;
         this.content = content;
         this.user = user;
         this.hits = 1L;
         this.report = 0;
-        this.category = Category.valueOf(category);
+        this.category = category;
     }
 
     public void update(PostUpdateDto postUpdateDto) {

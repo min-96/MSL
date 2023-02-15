@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.dto.post.reponse;
 
 import Maswillaeng.MSLback.domain.entity.Post;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
-
+@AllArgsConstructor
 public class PostResponseDto {
     private Long postId;
 
@@ -21,11 +22,11 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    private int likeCnt;
-    private int commentCnt;
+    private Long likeCnt;
+    private Long commentCnt;
     private Long hits;
 
-    public PostResponseDto(Post post, int likeCnt, int commentCnt) {
+    public PostResponseDto(Post post, Long likeCnt, Long commentCnt) {
         postId = post.getId();
         userId = post.getUser().getId();
         nickname = post.getUser().getNickName();
