@@ -19,7 +19,7 @@ public class CommentResponseDto {
     private LocalDateTime createAt;
 
     public CommentResponseDto(Comment comment) {
-        this.commentId = comment.getCommentId();
+        this.commentId = comment.getId();
         this.content = comment.getContent();
         this.createAt = comment.getCreatedAt();
     }

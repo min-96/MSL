@@ -22,14 +22,14 @@ public class CommentLike {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    @MapsId("postId")
-    private Post post;
+    @JoinColumn(name = "comment_id")
+    @MapsId("commentId")
+    private Comment comment;
 
     @Builder
-    public CommentLike(User user, Post post) {
-        this.id = new CommentLikeId(user.getId(), post.getId());
+    public CommentLike(User user, Comment comment) {
+        this.id = new CommentLikeId(user.getId(), comment.getId());
         this.user = user;
-        this.post = post;
+        this.comment = comment;
     }
 }
