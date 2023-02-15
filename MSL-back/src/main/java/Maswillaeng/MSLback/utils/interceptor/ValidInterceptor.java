@@ -1,14 +1,17 @@
 package Maswillaeng.MSLback.utils.interceptor;
 
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
+import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.TokenUserData;
 import Maswillaeng.MSLback.utils.auth.UserContext;
+import Maswillaeng.MSLback.utils.auth.ValidToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Ordered;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.FilterChain;
@@ -29,6 +32,18 @@ public class ValidInterceptor implements Ordered, HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        HandlerMethod handlerMethod;
+
+        if (!(handler instanceof HandlerMethod))
+            return true;
+        handlerMethod = (HandlerMethod) handler;
+
+        ValidToken token = handlerMethod.getMethodAnnotation(ValidToken.class);
+        if (token == null) {
+            return true;
+        }
+
 
         String accessToken = new String();
         String refreshToken = new String();
