@@ -60,6 +60,7 @@ public class Post extends BaseTimeEntity {
         this.content = content;
         this.user = user;
         this.hits = 1L;
+        this.report = 0;
         this.category = Category.valueOf(category);
     }
 
