@@ -2,9 +2,13 @@ package Maswillaeng.MSLback.service;
 
 import Maswillaeng.MSLback.common.exception.EntityNotFoundException;
 import Maswillaeng.MSLback.domain.entity.*;
+import Maswillaeng.MSLback.domain.entity.key.CommentLikeId;
+import Maswillaeng.MSLback.domain.entity.key.PostLikeId;
 import Maswillaeng.MSLback.domain.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import javax.xml.bind.ValidationException;
 
 @RequiredArgsConstructor
 @Service
@@ -18,7 +22,7 @@ public class LikeService {
     public void savePostLike(Long userId, Long postId) {
         User user = userRepository.findById(userId).get();
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
+                () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
 
         if (postLikeRepository.existsByUserAndPost(user, post)) {
             throw new IllegalStateException("해당 게시물에 이미 좋아요를 눌렀습니다");
@@ -43,5 +47,25 @@ public class LikeService {
                 .user(user)
                 .comment(comment).build();
         commentLikeRepository.save(postLike);
+    }
+
+    public void deletePostLike(Long userId, Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
+        if (userId.equals(post.getUser().getId())) {
+            postLikeRepository.deleteById(new PostLikeId(userId, postId));
+        } else {
+            throw new RuntimeException("접근 권한 없음");
+        }
+    }
+
+    public void deleteCommentLike(Long userId, Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
+        if (userId.equals(comment.getUser().getId())) {
+            commentLikeRepository.deleteById(new CommentLikeId(userId, commentId));
+        } else {
+            throw new RuntimeException("접근 권한 없음");
+        }
     }
 }
