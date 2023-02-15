@@ -1,12 +1,16 @@
 package Maswillaeng.MSLback.domain.entity;
 
+import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -31,28 +35,39 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @Enumerated(EnumType.STRING)
     private Category category;
-    private Long hits; // int가 21억까지 표현 가능한데 조회수가 21억을 넘을 일이 있을까?
+
+    @ColumnDefault("0")
+    private Long hits;
+
+    @ColumnDefault("0")
+    private int report;
+
+    @OneToMany(mappedBy = "post")
+    private List<PostLike> postLikeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<HashTag> hashTagList = new ArrayList<>();
 
     @Builder
-    public Post(String thumbnail, String title, String content, User user) {
+    public Post(String thumbnail, String title, String content, User user, String category) {
         this.thumbnail = thumbnail;
         this.title = title;
         this.content = content;
         this.user = user;
         this.hits = 1L;
+        this.category = Category.valueOf(category);
     }
 
     public void update(PostUpdateDto postUpdateDto) {
         this.thumbnail = postUpdateDto.getThumbnail();
         this.title = postUpdateDto.getTitle();
         this.content = postUpdateDto.getContent();
+        this.category = postUpdateDto.getCategory();
     }
 
-    // 연관관계 편의 메서드
-    private void changeCategory(Category category) {
-        this.category = category;
-    }
 }
