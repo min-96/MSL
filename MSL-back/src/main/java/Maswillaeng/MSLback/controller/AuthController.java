@@ -5,6 +5,7 @@ import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.ImportResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
+import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserLoginResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -101,11 +103,15 @@ public class AuthController {
     //TODO : 토큰을 그냥 바디에 담아준다?
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/updateToken")
-    public ResponseEntity<Object> updateAccessToken(@CookieValue("ACCESS_TOKEN") String accessToken,
-                                                    @CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
+    public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken,
+                                                    @CookieValue("FROM") String from ) throws Exception {
+        TokenResponseDto token = authService.updateAccessToken(refreshToken);
 
-        return ResponseEntity.ok().body(
-                authService.updateAccessToken(accessToken, refreshToken));
+
+        return ResponseEntity.status(302)
+                .header("Set-Cookie", "ACCESS_TOKEN=" + token.getACCESS_TOKEN() )
+                .header("Set-Cookie", "FROM=; max-age=0; expires=0;")
+                .location(URI.create(from)).build();
     }
 
     @PostMapping("/api/certifications") // 쓸일 없음
