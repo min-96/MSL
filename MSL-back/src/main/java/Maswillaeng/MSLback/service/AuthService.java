@@ -9,12 +9,15 @@ import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AESEncryption;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import static Maswillaeng.MSLback.jwt.JwtTokenProvider.REFRESH_TOKEN_VALID_TIME;
 
 @RequiredArgsConstructor
 @Service
@@ -70,6 +73,26 @@ public class AuthService {
 
         return TokenResponseDto.builder()
                 .ACCESS_TOKEN(updateAccessToken)
+                .build();
+    }
+
+    public ResponseCookie getAccessTokenCookie(String accessToken) throws Exception {
+        return ResponseCookie.from(
+                        "ACCESS_TOKEN", accessToken)
+                .path("/")
+                .httpOnly(true)
+                .maxAge(REFRESH_TOKEN_VALID_TIME)
+                .sameSite("none")
+                .build();
+    }
+
+    public ResponseCookie getRefreshTokenCookie(String refreshToken) throws Exception {
+        return ResponseCookie.from(
+                        "REFRESH_TOKEN", refreshToken)
+                .path("/updateToken")
+                .httpOnly(true)
+                .maxAge(REFRESH_TOKEN_VALID_TIME)
+                .sameSite("none")
                 .build();
     }
 

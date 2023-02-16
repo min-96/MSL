@@ -22,7 +22,7 @@ public class UserController {
 
     //////////////////////////////// 종속되어있지 않는 user api
     @ValidToken
-    @GetMapping("api-user")
+    @GetMapping("/api/user")
     public ResponseEntity<?> getUserApi() {
         if (UserContext.userData.get() == null) return ResponseEntity.ok().body(new UserApiResponse(false));
 
@@ -31,7 +31,7 @@ public class UserController {
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/api/user")
+    @GetMapping("/api/userInfo")
     public ResponseEntity<?> getUserInfo() {
         return ResponseEntity.ok().body(
                 userService.getUser(UserContext.userData.get().getUserId()));

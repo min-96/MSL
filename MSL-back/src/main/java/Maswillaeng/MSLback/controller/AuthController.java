@@ -68,21 +68,11 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request) throws Exception {
         LoginResponseDto dto = authService.login(request);
 
-        ResponseCookie AccessToken = ResponseCookie.from(
-                "ACCESS_TOKEN", dto.getTokenResponseDto().getACCESS_TOKEN())
-                .path("/")
-                .httpOnly(true)
-                .maxAge(JwtTokenProvider.REFRESH_TOKEN_VALID_TIME)
-                .sameSite("Lax")
-                .build();
+        ResponseCookie AccessToken = authService.getAccessTokenCookie(
+                dto.getTokenResponseDto().getACCESS_TOKEN());
 
-        ResponseCookie RefreshToken = ResponseCookie.from(
-                "REFRESH_TOKEN", dto.getTokenResponseDto().getREFRESH_TOKEN())
-                .path("/")
-                .maxAge(JwtTokenProvider.REFRESH_TOKEN_VALID_TIME)
-                .httpOnly(true)
-                .sameSite("Lax")
-                .build();
+        ResponseCookie RefreshToken = authService.getRefreshTokenCookie(
+                dto.getTokenResponseDto().getREFRESH_TOKEN());
 
         return ResponseEntity.ok()
                 .header("Set-Cookie", AccessToken.toString())
