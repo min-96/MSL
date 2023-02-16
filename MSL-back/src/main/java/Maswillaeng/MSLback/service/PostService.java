@@ -2,6 +2,8 @@ package Maswillaeng.MSLback.service;
 
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.User;
+import Maswillaeng.MSLback.domain.enums.Category;
+import Maswillaeng.MSLback.domain.repository.PostQueryRepository;
 import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
@@ -27,6 +29,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PostQueryRepository postQueryRepository;
 
     public void registerPost(Long userId, PostRequestDto postRequestDto) {
         User user = userRepository.findById(userId).get();
@@ -34,9 +37,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponseDto> getPostList() {
+    public List<PostResponseDto> getPostList(Category category) {
 
-        return postRepository.findAllPostResponseDto(PageRequest.of(0, 500));
+        return postQueryRepository.findAllPostByCategory(category);
     }
 
     @Transactional(readOnly = true)

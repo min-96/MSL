@@ -19,7 +19,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdFetchJoin(@Param("id") Long id);
 
     @Query("select new Maswillaeng.MSLback.dto.post.reponse.PostResponseDto(" +
-            "p.id, u.id, u.nickName, u.userImage, p.thumbnail, p.title, p.content, p.createdAt, p.modifiedAt, count(c), count(l), p.hits) " +
+            "p.id, u.id, u.nickName, u.userImage, p.thumbnail, p.title, p.content," +
+            " p.createdAt, p.modifiedAt, count(c), count(l), p.hits) " +
             "from Post p "
             + "join p.user u "
             + "left join p.commentList c "

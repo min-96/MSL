@@ -1,20 +1,18 @@
 package Maswillaeng.MSLback.dto.post.reponse;
 
 import Maswillaeng.MSLback.domain.entity.Post;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
-@Getter
+@Getter @Setter
 @AllArgsConstructor
 public class PostResponseDto {
     private Long postId;
 
     private Long userId;
-    private String nickname;
+    private String nickName;
     private String userImage;
     private String thumbnail;
     private String title;
@@ -29,7 +27,7 @@ public class PostResponseDto {
     public PostResponseDto(Post post, Long likeCnt, Long commentCnt) {
         postId = post.getId();
         userId = post.getUser().getId();
-        nickname = post.getUser().getNickName();
+        nickName = post.getUser().getNickName();
         userImage = post.getUser().getUserImage();
         thumbnail = post.getThumbnail();
         title = post.getTitle();

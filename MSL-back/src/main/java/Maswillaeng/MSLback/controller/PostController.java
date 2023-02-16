@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.domain.entity.Post;
+import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
@@ -37,10 +38,10 @@ public class PostController {
     }
 
     @GetMapping("/post/page")
-    public ResponseEntity<?> getPostList() {
+    public ResponseEntity<?> getPostList(@RequestParam(required = false) Category category) {
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                HttpStatus.OK, postService.getPostList()));
+                HttpStatus.OK, postService.getPostList(category)));
     }
 
     @GetMapping("/post/{postId}")
