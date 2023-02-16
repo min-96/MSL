@@ -29,7 +29,7 @@ public class AuthController {
     private final UserRepository userRepository;
     private final ExternalHttpService externalHttpService;
 
-    @PostMapping("/duplicate-email")
+    @PostMapping("/api/duplicate-email")
     public ResponseEntity<Object> duplicateEmail(@RequestBody String email) {
         if (userRepository.existsByEmail(email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -38,7 +38,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/duplicate-nickname")
+    @PostMapping("/api/duplicate-nickname")
     public ResponseEntity<Object> duplicateNickname(@RequestBody String nickname) {
         if (userRepository.existsByNickName(nickname)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -47,7 +47,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/sign")
+    @PostMapping("/api/sign")
     public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) throws Exception {
         User user = userJoinDto.toEntity();
         if (authService.joinDuplicate(user)) {
@@ -58,7 +58,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request) throws Exception {
         LoginResponseDto dto = authService.login(request);
 
@@ -85,7 +85,7 @@ public class AuthController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/logout")
+    @PostMapping("/api/logout")
     public ResponseEntity<Object> logout() {
         Long userId = UserContext.userData.get().getUserId();
         authService.removeRefreshToken(userId);
@@ -100,7 +100,7 @@ public class AuthController {
 
     //TODO : 토큰을 그냥 바디에 담아준다?
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/updateToken")
+    @GetMapping("/api/updateToken")
     public ResponseEntity<Object> updateAccessToken(@CookieValue("ACCESS_TOKEN") String accessToken,
                                                     @CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
 
@@ -108,7 +108,7 @@ public class AuthController {
                 authService.updateAccessToken(accessToken, refreshToken));
     }
 
-    @PostMapping("/certifications") // 쓸일 없음
+    @PostMapping("/api/certifications") // 쓸일 없음
     public ResponseEntity<Objects> impUid(@RequestBody String imp_uid) throws Exception {
 
         System.out.println("imp_uid = " + imp_uid);

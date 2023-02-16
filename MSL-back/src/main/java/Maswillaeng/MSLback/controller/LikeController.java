@@ -18,7 +18,7 @@ public class LikeController {
     private final LikeService likeService;
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/post-like/{postId}")
+    @PostMapping("/api/post-like/{postId}")
     public ResponseEntity<Object> savePostLike(@PathVariable Long postId) {
         likeService.savePostLike(UserContext.userData.get().getUserId(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
@@ -27,7 +27,7 @@ public class LikeController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/comment-like/{commentId}")
+    @PostMapping("/api/comment-like/{commentId}")
     public ResponseEntity<Object> saveCommentLike(@PathVariable Long commentId) {
         likeService.saveCommentLike(UserContext.userData.get().getUserId(), commentId);
         return ResponseEntity.ok().body(ResponseDto.of(
@@ -35,7 +35,7 @@ public class LikeController {
         ));
     }
 
-    @DeleteMapping("/post-like/{postId}")
+    @DeleteMapping("/api/post-like/{postId}")
     public ResponseEntity<Object> deletePostLike(@PathVariable Long postId) {
         likeService.deletePostLike(UserContext.userData.get().getUserId(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
@@ -43,7 +43,7 @@ public class LikeController {
         ));
     }
 
-    @DeleteMapping("/comment-like/{commentId}")
+    @DeleteMapping("/api/comment-like/{commentId}")
     public ResponseEntity<Object> deleteCommentLike(@PathVariable Long commentId) {
         likeService.deleteCommentLike(UserContext.userData.get().getUserId(), commentId);
         return ResponseEntity.ok().body(ResponseDto.of(

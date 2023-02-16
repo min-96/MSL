@@ -18,7 +18,7 @@ public class UserController {
 
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/user")
+    @GetMapping("/api/user")
     public ResponseEntity<?> getUserInfo() {
         return ResponseEntity.ok().body(
                 userService.getUser(UserContext.userData.get().getUserId()));
@@ -26,7 +26,7 @@ public class UserController {
 
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PutMapping("/user")
+    @PutMapping("/api/user")
     public ResponseEntity<Object> updateUserInfo(
             @RequestBody @Valid UserUpdateRequestDto requestDto) {
         if (requestDto.getPassword() == null && requestDto.getNickName() == null) {
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @DeleteMapping("/user")
+    @DeleteMapping("/api/user")
     public ResponseEntity<Object> userWithDraw() {
         userService.userWithdraw(UserContext.userData.get().getUserId());
         return ResponseEntity.ok().build();

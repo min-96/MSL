@@ -27,7 +27,7 @@ public class PostController {
     private final PostService postService;
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/post")
+    @PostMapping("/api/post")
     public ResponseEntity<?> savePost(@RequestBody @Valid PostRequestDto requestDto) {
 
         postService.registerPost(UserContext.userData.get().getUserId(), requestDto);
@@ -37,14 +37,14 @@ public class PostController {
         ));
     }
 
-    @GetMapping("/post/page")
+    @GetMapping("/api/post/page")
     public ResponseEntity<?> getPostList(@RequestParam(required = false) Category category) {
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK, postService.getPostList(category)));
     }
 
-    @GetMapping("/post/{postId}")
+    @GetMapping("/api/post/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
 
         Post post = postService.getPostById(postId);
@@ -56,7 +56,7 @@ public class PostController {
 
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PutMapping("/post")
+    @PutMapping("/api/post")
     public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws Exception {
 
         postService.updatePost(UserContext.userData.get().getUserId(), updateDto);
@@ -66,7 +66,7 @@ public class PostController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @DeleteMapping("/post/{postId}")
+    @DeleteMapping("/api/post/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId) throws ValidationException {
         postService.deletePost(UserContext.userData.get().getUserId(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
@@ -75,7 +75,7 @@ public class PostController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/userPostList")
+    @GetMapping("/api/userPostList")
     public ResponseEntity<?> getUserPostList(@RequestParam int currentPage) {
         return ResponseEntity.ok().body(
                 postService.getUserPostList(UserContext.userData.get().getUserId(), currentPage)

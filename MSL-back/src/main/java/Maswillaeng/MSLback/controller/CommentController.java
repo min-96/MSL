@@ -33,7 +33,7 @@ public class CommentController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/recomment")
+    @PostMapping("/api/recomment")
     public ResponseEntity<?> saveRecomment(@RequestBody RecommentRequestDto recommentRequestDto) {
 
         commentService.registerRecomment(UserContext.userData.get().getUserId(), recommentRequestDto);
@@ -44,7 +44,7 @@ public class CommentController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PutMapping("/comment")
+    @PutMapping("/api/comment")
     public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) throws ValidationException {
 
         commentService.updateComment(updateRequestDto);
@@ -55,7 +55,7 @@ public class CommentController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @DeleteMapping("/comment/{commentId}")
+    @DeleteMapping("/api/comment/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable Long commentId) throws ValidationException {
 
         commentService.deleteComment(commentId);
