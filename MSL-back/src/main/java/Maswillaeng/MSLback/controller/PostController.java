@@ -37,7 +37,7 @@ public class PostController {
         ));
     }
 
-    @GetMapping("/api/post/page")
+    @GetMapping("/api-post")
     public ResponseEntity<?> getPostList(@RequestParam(required = false) Category category) {
 
         return ResponseEntity.ok().body(ResponseDto.of(
