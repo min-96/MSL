@@ -1,10 +1,14 @@
 package Maswillaeng.MSLback.controller;
 
+import Maswillaeng.MSLback.dto.common.ResponseDto;
+import Maswillaeng.MSLback.dto.user.reponse.UserApiResponse;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
+import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +20,16 @@ public class UserController {
 
     private final UserService userService;
 
+    //////////////////////////////// 종속되어있지 않는 user api
+    @ValidToken
+    @GetMapping("api-user")
+    public ResponseEntity<?> getUserApi() {
+        if (UserContext.userData.get() == null) return ResponseEntity.ok().body(new UserApiResponse(false));
 
+        return ResponseEntity.ok().body(userService.getUserApi(UserContext.userData.get().getUserId()));
+    }
+
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/user")
     public ResponseEntity<?> getUserInfo() {

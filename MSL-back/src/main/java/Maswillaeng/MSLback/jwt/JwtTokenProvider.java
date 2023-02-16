@@ -44,9 +44,9 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
 
-    public String createRefreshToken() {
+    public String createRefreshToken(Long userId) {
         Claims claims = Jwts.claims();
-
+        claims.put("userId",userId);
         Date now = new Date();
         Date expiration = new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME);
 
@@ -68,11 +68,5 @@ public class JwtTokenProvider implements InitializingBean {
         return Long.parseLong(String.valueOf(claims.get("userId")));
     }
 
-
-
-    public boolean isValidToken(String token) {
-        Claims accessClaims =getClaims(token);
-        return true;
-    }
 
 }

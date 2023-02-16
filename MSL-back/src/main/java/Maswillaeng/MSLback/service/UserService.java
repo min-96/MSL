@@ -4,6 +4,7 @@ import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
+import Maswillaeng.MSLback.dto.user.reponse.UserApiResponse;
 import Maswillaeng.MSLback.dto.user.reponse.UserInfoResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
@@ -21,8 +22,6 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-
     @Transactional(readOnly = true)
     public UserInfoResponseDto getUser(Long userId) {
         User user = userRepository.findById(userId).get();
@@ -40,5 +39,10 @@ public class UserService {
     public void userWithdraw(Long userId) {
         User findUser = userRepository.findById(userId).get();
         findUser.withdraw();
+    }
+
+    public UserApiResponse getUserApi(Long userId) {
+       User user = userRepository.findById(userId).get();
+       return new UserApiResponse(user,true);
     }
 }
