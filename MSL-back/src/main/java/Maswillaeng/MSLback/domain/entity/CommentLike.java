@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.domain.entity;
 
+import Maswillaeng.MSLback.domain.entity.key.CommentLikeId;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,33 +10,26 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Like {
+public class CommentLike {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "like_id")
-    private Long likeId;
+    @EmbeddedId
+    private CommentLikeId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
+    @MapsId("userId")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId")
-    private Post post;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "commentId")
+    @JoinColumn(name = "comment_id")
+    @MapsId("commentId")
     private Comment comment;
 
-
     @Builder
-    public Like(Long likeId, User user, Post post, Comment comment) {
-        this.likeId = likeId;
+    public CommentLike(User user, Comment comment) {
+        this.id = new CommentLikeId(user.getId(), comment.getId());
         this.user = user;
-        this.post = post;
         this.comment = comment;
     }
 }

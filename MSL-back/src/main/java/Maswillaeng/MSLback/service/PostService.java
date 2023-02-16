@@ -2,15 +2,17 @@ package Maswillaeng.MSLback.service;
 
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.User;
+import Maswillaeng.MSLback.domain.enums.Category;
+import Maswillaeng.MSLback.domain.repository.PostQueryRepository;
 import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
-import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PostQueryRepository postQueryRepository;
 
     public void registerPost(Long userId, PostRequestDto postRequestDto) {
         User user = userRepository.findById(userId).get();
@@ -34,9 +37,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<Post> getPostList() {
+    public List<PostResponseDto> getPostList(Category category) {
 
-        return postRepository.findAllFetchJoin();
+        return postQueryRepository.findAllPostByCategory(category);
     }
 
     @Transactional(readOnly = true)

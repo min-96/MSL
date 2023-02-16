@@ -33,7 +33,7 @@ public class CommentController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/recomment")
+    @PostMapping("/api/recomment")
     public ResponseEntity<?> saveRecomment(@RequestBody RecommentRequestDto recommentRequestDto) {
 
         commentService.registerRecomment(UserContext.userData.get().getUserId(), recommentRequestDto);
@@ -44,7 +44,7 @@ public class CommentController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PutMapping("/comment")
+    @PutMapping("/api/comment")
     public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) throws ValidationException {
 
         commentService.updateComment(updateRequestDto);
@@ -55,7 +55,7 @@ public class CommentController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @DeleteMapping("/comment/{commentId}")
+    @DeleteMapping("/api/comment/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable Long commentId) throws ValidationException {
 
         commentService.deleteComment(commentId);
@@ -69,12 +69,12 @@ public class CommentController {
     @GetMapping("/api/recomment/{parentId}")
     public ResponseEntity<?> getRecommentList(@PathVariable Long parentId) {
 
-        List<CommentResponseDto> list = commentService.getRecommentList(parentId)
-                .stream().map(CommentResponseDto::new).collect(Collectors.toList());
+//        List<CommentResponseDto> list = commentService.getRecommentList(parentId)
+//                .stream().map(CommentResponseDto::new).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 "대댓글 조회 성공",
-                list
+                null
         ));
     }
 

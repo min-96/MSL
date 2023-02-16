@@ -13,18 +13,21 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
 
     private Long commentId;
-//    private String nickName;
-//    private String userImage;
+    private Long userId;
+    private String nickName;
+    private String userImage;
     private String content;
     private LocalDateTime createAt;
+    private boolean isLiked;
+    private int like;
 
-    public CommentResponseDto(Comment comment) {
-        this.commentId = comment.getCommentId();
-        this.content = comment.getContent();
-        this.createAt = comment.getCreatedAt();
+    public CommentResponseDto(Comment comment, int likeCnt) {
+        commentId = comment.getId();
+        content = comment.getContent();
+        createAt = comment.getCreatedAt();
+        userId = comment.getUser().getId();
+        nickName = comment.getUser().getNickName();
+        userImage = comment.getUser().getUserImage();
+        this.like = likeCnt;
     }
-//    private boolean userLikeYn;
-//    private int likeCount;
-
-
 }

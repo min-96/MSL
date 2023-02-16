@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.domain.entity.Post;
+import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
@@ -31,7 +32,7 @@ public class PostController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/post")
+    @PostMapping("/api/post")
     public ResponseEntity<?> savePost(@RequestBody @Valid PostRequestDto requestDto) {
 
         postService.registerPost(UserContext.userData.get().getUserId(), requestDto);
@@ -41,29 +42,26 @@ public class PostController {
         ));
     }
 
-    @GetMapping("/post/page")
-    public ResponseEntity<?> getPostList() {
-
-        List<PostResponseDto> postList = postService.getPostList()
-                .stream().map(PostResponseDto::new).collect(Collectors.toList());
+    @GetMapping("/api/post/page")
+    public ResponseEntity<?> getPostList(@RequestParam(required = false) Category category) {
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                HttpStatus.OK, postList));
+                HttpStatus.OK, postService.getPostList(category)));
     }
 
-    @GetMapping("/post/{postId}")
+    @GetMapping("/api/post/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
 
         Post post = postService.getPostById(postId);
         System.out.println("UserContext.userData.get().getUserId() = " + UserContext.userData.get().getUserId());
         return ResponseEntity.ok().body(ResponseDto.of(
-                HttpStatus.OK, new PostResponseDto(post)
+                HttpStatus.OK, null // 잠깐 임시로
         ));
     }
 
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PutMapping("/post")
+    @PutMapping("/api/post")
     public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws Exception {
 
         postService.updatePost(UserContext.userData.get().getUserId(), updateDto);
@@ -73,7 +71,7 @@ public class PostController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @DeleteMapping("/post/{postId}")
+    @DeleteMapping("/api/post/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId) throws ValidationException {
         postService.deletePost(UserContext.userData.get().getUserId(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
@@ -82,7 +80,7 @@ public class PostController {
     }
 
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/userPostList")
+    @GetMapping("/api/userPostList")
     public ResponseEntity<?> getUserPostList(@RequestParam int currentPage) {
         return ResponseEntity.ok().body(
                 postService.getUserPostList(UserContext.userData.get().getUserId(), currentPage)

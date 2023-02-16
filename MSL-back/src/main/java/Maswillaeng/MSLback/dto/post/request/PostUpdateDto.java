@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.dto.post.request;
 
+import Maswillaeng.MSLback.domain.enums.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,5 +21,7 @@ public class PostUpdateDto {
 
     @NotNull
     private String content;
+
+    private Category category;
 
 }

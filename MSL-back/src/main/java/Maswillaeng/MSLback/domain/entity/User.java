@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.domain.entity;
 
+import Maswillaeng.MSLback.domain.enums.RoleType;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
