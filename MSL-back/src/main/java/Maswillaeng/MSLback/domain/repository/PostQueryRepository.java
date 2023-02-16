@@ -26,7 +26,6 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         this.queryFactory = queryFactory;
     }
 
-
     public List<PostResponseDto> findAllPostByCategory(Category category) {
         JPAQuery<PostResponseDto> query = queryFactory
                 .select(Projections.bean(PostResponseDto.class,
