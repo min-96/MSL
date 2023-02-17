@@ -50,7 +50,7 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post")
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<HashTag> hashTagList = new ArrayList<>();
 
     @Builder
@@ -71,4 +71,7 @@ public class Post extends BaseTimeEntity {
         this.category = postUpdateDto.getCategory();
     }
 
+    public void setHashTagList(List<HashTag> hashTagList) {
+        this.hashTagList = hashTagList;
+    }
 }

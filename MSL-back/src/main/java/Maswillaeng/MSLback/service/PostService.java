@@ -1,10 +1,13 @@
 package Maswillaeng.MSLback.service;
 
+import Maswillaeng.MSLback.domain.entity.HashTag;
 import Maswillaeng.MSLback.domain.entity.Post;
+import Maswillaeng.MSLback.domain.entity.Tag;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.domain.repository.PostQueryRepository;
 import Maswillaeng.MSLback.domain.repository.PostRepository;
+import Maswillaeng.MSLback.domain.repository.TagRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
@@ -21,6 +24,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.ValidationException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -30,10 +34,20 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostQueryRepository postQueryRepository;
+    private final TagRepository tagRepository;
 
     public void registerPost(Long userId, PostRequestDto postRequestDto) {
         User user = userRepository.findById(userId).get();
-        postRepository.save(postRequestDto.toEntity(user));
+        Post post = postRequestDto.toEntity(user);
+
+        List<HashTag> hashTagList = postRequestDto.getHashTagList().stream()
+                .map(tagName -> tagRepository.findById(tagName)
+                        .map(tag -> new HashTag(tag, post)).orElseGet(
+                                () -> new HashTag(new Tag(tagName), post))).toList();
+
+        post.setHashTagList(hashTagList);
+
+        postRepository.save(post);
     }
 
     @Transactional(readOnly = true)
