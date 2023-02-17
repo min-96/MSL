@@ -14,6 +14,7 @@ import Maswillaeng.MSLback.service.AuthService;
 import Maswillaeng.MSLback.service.ExternalHttpService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
+import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -49,8 +50,10 @@ public class AuthController {
         }
     }
 
+    @ValidToken
     @PostMapping("/api/sign")
     public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) throws Exception {
+//        if(UserContext.userData.get()!=null) return ResponseEntity.status(302).location(URI.create("/")).build();
         User user = userJoinDto.toEntity();
         if (authService.joinDuplicate(user)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -60,7 +63,8 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/api/login")
+    @ValidToken
+    @PostMapping("/api-login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request) throws Exception {
         LoginResponseDto dto = authService.login(request);
 
@@ -103,15 +107,10 @@ public class AuthController {
     //TODO : 토큰을 그냥 바디에 담아준다?
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/updateToken")
-    public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken,
-                                                    @CookieValue("FROM") String from ) throws Exception {
+    public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
         TokenResponseDto token = authService.updateAccessToken(refreshToken);
-
-
-        return ResponseEntity.status(302)
-                .header("Set-Cookie", "ACCESS_TOKEN=" + token.getACCESS_TOKEN() )
-                .header("Set-Cookie", "FROM=; max-age=0; expires=0;")
-                .location(URI.create(from)).build();
+        return ResponseEntity.ok()
+                .header("Set-Cookie", "ACCESS_TOKEN=" + token.getACCESS_TOKEN()).build();
     }
 
     @PostMapping("/api/certifications") // 쓸일 없음
