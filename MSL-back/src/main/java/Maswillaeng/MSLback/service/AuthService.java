@@ -70,7 +70,6 @@ public class AuthService {
 
         return TokenResponseDto.builder()
                 .ACCESS_TOKEN(updateAccessToken)
-                .REFRESH_TOKEN(refresh_token)
                 .build();
     }
 
