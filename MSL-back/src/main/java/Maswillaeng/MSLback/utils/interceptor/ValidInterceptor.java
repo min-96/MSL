@@ -73,7 +73,7 @@ public class ValidInterceptor implements Ordered, HandlerInterceptor {
                 Claims claims = jwtTokenProvider.getClaims(refreshToken);
                 UserContext.userData.set(new TokenUserData(claims));
             } catch (ExpiredJwtException exception) {
-                res.sendRedirect("/login");
+                res.sendRedirect("/api/login");
                 return false;
             }
             // TODO : 나중에 Exception Handler JwtException, NullPointerException 로 관리 (401)
@@ -83,12 +83,10 @@ public class ValidInterceptor implements Ordered, HandlerInterceptor {
                 Claims claims = jwtTokenProvider.getClaims(accessToken);
                 UserContext.userData.set(new TokenUserData(claims));
             } catch (ExpiredJwtException exception) {
-                res.setHeader("Set-Cookie", "FROM=" + uri);
-                res.sendRedirect("/updateToken");
+                res.setStatus(401);
                 return false;
             }
             // TODO : 나중에 Exception Handler JwtException, NullPointerException 로 관리
-
         }
         return true;
     }

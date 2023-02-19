@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -23,5 +24,7 @@ public class PostUpdateDto {
     private String content;
 
     private Category category;
+
+    private List<String> hashTagList;
 
 }

@@ -10,6 +10,7 @@ import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import Maswillaeng.MSLback.service.PostService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
+import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +27,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/")
-    public ResponseEntity<?> test(){
-        return ResponseEntity.ok().build();
-    }
-
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/post")
     public ResponseEntity<?> savePost(@RequestBody @Valid PostRequestDto requestDto) {
@@ -38,28 +35,28 @@ public class PostController {
         postService.registerPost(UserContext.userData.get().getUserId(), requestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                HttpStatus.OK
+                "게시물이 성공적으로 등록되었습니다."
         ));
     }
 
-    @GetMapping("/api-post")
+    @GetMapping("/api/post")
     public ResponseEntity<?> getPostList(@RequestParam(required = false) Category category) {
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK, postService.getPostList(category)));
     }
 
+    @ValidToken
     @GetMapping("/api/post/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
 
-        Post post = postService.getPostById(postId);
-        System.out.println("UserContext.userData.get().getUserId() = " + UserContext.userData.get().getUserId());
         return ResponseEntity.ok().body(ResponseDto.of(
-                HttpStatus.OK, null // 잠깐 임시로
+                HttpStatus.OK, postService.getPostById(postId)
         ));
     }
 
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/post")
     public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws Exception {
@@ -70,6 +67,7 @@ public class PostController {
         ));
     }
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/api/post/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId) throws ValidationException {

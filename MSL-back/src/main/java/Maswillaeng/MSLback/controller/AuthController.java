@@ -9,19 +9,17 @@ import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserLoginResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
-import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.service.AuthService;
 import Maswillaeng.MSLback.service.ExternalHttpService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
+import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.net.URI;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -76,6 +74,7 @@ public class AuthController {
                 .body(new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
     }
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/logout")
     public ResponseEntity<Object> logout() {
@@ -85,23 +84,18 @@ public class AuthController {
                 .header("Set-Cookie", "ACCESS_TOKEN=; max-age=0; expires=0;")
                 .header("Set-Cookie", "REFRESH_TOKEN=; max-age=0; expires=0;")
                 .body(ResponseDto.of(
-                HttpStatus.OK,
-                "로그아웃 성공")
-        );
+                        HttpStatus.OK,
+                        "로그아웃 성공")
+                );
     }
 
-    //TODO : 토큰을 그냥 바디에 담아준다?
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/updateToken")
-    public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken,
-                                                    @CookieValue("FROM") String from ) throws Exception {
+    public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
         TokenResponseDto token = authService.updateAccessToken(refreshToken);
-
-
-        return ResponseEntity.status(302)
-                .header("Set-Cookie", "ACCESS_TOKEN=" + token.getACCESS_TOKEN() )
-                .header("Set-Cookie", "FROM=; max-age=0; expires=0;")
-                .location(URI.create(from)).build();
+        return ResponseEntity.ok()
+                .header("Set-Cookie", "ACCESS_TOKEN=" + token.getACCESS_TOKEN()).build();
     }
 
     @PostMapping("/api/certifications") // 쓸일 없음
