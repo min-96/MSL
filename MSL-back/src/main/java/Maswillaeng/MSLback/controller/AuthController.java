@@ -9,20 +9,16 @@ import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserLoginResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
-import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.service.AuthService;
 import Maswillaeng.MSLback.service.ExternalHttpService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
-import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.net.URI;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -50,10 +46,8 @@ public class AuthController {
         }
     }
 
-    @ValidToken
     @PostMapping("/api/sign")
     public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) throws Exception {
-//        if(UserContext.userData.get()!=null) return ResponseEntity.status(302).location(URI.create("/")).build();
         User user = userJoinDto.toEntity();
         if (authService.joinDuplicate(user)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -63,8 +57,7 @@ public class AuthController {
         }
     }
 
-    @ValidToken
-    @PostMapping("/api-login")
+    @PostMapping("/api/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request) throws Exception {
         LoginResponseDto dto = authService.login(request);
 
@@ -89,9 +82,9 @@ public class AuthController {
                 .header("Set-Cookie", "ACCESS_TOKEN=; max-age=0; expires=0;")
                 .header("Set-Cookie", "REFRESH_TOKEN=; max-age=0; expires=0;")
                 .body(ResponseDto.of(
-                HttpStatus.OK,
-                "로그아웃 성공")
-        );
+                        HttpStatus.OK,
+                        "로그아웃 성공")
+                );
     }
 
     //TODO : 토큰을 그냥 바디에 담아준다?
