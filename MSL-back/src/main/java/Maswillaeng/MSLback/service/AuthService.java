@@ -47,7 +47,6 @@ public class AuthService {
         String accessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
         user.updateRefreshToken(refreshToken);
-        userRepository.save(user);
         TokenResponseDto token = TokenResponseDto.builder().
                 ACCESS_TOKEN(accessToken).REFRESH_TOKEN(refreshToken)
                 .build();
@@ -82,7 +81,7 @@ public class AuthService {
                 .path("/")
                 .httpOnly(true)
                 .maxAge(REFRESH_TOKEN_VALID_TIME)
-                .sameSite("none")
+                .sameSite("Lax")
                 .build();
     }
 
@@ -92,7 +91,7 @@ public class AuthService {
                 .path("/updateToken")
                 .httpOnly(true)
                 .maxAge(REFRESH_TOKEN_VALID_TIME)
-                .sameSite("none")
+                .sameSite("Lax")
                 .build();
     }
 

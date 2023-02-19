@@ -28,7 +28,7 @@ public class PostRequestDto {
 
     private String category;
 
-    private List<String> hashTagList;
+    private List<String> hashTagList = new ArrayList<>();
 
 
     public Post toEntity(User user) {

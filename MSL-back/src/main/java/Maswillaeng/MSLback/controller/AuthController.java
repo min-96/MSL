@@ -13,6 +13,7 @@ import Maswillaeng.MSLback.service.AuthService;
 import Maswillaeng.MSLback.service.ExternalHttpService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
+import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -73,6 +74,7 @@ public class AuthController {
                 .body(new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
     }
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/logout")
     public ResponseEntity<Object> logout() {
@@ -87,7 +89,7 @@ public class AuthController {
                 );
     }
 
-    //TODO : 토큰을 그냥 바디에 담아준다?
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/updateToken")
     public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {

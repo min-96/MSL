@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
+//TODO : 좋아요 수 likeNumber, reported
 @NoArgsConstructor
 @Getter @Setter
 public class PostDetailResponseDto {
@@ -22,6 +22,8 @@ public class PostDetailResponseDto {
     private String userImage;
     private String title;
     private LocalDateTime createdAt;
+    private int likeNumber;
+    private boolean reported;
     private String content;
     private boolean isLiked;
     private List<String> hashTagList;
@@ -35,6 +37,8 @@ public class PostDetailResponseDto {
         this.title = post.getTitle();
         this.createdAt = post.getCreatedAt();
         this.content = post.getContent();
+        this.likeNumber = 50;
+        this.reported = false;
         this.isLiked = post.getPostLikeList().stream().anyMatch(postLike ->
                 postLike.getUser().getId().equals(userId));
         this.hashTagList = post.getHashTagList().stream().map(hashTag ->
