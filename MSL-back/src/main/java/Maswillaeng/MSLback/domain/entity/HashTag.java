@@ -18,7 +18,7 @@ public class HashTag {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "tag_name")
+    @JoinColumn(name = "tag_id")
     private Tag tag;
 
     @ManyToOne(fetch = FetchType.LAZY)

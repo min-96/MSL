@@ -74,12 +74,34 @@ public class PostService {
     public void updatePost(Long userId, PostUpdateDto updateDto) throws Exception {
         Post selectedPost = postRepository.findById(updateDto.getPostId()).get();
 
-        if (Objects.equals(selectedPost.getUser().getId(), userId)) {
-            selectedPost.update(updateDto);
-//            postRepository.save(selectedPost);
-        } else {
+        if (!Objects.equals(selectedPost.getUser().getId(), userId)) {
             throw new Exception("접근 권한 없음");
         }
+
+        List<String> updateHashTagList = updateDto.getHashTagList();
+        List<Tag> updateTagList = tagRepository.findByNameList(updateHashTagList);
+
+        List<HashTag> oldHashTagList = hashTagRepository.findByPost(selectedPost);
+        List<Tag> oldTagList = oldHashTagList.stream().map(HashTag::getTag).toList();
+
+        oldHashTagList.stream()
+                .filter(oldHashTag -> !updateHashTagList.contains(oldHashTag.getTag().getName()))
+                .forEach(hashTagRepository::delete);
+
+        List<HashTag> newHashTagList = updateTagList.stream()
+                .filter(tag -> !oldTagList.contains(tag))
+                .map(tag -> new HashTag(tag, selectedPost))
+                .toList();
+
+        List<HashTag> keepHashTagList = hashTagRepository.findByPostAndTagIn(selectedPost, updateTagList);
+
+        List<HashTag> resultHashTagList = new ArrayList<>();
+
+        resultHashTagList.addAll(keepHashTagList);
+        resultHashTagList.addAll(newHashTagList);
+
+        selectedPost.setHashTagList(resultHashTagList);
+        selectedPost.update(updateDto);
     }
 
     public void deletePost(Long userId, Long postId) throws ValidationException {

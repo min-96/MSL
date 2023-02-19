@@ -62,6 +62,7 @@ public class PostController {
     }
 
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/post")
     public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws Exception {

@@ -12,10 +12,15 @@ import javax.persistence.*;
 public class Tag {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tag_id")
+    private String id;
+
     @Column(name = "tag_name", unique = true)
     private String name;
 
     public Tag(String name) {
         this.name = name;
     }
+
 }
