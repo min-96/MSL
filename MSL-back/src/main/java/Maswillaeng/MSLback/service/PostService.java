@@ -5,10 +5,7 @@ import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.Tag;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.enums.Category;
-import Maswillaeng.MSLback.domain.repository.PostQueryRepository;
-import Maswillaeng.MSLback.domain.repository.PostRepository;
-import Maswillaeng.MSLback.domain.repository.TagRepository;
-import Maswillaeng.MSLback.domain.repository.UserRepository;
+import Maswillaeng.MSLback.domain.repository.*;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
@@ -22,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.ValidationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -35,19 +33,30 @@ public class PostService {
     private final UserRepository userRepository;
     private final PostQueryRepository postQueryRepository;
     private final TagRepository tagRepository;
+    private final HashTagRepository hashTagRepository;
 
     public void registerPost(Long userId, PostRequestDto postRequestDto) {
         User user = userRepository.findById(userId).get();
         Post post = postRequestDto.toEntity(user);
 
-        List<HashTag> hashTagList = postRequestDto.getHashTagList().stream()
-                .map(tagName -> tagRepository.findById(tagName)
-                        .map(tag -> new HashTag(tag, post)).orElseGet(
-                                () -> new HashTag(new Tag(tagName), post))).toList();
+        List<HashTag> resultHashTagList = getHashTagList(postRequestDto.getHashTagList(), post);
 
-        post.setHashTagList(hashTagList);
+        post.setHashTagList(resultHashTagList);
 
         postRepository.save(post);
+    }
+
+    private List<HashTag> getHashTagList(List<String> hashTagList, Post post) {
+
+        List<Tag> existHashTagList = tagRepository.findByNameList(hashTagList);
+
+        return hashTagList.stream()
+                .map(tagName -> existHashTagList.stream()
+                        .filter(t -> t.getName().equals(tagName))
+                        .findFirst()
+                        .map(tag -> new HashTag(tag, post))
+                        .orElseGet(() -> new HashTag(new Tag(tagName), post)))
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -75,11 +84,10 @@ public class PostService {
 
     public void deletePost(Long userId, Long postId) throws ValidationException {
         Post post = postRepository.findById(postId).get();
-        if (Objects.equals(userId, post.getUser().getId())) {
+        if (!Objects.equals(userId, post.getUser().getId())) {
             postRepository.delete(post);
-        } else {
-            throw new ValidationException("접근 권한 없음");
         }
+        throw new ValidationException("접근 권한 없음");
     }
 
     public Page<Post> getUserPostList(Long userId, int currentPage) {
