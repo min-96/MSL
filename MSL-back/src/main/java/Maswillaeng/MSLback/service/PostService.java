@@ -6,9 +6,11 @@ import Maswillaeng.MSLback.domain.entity.Tag;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.domain.repository.*;
+import Maswillaeng.MSLback.dto.post.reponse.PostDetailResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
+import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -66,9 +68,16 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Post getPostById(Long postId) {
-        return postRepository.findByIdFetchJoin(postId)
+    public PostDetailResponseDto getPostById(Long postId) {
+        Post post = postQueryRepository.findByIdFetchJoin(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
+
+        if (UserContext.userData.get() == null) {
+            return new PostDetailResponseDto(post);
+        } else {
+            Long userId = UserContext.userData.get().getUserId();
+            return new PostDetailResponseDto(post, userId);
+        }
     }
 
     public void updatePost(Long userId, PostUpdateDto updateDto) throws Exception {
@@ -107,9 +116,13 @@ public class PostService {
     public void deletePost(Long userId, Long postId) throws ValidationException {
         Post post = postRepository.findById(postId).get();
         if (!Objects.equals(userId, post.getUser().getId())) {
-            postRepository.delete(post);
+            throw new ValidationException("접근 권한 없음");
         }
-        throw new ValidationException("접근 권한 없음");
+
+        hashTagRepository.deleteByPostId(postId);
+
+        postRepository.delete(post);
+
     }
 
     public Page<Post> getUserPostList(Long userId, int currentPage) {

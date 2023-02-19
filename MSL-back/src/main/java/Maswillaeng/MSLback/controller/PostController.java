@@ -51,13 +51,12 @@ public class PostController {
                 HttpStatus.OK, postService.getPostList(category)));
     }
 
+    @ValidToken
     @GetMapping("/api/post/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
 
-        Post post = postService.getPostById(postId);
-        System.out.println("UserContext.userData.get().getUserId() = " + UserContext.userData.get().getUserId());
         return ResponseEntity.ok().body(ResponseDto.of(
-                HttpStatus.OK, null // 잠깐 임시로
+                HttpStatus.OK, postService.getPostById(postId)
         ));
     }
 

@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @Getter
@@ -26,7 +28,7 @@ public class PostRequestDto {
 
     private String category;
 
-    private ArrayList<String> hashTagList;
+    private List<String> hashTagList;
 
 
     public Post toEntity(User user) {
