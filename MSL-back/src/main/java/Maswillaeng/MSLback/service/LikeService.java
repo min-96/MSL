@@ -28,7 +28,7 @@ public class LikeService {
             throw new IllegalStateException("해당 게시물에 이미 좋아요를 눌렀습니다");
         }
 
-        PostLike postLike= PostLike.builder()
+        PostLike postLike = PostLike.builder()
                 .user(user)
                 .post(post).build();
         postLikeRepository.save(postLike);
@@ -52,20 +52,20 @@ public class LikeService {
     public void deletePostLike(Long userId, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
-        if (userId.equals(post.getUser().getId())) {
-            postLikeRepository.deleteById(new PostLikeId(userId, postId));
-        } else {
+        if (!userId.equals(post.getUser().getId())) {
             throw new RuntimeException("접근 권한 없음");
         }
+
+        postLikeRepository.deleteById(new PostLikeId(userId, postId));
     }
 
     public void deleteCommentLike(Long userId, Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
-        if (userId.equals(comment.getUser().getId())) {
-            commentLikeRepository.deleteById(new CommentLikeId(userId, commentId));
-        } else {
+        if (!userId.equals(comment.getUser().getId())) {
             throw new RuntimeException("접근 권한 없음");
         }
+
+        commentLikeRepository.deleteById(new CommentLikeId(userId, commentId));
     }
 }

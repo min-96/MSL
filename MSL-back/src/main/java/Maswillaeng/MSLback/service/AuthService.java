@@ -95,26 +95,6 @@ public class AuthService {
                 .build();
     }
 
-    public ResponseCookie getAccessTokenCookie(String accessToken) throws Exception {
-        return ResponseCookie.from(
-                        "ACCESS_TOKEN", accessToken)
-                .path("/")
-                .httpOnly(true)
-                .maxAge(REFRESH_TOKEN_VALID_TIME)
-                .sameSite("none")
-                .build();
-    }
-
-    public ResponseCookie getRefreshTokenCookie(String refreshToken) throws Exception {
-        return ResponseCookie.from(
-                        "REFRESH_TOKEN", refreshToken)
-                .path("/updateToken")
-                .httpOnly(true)
-                .maxAge(REFRESH_TOKEN_VALID_TIME)
-                .sameSite("none")
-                .build();
-    }
-
     public boolean joinDuplicate(User user) {
         return userRepository.existsByNickName(user.getNickName()) ||
                 userRepository.existsByEmail(user.getEmail());

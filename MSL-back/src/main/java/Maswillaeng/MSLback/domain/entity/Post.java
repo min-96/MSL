@@ -41,9 +41,6 @@ public class Post extends BaseTimeEntity {
     @ColumnDefault("0")
     private Long hits;
 
-    @ColumnDefault("0")
-    private int report;
-
     @OneToMany(mappedBy = "post")
     private List<PostLike> postLikeList = new ArrayList<>();
 
@@ -53,6 +50,9 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<HashTag> hashTagList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Report> reportList = new ArrayList<>();
+
     @Builder
     public Post(String thumbnail, String title, String content, User user, Category category) {
         this.thumbnail = thumbnail;
@@ -60,7 +60,6 @@ public class Post extends BaseTimeEntity {
         this.content = content;
         this.user = user;
         this.hits = 1L;
-        this.report = 0;
         this.category = category;
     }
 
