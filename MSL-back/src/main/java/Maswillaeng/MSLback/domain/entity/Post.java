@@ -73,4 +73,8 @@ public class Post extends BaseTimeEntity {
     public void setHashTagList(List<HashTag> hashTagList) {
         this.hashTagList = hashTagList;
     }
+
+    public void increaseHits() {
+        this.hits = this.hits + 1L;
+    }
 }

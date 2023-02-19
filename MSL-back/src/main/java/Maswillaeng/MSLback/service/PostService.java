@@ -67,10 +67,10 @@ public class PostService {
         return postQueryRepository.findAllPostByCategory(category);
     }
 
-    @Transactional(readOnly = true)
     public PostDetailResponseDto getPostById(Long postId) {
         Post post = postQueryRepository.findByIdFetchJoin(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
+        post.increaseHits();
 
         if (UserContext.userData.get() == null) {
             return new PostDetailResponseDto(post);
@@ -78,6 +78,7 @@ public class PostService {
             Long userId = UserContext.userData.get().getUserId();
             return new PostDetailResponseDto(post, userId);
         }
+
     }
 
     public void updatePost(Long userId, PostUpdateDto updateDto) throws Exception {
