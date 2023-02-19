@@ -8,6 +8,7 @@ import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.service.CommentService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
+import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class CommentController {
     private final CommentService commentService;
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/comment")
     public ResponseEntity<?> saveComment(@RequestBody CommentRequestDto commentRequestDto) {
@@ -32,6 +34,7 @@ public class CommentController {
         ));
     }
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/recomment")
     public ResponseEntity<?> saveRecomment(@RequestBody RecommentRequestDto recommentRequestDto) {

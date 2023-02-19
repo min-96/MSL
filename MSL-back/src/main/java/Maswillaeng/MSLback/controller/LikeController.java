@@ -4,6 +4,7 @@ import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.service.LikeService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
+import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,7 @@ public class LikeController {
 
     private final LikeService likeService;
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/post-like/{postId}")
     public ResponseEntity<Object> savePostLike(@PathVariable Long postId) {
@@ -26,6 +28,7 @@ public class LikeController {
         ));
     }
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/comment-like/{commentId}")
     public ResponseEntity<Object> saveCommentLike(@PathVariable Long commentId) {
@@ -35,6 +38,7 @@ public class LikeController {
         ));
     }
 
+    @ValidToken
     @DeleteMapping("/api/post-like/{postId}")
     public ResponseEntity<Object> deletePostLike(@PathVariable Long postId) {
         likeService.deletePostLike(UserContext.userData.get().getUserId(), postId);
@@ -43,6 +47,7 @@ public class LikeController {
         ));
     }
 
+    @ValidToken
     @DeleteMapping("/api/comment-like/{commentId}")
     public ResponseEntity<Object> deleteCommentLike(@PathVariable Long commentId) {
         likeService.deleteCommentLike(UserContext.userData.get().getUserId(), commentId);

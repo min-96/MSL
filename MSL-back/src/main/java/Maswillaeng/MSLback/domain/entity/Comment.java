@@ -34,7 +34,10 @@ public class Comment extends BaseTimeEntity{
     private Comment parentId;
 
     @OneToMany(mappedBy = "parentId", fetch = FetchType.LAZY)
-    private List<Comment> commentList = new ArrayList<>(); // 어차피 api 요청이 올때마다 준다면, 관리할 필요가 있을까? 없는게 낫다고 봄
+    private List<Comment> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    private List<CommentLike> commentLikeList = new ArrayList<>();
 
     @Builder
     public Comment(Post post, User user, String content, Comment parent) {

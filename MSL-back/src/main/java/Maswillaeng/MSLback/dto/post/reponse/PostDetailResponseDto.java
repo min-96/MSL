@@ -1,16 +1,20 @@
 package Maswillaeng.MSLback.dto.post.reponse;
 
 import Maswillaeng.MSLback.domain.entity.HashTag;
+import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.dto.comment.response.CommentResponseDto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @NoArgsConstructor
-@Getter
+@Getter @Setter
 public class PostDetailResponseDto {
     private Long postId;
     private Long userId;
@@ -20,7 +24,41 @@ public class PostDetailResponseDto {
     private LocalDateTime createdAt;
     private String content;
     private boolean isLiked;
-    private int commentNumber;
-    private List<HashTag> HashTagList;
+    private List<String> hashTagList;
     private List<CommentResponseDto> commentList;
+
+    public PostDetailResponseDto(Post post, Long userId) {
+        this.postId = post.getId();
+        this.userId = post.getUser().getId();
+        this.nickName = post.getUser().getNickName();
+        this.userImage = post.getUser().getUserImage();
+        this.title = post.getTitle();
+        this.createdAt = post.getCreatedAt();
+        this.content = post.getContent();
+        this.isLiked = post.getPostLikeList().stream().anyMatch(postLike ->
+                postLike.getUser().getId().equals(userId));
+        this.hashTagList = post.getHashTagList().stream().map(hashTag ->
+                hashTag.getTag().getName()).toList();
+        this.commentList = post.getCommentList().stream()
+                .filter(comment -> comment.getParentId() == null)
+                .map(comment -> new CommentResponseDto(comment, comment.getCommentLikeList().size(), userId))
+                .toList();
+    }
+
+    public PostDetailResponseDto(Post post) {
+        this.postId = post.getId();
+        this.userId = post.getUser().getId();
+        this.nickName = post.getUser().getNickName();
+        this.userImage = post.getUser().getUserImage();
+        this.title = post.getTitle();
+        this.createdAt = post.getCreatedAt();
+        this.content = post.getContent();
+        this.isLiked = false;
+        this.hashTagList = post.getHashTagList().stream().map(hashTag ->
+                hashTag.getTag().getName()).toList();
+        this.commentList = post.getCommentList().stream()
+                .filter(comment -> comment.getParentId() == null)
+                .map(comment -> new CommentResponseDto(comment, comment.getCommentLikeList().size()))
+                .toList();
+    }
 }
