@@ -82,8 +82,8 @@ public class AuthController {
         Long userId = UserContext.userData.get().getUserId();
         authService.removeRefreshToken(userId);
         return ResponseEntity.ok()
-                .header("Set-Cookie", "ACCESS_TOKEN=; max-age=0; expires=0; sameSite=Lax;")
-                .header("Set-Cookie", "REFRESH_TOKEN=; max-age=0; expires=0; sameSite=Lax;")
+                .header("Set-Cookie", "ACCESS_TOKEN=; path=/; max-age=0; expires=0;")
+                .header("Set-Cookie", "REFRESH_TOKEN=; path=/updateToken; max-age=0; expires=0;")
                 .body(ResponseDto.of(
                         "로그아웃 성공")
                 );
