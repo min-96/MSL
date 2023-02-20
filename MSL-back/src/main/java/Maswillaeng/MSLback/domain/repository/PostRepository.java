@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-
     @Query(value = "select p from Post p join fetch p.user u where u.id = :userId",
             countQuery = "select count(p) from Post p where p.user.id = :userId")
     Page<Post> findByUserIdFetchJoin(@Param("userId") Long userId, PageRequest pageable);
