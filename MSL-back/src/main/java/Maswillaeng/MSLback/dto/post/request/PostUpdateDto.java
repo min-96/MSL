@@ -23,7 +23,7 @@ public class PostUpdateDto {
     @NotNull
     private String content;
 
-  //  private Category category;
+    private Category category;
 
     private List<String> hashTagList;
 

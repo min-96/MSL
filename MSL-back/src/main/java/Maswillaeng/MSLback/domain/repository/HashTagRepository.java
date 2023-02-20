@@ -23,13 +23,11 @@ public interface HashTagRepository extends JpaRepository<HashTag, Long> {
     @Query("delete from HashTag h where h.post.id = :postId")
     void deleteByPostId(@Param("postId") Long postId);
 
-//    @Query(value = "select h.tag.name, count(*) from HashTag h where h.tag.name in :removeHashTag group by h.tag.name")
-//    List<Object[]> countByNames(@Param("removeHashTag") List<String> removeHashTag);
-
     @Query(value = "select h from HashTag h where h.tag.name = :removeHashTag")
     List<HashTag> findByNames(@Param("removeHashTag") String removeHashTag);
-//    @Query(value = "delete from HashTag h where h.post.id = :postId and h.tag.name=:toString")
-//    void deleteByHashTag(@Param("toString") String toString,@Param("postId") Long postId);
+
+    @Query(value = "delete from HashTag h where h.post.id = :postId and h.tag.name=:removeHashTag")
+    void deleteByName(@Param("removeHashTag") List<String> removeHashTag, @Param("postId") Long postId);
 
 
 }

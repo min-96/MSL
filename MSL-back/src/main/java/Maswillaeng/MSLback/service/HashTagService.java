@@ -32,21 +32,14 @@ public class HashTagService {
                 .toList();
     }
 
-    public void deleteHashTagList(List<String> removeHashTag) {
 
-        for(String r : removeHashTag) {
-            List<HashTag> removeHashTagList = hashTagRepository.findByNames(r);
-            if(!(removeHashTagList.size() >1)){
-                for(HashTag h : removeHashTagList) {
 
-                    hashTagRepository.deleteById(h.getId());
-                 //   tagRepository.deleteById(h.getTag().getName());
-
-                }
-            }
+        public void deleteHashTagList(List<String> removeTags, Post post) {
+            hashTagRepository.deleteByPostId(post.getId());
+            tagRepository.deleteByIds(removeTags.stream().filter(t->hashTagRepository.findByNames(t).size() == 0).toList());
         }
 
-    }
+
 
     public List<HashTag> updateHashTagList(List<String> updateHashTagList, Post post) {
         List<HashTag> oldHashTagList = hashTagRepository.findByPost(post);
@@ -60,7 +53,7 @@ public class HashTagService {
                 .filter(update -> oldStringTagList.stream().noneMatch(Predicate.isEqual(update)))
                 .collect(Collectors.toList());
 
-        deleteHashTagList(removeHashTag);
+        deleteHashTagList(removeHashTag,post);
 
 
         List<HashTag>  resultHashTagList =  insertHashTagList(insertHashTag ,post);

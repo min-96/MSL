@@ -58,10 +58,10 @@ public class PostController {
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PutMapping("/api/post/{postId}")
-    public ResponseEntity<?> updatePost(@PathVariable Long postId,@RequestBody @Valid PostUpdateDto updateDto) throws Exception {
+    @PutMapping("/api/post/")
+    public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws Exception {
 
-        postService.updatePost(UserContext.userData.get().getUserId(), updateDto,postId);
+        postService.updatePost(UserContext.userData.get().getUserId(), updateDto);
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
         ));

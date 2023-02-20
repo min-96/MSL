@@ -68,7 +68,7 @@ public class Post extends BaseTimeEntity {
         this.thumbnail = postUpdateDto.getThumbnail();
         this.title = postUpdateDto.getTitle();
         this.content = postUpdateDto.getContent();
-    //    this.category = postUpdateDto.getCategory();
+        this.category = postUpdateDto.getCategory();
     }
 
     public void setHashTagList(List<HashTag> hashTagList) {
