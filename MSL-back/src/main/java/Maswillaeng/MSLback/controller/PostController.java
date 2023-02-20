@@ -16,8 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,18 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostService postService;
+
+
+    @ValidToken
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @PostMapping("/api/changeFormatImage")
+    public String Image(File file, HttpServletRequest httpServletRequest){
+        System.out.println(file);
+        System.out.println(httpServletRequest);
+        return "성공";
+    }
+
+
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
