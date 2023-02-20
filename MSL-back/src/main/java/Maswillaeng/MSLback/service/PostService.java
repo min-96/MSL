@@ -44,7 +44,7 @@ public class PostService {
         User user = userRepository.findById(userId).get();
         Post post = postRequestDto.toEntity(user);
 
-        List<HashTag> resultHashTagList =insertHashTagList(postRequestDto.getHashTagList(), post);
+        List<HashTag> resultHashTagList =hashTagService.insertHashTagList(postRequestDto.getHashTagList(), post);
 
         post.setHashTagList(resultHashTagList);
 
@@ -70,18 +70,18 @@ public class PostService {
         }
     }
 
-    public List<HashTag> insertHashTagList(List<String> hashTagList, Post post) {
-
-        List<Tag> existHashTagList = tagRepository.findByNameList(hashTagList);
-
-        return hashTagList.stream()
-                .map(tagName -> existHashTagList.stream()
-                        .filter(t -> t.getName().equals(tagName))
-                        .findFirst()
-                        .map(tag -> new HashTag(tag, post))
-                        .orElseGet(() -> new HashTag(new Tag(tagName), post)))
-                .toList();
-    }
+//    public List<HashTag> insertHashTagList(List<String> hashTagList, Post post) {
+//
+//        List<Tag> existHashTagList = tagRepository.findByNameList(hashTagList);
+//
+//        return hashTagList.stream()
+//                .map(tagName -> existHashTagList.stream()
+//                        .filter(t -> t.getName().equals(tagName))
+//                        .findFirst()
+//                        .map(tag -> new HashTag(tag, post))
+//                        .orElseGet(() -> new HashTag(new Tag(tagName), post)))
+//                .toList();
+//    }
 
 
     public void updatePost(Long userId, PostUpdateDto updateDto,Long postId) throws Exception {
@@ -93,33 +93,32 @@ public class PostService {
 
         List<String> updateHashTagList = updateDto.getHashTagList();
        // List<Tag> updateTagList = tagRepository.findByNameList(updateHashTagList);
+     List<HashTag> resultHashTagList =   hashTagService.updateHashTagList(updateHashTagList,selectedPost);
 
-        List<HashTag> oldHashTagList = hashTagRepository.findByPost(selectedPost);
-        List<String> oldStringTagList = oldHashTagList.stream().map(h -> h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
-
-        List<String> removeHashTag = oldStringTagList.stream()
-                .filter(old -> updateHashTagList.stream().noneMatch(Predicate.isEqual(old)))
-                .collect(Collectors.toList());
-
-        List<String> insertHashTag = updateHashTagList.stream()
-                .filter(update -> oldStringTagList.stream().noneMatch(Predicate.isEqual(update)))
-                .collect(Collectors.toList());
+//        List<HashTag> oldHashTagList = hashTagRepository.findByPost(selectedPost);
+//        List<String> oldStringTagList = oldHashTagList.stream().map(h -> h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
+//
+//        List<String> removeHashTag = oldStringTagList.stream()
+//                .filter(old -> updateHashTagList.stream().noneMatch(Predicate.isEqual(old)))
+//                .collect(Collectors.toList());
+//
+//        List<String> insertHashTag = updateHashTagList.stream()
+//                .filter(update -> oldStringTagList.stream().noneMatch(Predicate.isEqual(update)))
+//                .collect(Collectors.toList());
 
      //   if(removeHashTag.isEmpty())
 
-        System.out.println(removeHashTag);
-        System.out.println(insertHashTag);
-        for(String r : removeHashTag) {
-            List<HashTag> removeHashTagList = hashTagRepository.findByNames(r);
-            if(!(removeHashTagList.size() >1)){
-               for(HashTag h : removeHashTagList) {
-                //   hashTagRepository.deleteById(h.getId());
-                   tagRepository.deleteById(h.getTag().getName());
-               }
-            }
-        }
+//        for(String r : removeHashTag) {
+//            List<HashTag> removeHashTagList = hashTagRepository.findByNames(r);
+//            if(!(removeHashTagList.size() >1)){
+//               for(HashTag h : removeHashTagList) {
+//                   hashTagRepository.deleteById(h.getId());
+//                   tagRepository.deleteById(h.getTag().getName());
+//               }
+//            }
+//        }
 
-     List<HashTag>  resultHashTagList =  insertHashTagList(insertHashTag ,selectedPost);
+ //    List<HashTag>  resultHashTagList =  insertHashTagList(insertHashTag ,selectedPost);
 
 //        for(Object[] r : removeHashTagList){
 //          if(r[1].equals(1)){
@@ -185,10 +184,12 @@ public class PostService {
         if (!Objects.equals(userId, post.getUser().getId())) {
             throw new ValidationException("접근 권한 없음");
         }
-        //  List<String> deleteHashTag =  post.getHashTagList().stream().map(h->h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
-      //  hashTagService.deleteHashTagList(deleteHashTag);
-        hashTagRepository.deleteByPostId(post.getId());
+
+          List<String> deleteHashTag =  post.getHashTagList().stream().map(h->h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
+        hashTagService.deleteHashTagList(deleteHashTag);
+     //   hashTagRepository.deleteByPostId(post.getId());
         postRepository.delete(post);
+       // tagRepository.deleteByIds(deleteHashTag);
 
     }
 

@@ -15,4 +15,6 @@ public interface TagRepository extends JpaRepository<Tag, String> {
     @Query("select t from Tag t where t.name in :tagList")
     List<Tag> findByNameList(@Param("tagList") List<String> tagList);
 
+    @Query("delete from Tag t where t.name in :tagList")
+    void deleteByIds(@Param("tagList") List<String> deleteHashTag);
 }
