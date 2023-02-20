@@ -10,9 +10,6 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 public class UserUpdateRequestDto {
     @NotEmpty
-    private String password;
-    private String phoneNumber;
-    @NotEmpty
     private String nickName;
     private String userImage;
     private String introduction;

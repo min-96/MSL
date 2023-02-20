@@ -30,7 +30,7 @@ public class CommentController {
         commentService.registerComment(UserContext.userData.get().getUserId(), commentRequestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                "댓글 등록 성공", null // TODO 댓글 입력시 응답 다시 확인
+                "댓글 등록 성공"
         ));
     }
 
@@ -42,10 +42,11 @@ public class CommentController {
         commentService.registerRecomment(UserContext.userData.get().getUserId(), recommentRequestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                "댓글 등록 성공", null // TODO 대댓글 입력시 응답 다시 확인
+                "댓글 등록 성공"
         ));
     }
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/comment")
     public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) throws ValidationException {
@@ -53,10 +54,11 @@ public class CommentController {
         commentService.updateComment(updateRequestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                "댓글 수정 성공", null
+                "댓글 수정 성공"
         ));
     }
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/api/comment/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable Long commentId) throws ValidationException {
@@ -64,10 +66,11 @@ public class CommentController {
         commentService.deleteComment(commentId);
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                "댓글 삭제 성공", null
+                "댓글 삭제 성공"
         ));
     }
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/recomment/{parentId}")
     public ResponseEntity<?> getRecommentList(@PathVariable Long parentId) {

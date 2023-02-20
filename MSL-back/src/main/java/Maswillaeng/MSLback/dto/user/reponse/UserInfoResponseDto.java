@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+// TODO : followState 추가 -> 미뇽님이
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -14,8 +15,6 @@ public class UserInfoResponseDto {
 
     private String nickName;
 
-    private String phoneNumber;
-
     private String userImage;
 
     private String introduction;
@@ -24,7 +23,6 @@ public class UserInfoResponseDto {
         return new UserInfoResponseDto(
                 user.getEmail(),
                 user.getNickName(),
-                user.getPhoneNumber(),
                 user.getUserImage(),
                 user.getIntroduction());
     }

@@ -28,9 +28,6 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String password;
-
-    private String phoneNumber;
-
     @Column(nullable = false, length = 30, unique = true)
     private String nickName;
 
@@ -64,11 +61,10 @@ public class User extends BaseTimeEntity {
     }
 
     @Builder
-    public User(String email, String password, String phoneNumber,
+    public User(String email, String password,
                 String nickName, String userImage, String introduction) {
         this.email = email;
         this.password = password;
-        this.phoneNumber = phoneNumber;
         this.nickName = nickName;
         this.role = RoleType.USER;
         this.userImage = userImage;
@@ -81,8 +77,6 @@ public class User extends BaseTimeEntity {
     }
 
     public void update(UserUpdateRequestDto requestDto) {
-        this.password = requestDto.getPassword();
-        this.phoneNumber = requestDto.getPhoneNumber();
         this.nickName = requestDto.getNickName();
         this.userImage = requestDto.getUserImage();
         this.introduction = requestDto.getIntroduction();

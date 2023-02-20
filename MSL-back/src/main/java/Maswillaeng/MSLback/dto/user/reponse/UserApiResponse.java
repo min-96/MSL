@@ -3,6 +3,7 @@ package Maswillaeng.MSLback.dto.user.reponse;
 import Maswillaeng.MSLback.domain.entity.User;
 import lombok.Getter;
 
+// TODO : userId 추가
 @Getter
 public class UserApiResponse {
     private String nickName;

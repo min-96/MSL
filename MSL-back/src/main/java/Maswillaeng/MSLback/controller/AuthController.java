@@ -74,6 +74,7 @@ public class AuthController {
                 .body(new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
     }
 
+
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/logout")
@@ -81,10 +82,9 @@ public class AuthController {
         Long userId = UserContext.userData.get().getUserId();
         authService.removeRefreshToken(userId);
         return ResponseEntity.ok()
-                .header("Set-Cookie", "ACCESS_TOKEN=; max-age=0; expires=0;")
-                .header("Set-Cookie", "REFRESH_TOKEN=; max-age=0; expires=0;")
+                .header("Set-Cookie", "ACCESS_TOKEN=; max-age=0; expires=0; sameSite=Lax;")
+                .header("Set-Cookie", "REFRESH_TOKEN=; max-age=0; expires=0; sameSite=Lax;")
                 .body(ResponseDto.of(
-                        HttpStatus.OK,
                         "로그아웃 성공")
                 );
     }
