@@ -126,6 +126,7 @@ public class PostService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<PostResponseDto> getUserPostList(Long userId, String category, int offset) {
         return postQueryRepository.findAllPostByUserIdAndCategory(userId, category, offset);
     }

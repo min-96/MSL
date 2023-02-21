@@ -1,10 +1,7 @@
 package Maswillaeng.MSLback.controller;
 
-import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
-import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
-import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import Maswillaeng.MSLback.service.PostService;
@@ -18,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -86,7 +81,6 @@ public class PostController {
         return ResponseEntity.ok().body(
                 postService.getUserPostList(userId, category, offset));
     }
-
 
 
 }
