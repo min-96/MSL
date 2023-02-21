@@ -28,7 +28,17 @@ public class FollowController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/followingList")
     public ResponseEntity<?> followingList(@RequestParam Long userId){
-        followService.followingList(userId);
+
+        return ResponseEntity.ok().body(followService.followingList(userId));
+    }
+
+    @ValidToken
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @GetMapping("/api/follwerList")
+    public ResponseEntity<?> followerList(@RequestParam Long userId){
+        followService.followerList(userId);
         return ResponseEntity.ok().build();
     }
+
+
 }

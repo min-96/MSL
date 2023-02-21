@@ -38,6 +38,8 @@ public class PostService {
     private final TagRepository tagRepository;
     private final HashTagRepository hashTagRepository;
 
+    private final FollowService followService;
+
     public void registerPost(Long userId, PostRequestDto postRequestDto) {
         User user = userRepository.findById(userId).get();
         Post post = postRequestDto.toEntity(user);
@@ -130,7 +132,7 @@ public class PostService {
     public UserPostListResponseDto getUserPostList(Long userId, String category, int offset) {
 
         User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
-        boolean followState = 1 == user.getFollowingList().stream().filter(f->f.getFollowing().getId().equals(userId)).toList().size();
+        boolean followState = followService.alreadyFollow(user,userId);
 
         return new UserPostListResponseDto(followState,postQueryRepository.findAllPostByUserIdAndCategory(userId, category, offset));
 
