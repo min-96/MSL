@@ -8,6 +8,7 @@ import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.domain.repository.*;
 import Maswillaeng.MSLback.dto.post.reponse.PostDetailResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
+import Maswillaeng.MSLback.dto.post.reponse.UserPostListResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import Maswillaeng.MSLback.utils.auth.UserContext;
@@ -126,8 +127,12 @@ public class PostService {
 
     }
 
-    public Page<Post> getUserPostList(Long userId, int currentPage) {
-        return postRepository.findByUserIdFetchJoin(userId, PageRequest.of(
-        currentPage - 1, 20, Sort.Direction.DESC, "createdAt"));
+    public UserPostListResponseDto getUserPostList(Long userId, String category, int offset) {
+
+        User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
+        boolean followState = 1 == user.getFollowingList().stream().filter(f->f.getFollowing().getId().equals(userId)).toList().size();
+
+        return new UserPostListResponseDto(followState,postQueryRepository.findAllPostByUserIdAndCategory(userId, category, offset));
+
     }
 }
