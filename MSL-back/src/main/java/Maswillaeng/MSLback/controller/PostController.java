@@ -91,13 +91,14 @@ public class PostController {
         ));
     }
 
-    // TODO : 요청 파라미터로 userId, category, offset 들어올 것
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/userPostList")
-    public ResponseEntity<?> getUserPostList(@RequestParam int currentPage) {
+    public ResponseEntity<?> getUserPostList(@RequestParam Long userId,
+                                             @RequestParam(required = false) String category,
+                                             @RequestParam int offset) {
         return ResponseEntity.ok().body(
-                postService.getUserPostList(UserContext.userData.get().getUserId(), currentPage)
-                        .map(UserPostResponseDto::new));
+                postService.getUserPostList(userId, category, offset));
     }
 
 
