@@ -11,6 +11,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -68,5 +69,28 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
                 .fetchOne());
     }
 
+    public List<PostResponseDto> findAllPostByUserIdAndCategory(Long userId, String category, int offset) {
+        JPAQuery<PostResponseDto> query = queryFactory
+                .select(Projections.bean(PostResponseDto.class,
+                        post.id.as("postId"), user.id.as("userId"),
+                        user.nickName, user.userImage, post.thumbnail, post.title,
+                        post.content, post.createdAt, post.modifiedAt,
+                        postLike.count().as("likeCnt"), comment.count().as("commentCnt"), post.hits))
+                .from(post)
+                .join(post.user, user)
+                .leftJoin(post.commentList, comment)
+                .leftJoin(post.postLikeList, postLike)
+                .where(post.user.id.eq(userId))
+                .groupBy(post.id)
+                .orderBy(post.createdAt.desc())
+                .offset(offset - 20)
+                .limit(20);
+
+        if (category != null) {
+            query.where(post.category.eq(Category.valueOf(category)));
+        }
+
+        return query.fetch();
+    }
 }
 

@@ -126,8 +126,7 @@ public class PostService {
 
     }
 
-    public Page<Post> getUserPostList(Long userId, int currentPage) {
-        return postRepository.findByUserIdFetchJoin(userId, PageRequest.of(
-        currentPage - 1, 20, Sort.Direction.DESC, "createdAt"));
+    public List<PostResponseDto> getUserPostList(Long userId, String category, int offset) {
+        return postQueryRepository.findAllPostByUserIdAndCategory(userId, category, offset);
     }
 }
