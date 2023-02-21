@@ -19,4 +19,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             countQuery = "select count(p) from Post p where p.user.id = :userId")
     Page<Post> findByUserIdFetchJoin(@Param("userId") Long userId, PageRequest pageable);
 
+
+    @Query(value = "delete from Post p where p.id in :postList")
+    void deleteAllById(@Param("postList") List<Post> postList);
 }

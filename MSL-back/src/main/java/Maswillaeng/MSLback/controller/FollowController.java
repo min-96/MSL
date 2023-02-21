@@ -34,7 +34,7 @@ public class FollowController {
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/api/follwerList")
+    @GetMapping("/api/followerList")
     public ResponseEntity<?> followerList(@RequestParam Long userId){
         followService.followerList(userId);
         return ResponseEntity.ok().build();
