@@ -92,6 +92,7 @@ public class PostController {
     }
 
     // TODO : 요청 파라미터로 userId, category, offset 들어올 것
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/userPostList")
     public ResponseEntity<?> getUserPostList(@RequestParam int currentPage) {
