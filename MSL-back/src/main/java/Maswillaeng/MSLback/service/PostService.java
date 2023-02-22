@@ -13,6 +13,8 @@ import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,5 +108,10 @@ public class PostService {
 
         return new UserPostListResponseDto(followState,postQueryRepository.findAllPostByUserIdAndCategory(userId, category, offset));
 
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> getReportedPostList(int page) {
+        return postQueryRepository.findByReportCount(PageRequest.of(page - 1, 20));
     }
 }
