@@ -24,6 +24,7 @@ public class PostResponseDto {
     private Long commentCnt;
     private Long hits;
 
+
     public PostResponseDto(Post post, Long likeCnt, Long commentCnt) {
         postId = post.getId();
         userId = post.getUser().getId();

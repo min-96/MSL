@@ -8,14 +8,13 @@ import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.domain.repository.*;
 import Maswillaeng.MSLback.dto.post.reponse.PostDetailResponseDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
+import Maswillaeng.MSLback.dto.post.reponse.UserPostListResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,9 +34,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostQueryRepository postQueryRepository;
-    private final TagRepository tagRepository;
-    private final HashTagRepository hashTagRepository;
-
+    private final FollowService followService;
     private final HashTagService hashTagService;
 
     public void registerPost(Long userId, PostRequestDto postRequestDto) {
@@ -103,9 +100,14 @@ public class PostService {
 
     }
 
-    @Transactional(readOnly = true)
-    public List<PostResponseDto> getUserPostList(Long userId, String category, int offset) {
-        return postQueryRepository.findAllPostByUserIdAndCategory(userId, category, offset);
+
+    public UserPostListResponseDto getUserPostList(Long userId, String category, int offset) {
+
+        User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
+        boolean followState = followService.alreadyFollow(user,userId);
+
+        return new UserPostListResponseDto(followState,postQueryRepository.findAllPostByUserIdAndCategory(userId, category, offset));
+
     }
 
     @Transactional(readOnly = true)
