@@ -1,20 +1,18 @@
 package Maswillaeng.MSLback.dto.post.reponse;
 
-import Maswillaeng.MSLback.domain.entity.HashTag;
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.dto.comment.response.CommentResponseDto;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-//TODO : 좋아요 수 likeNumber, reported
+
 @NoArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 public class PostDetailResponseDto {
     private Long postId;
     private Long userId;
@@ -37,8 +35,9 @@ public class PostDetailResponseDto {
         this.title = post.getTitle();
         this.createdAt = post.getCreatedAt();
         this.content = post.getContent();
-        this.likeNumber = 50;
-        this.reported = false;
+        this.likeNumber = post.getPostLikeList().size();
+        this.reported = post.getReportList().stream().anyMatch(postReport ->
+                postReport.getUser().getId().equals(userId));
         this.isLiked = post.getPostLikeList().stream().anyMatch(postLike ->
                 postLike.getUser().getId().equals(userId));
         this.hashTagList = post.getHashTagList().stream().map(hashTag ->
@@ -57,6 +56,8 @@ public class PostDetailResponseDto {
         this.title = post.getTitle();
         this.createdAt = post.getCreatedAt();
         this.content = post.getContent();
+        this.likeNumber = post.getPostLikeList().size();
+        this.reported = false;
         this.isLiked = false;
         this.hashTagList = post.getHashTagList().stream().map(hashTag ->
                 hashTag.getTag().getName()).toList();

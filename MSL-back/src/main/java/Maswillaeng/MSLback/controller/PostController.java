@@ -16,8 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,18 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostService postService;
+
+
+    @ValidToken
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @PostMapping("/api/changeFormatImage")
+    public String Image(File file, HttpServletRequest httpServletRequest){
+        System.out.println(file);
+        System.out.println(httpServletRequest);
+        return "성공";
+    }
+
+
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
@@ -77,14 +91,22 @@ public class PostController {
         ));
     }
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/api/userPostList")
-    public ResponseEntity<?> getUserPostList(@RequestParam int currentPage) {
+    @GetMapping("/api/post/user")
+    public ResponseEntity<?> getUserPostList(@RequestParam Long userId,
+                                             @RequestParam(required = false) String category,
+                                             @RequestParam int offset) {
         return ResponseEntity.ok().body(
-                postService.getUserPostList(UserContext.userData.get().getUserId(), currentPage)
-                        .map(UserPostResponseDto::new));
+                postService.getUserPostList(userId, category, offset));
     }
 
-
-
+    @ValidToken
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @GetMapping("/api/post/report")
+    public ResponseEntity<?> getReportedPostList(@RequestParam int page) {
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "신고 횟수가 50회 이상인 게시물 조회에 성공했습니다.",
+                postService.getReportedPostList(page)));
+    }
 }

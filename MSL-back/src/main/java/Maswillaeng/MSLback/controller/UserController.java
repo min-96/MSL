@@ -29,6 +29,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUserApi(UserContext.userData.get().getUserId()));
     }
 
+    // TODO : 요청 패쓰배리어블로 userId 들어올 것
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/userInfo")
@@ -42,7 +43,7 @@ public class UserController {
     @PutMapping("/api/user")
     public ResponseEntity<Object> updateUserInfo(
             @RequestBody @Valid UserUpdateRequestDto requestDto) {
-        if (requestDto.getPassword() == null && requestDto.getNickName() == null) {
+        if (requestDto.getNickName() == null) {
             return ResponseEntity.badRequest().build();
         }
         userService.updateUser(UserContext.userData.get().getUserId(), requestDto);

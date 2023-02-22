@@ -57,10 +57,10 @@ public class PostService {
         return postQueryRepository.findAllPostByCategory(category);
     }
 
-    @Transactional(readOnly = true)
     public PostDetailResponseDto getPostById(Long postId) {
         Post post = postQueryRepository.findByIdFetchJoin(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시물입니다."));
+        post.increaseHits();
 
         if (UserContext.userData.get() == null) {
             return new PostDetailResponseDto(post);
@@ -68,6 +68,7 @@ public class PostService {
             Long userId = UserContext.userData.get().getUserId();
             return new PostDetailResponseDto(post, userId);
         }
+
     }
 
 
@@ -102,8 +103,13 @@ public class PostService {
 
     }
 
-    public Page<Post> getUserPostList(Long userId, int currentPage) {
-        return postRepository.findByUserIdFetchJoin(userId, PageRequest.of(
-        currentPage - 1, 20, Sort.Direction.DESC, "createdAt"));
+    @Transactional(readOnly = true)
+    public List<PostResponseDto> getUserPostList(Long userId, String category, int offset) {
+        return postQueryRepository.findAllPostByUserIdAndCategory(userId, category, offset);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> getReportedPostList(int page) {
+        return postQueryRepository.findByReportCount(PageRequest.of(page - 1, 20));
     }
 }

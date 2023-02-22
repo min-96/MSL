@@ -12,8 +12,6 @@ public class UserJoinDto {
 
     private String password;
 
-//    private String phoneNumber;
-
     private String nickName;
 
     private String userImage;
@@ -22,7 +20,6 @@ public class UserJoinDto {
         return User.builder()
                 .email(email)
                 .password(password)
-//                .phoneNumber(phoneNumber)
                 .nickName(nickName)
                 .userImage(userImage)
                 .build();
