@@ -12,22 +12,42 @@ import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class PostController {
 
     private final PostService postService;
+
+    @ValidToken
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @PostMapping("/api/changeFormatImage")
+    public String Image(HttpServletRequest request) throws IOException {
+        ServletInputStream inputStream = request.getInputStream();
+
+        String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+        log.info(messageBody);
+
+        return "성공";
+
+    }
+
 
 
     @ValidToken
