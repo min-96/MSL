@@ -45,6 +45,6 @@ public class ReportController {
     @DeleteMapping("/api/report/posts")
     public ResponseEntity<?> deleteReportPosts(@RequestBody List<Post> postList){
         postRepository.deleteAllById(postList);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(ResponseDto.of("게시글이 삭제 되었습니다."));
     }
 }

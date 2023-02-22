@@ -72,7 +72,7 @@ public class PostController {
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PutMapping("/api/post")
+    @PutMapping("/api/post/")
     public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws Exception {
 
         postService.updatePost(UserContext.userData.get().getUserId(), updateDto);
@@ -93,7 +93,7 @@ public class PostController {
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/api/userPostList")
+    @GetMapping("/api/post/user")
     public ResponseEntity<?> getUserPostList(@RequestParam Long userId,
                                              @RequestParam(required = false) String category,
                                              @RequestParam int offset) {
@@ -101,6 +101,12 @@ public class PostController {
                 postService.getUserPostList(userId, category, offset));
     }
 
-
-
+    @ValidToken
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @GetMapping("/api/post/report")
+    public ResponseEntity<?> getReportedPostList(@RequestParam int page) {
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "신고 횟수가 50회 이상인 게시물 조회에 성공했습니다.",
+                postService.getReportedPostList(page)));
+    }
 }

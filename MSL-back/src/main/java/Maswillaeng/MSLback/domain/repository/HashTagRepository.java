@@ -9,8 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Objects;
 
 public interface HashTagRepository extends JpaRepository<HashTag, Long> {
+
+
+
     List<HashTag> findByPost(Post post);
 
     List<HashTag> findByPostAndTagIn(Post selectedPost, List<Tag> tagList);
@@ -18,4 +22,12 @@ public interface HashTagRepository extends JpaRepository<HashTag, Long> {
     @Modifying
     @Query("delete from HashTag h where h.post.id = :postId")
     void deleteByPostId(@Param("postId") Long postId);
+
+    @Query(value = "select h from HashTag h where h.tag.name = :removeHashTag")
+    List<HashTag> findByNames(@Param("removeHashTag") String removeHashTag);
+
+    @Query(value = "delete from HashTag h where h.post.id = :postId and h.tag.name=:removeHashTag")
+    void deleteByName(@Param("removeHashTag") List<String> removeHashTag, @Param("postId") Long postId);
+
+
 }

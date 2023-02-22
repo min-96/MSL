@@ -13,10 +13,6 @@ import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +21,7 @@ import javax.xml.bind.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -35,33 +32,18 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostQueryRepository postQueryRepository;
-    private final TagRepository tagRepository;
-    private final HashTagRepository hashTagRepository;
-
     private final FollowService followService;
+    private final HashTagService hashTagService;
 
     public void registerPost(Long userId, PostRequestDto postRequestDto) {
         User user = userRepository.findById(userId).get();
         Post post = postRequestDto.toEntity(user);
 
-        List<HashTag> resultHashTagList = getHashTagList(postRequestDto.getHashTagList(), post);
+        List<HashTag> resultHashTagList =hashTagService.insertHashTagList(postRequestDto.getHashTagList(), post);
 
         post.setHashTagList(resultHashTagList);
 
         postRepository.save(post);
-    }
-
-    private List<HashTag> getHashTagList(List<String> hashTagList, Post post) {
-
-        List<Tag> existHashTagList = tagRepository.findByNameList(hashTagList);
-
-        return hashTagList.stream()
-                .map(tagName -> existHashTagList.stream()
-                        .filter(t -> t.getName().equals(tagName))
-                        .findFirst()
-                        .map(tag -> new HashTag(tag, post))
-                        .orElseGet(() -> new HashTag(new Tag(tagName), post)))
-                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -84,6 +66,7 @@ public class PostService {
 
     }
 
+
     public void updatePost(Long userId, PostUpdateDto updateDto) throws Exception {
         Post selectedPost = postRepository.findById(updateDto.getPostId()).get();
 
@@ -92,29 +75,13 @@ public class PostService {
         }
 
         List<String> updateHashTagList = updateDto.getHashTagList();
-        List<Tag> updateTagList = tagRepository.findByNameList(updateHashTagList);
+       // List<Tag> updateTagList = tagRepository.findByNameList(updateHashTagList);
+     List<HashTag> resultHashTagList =   hashTagService.updateHashTagList(updateHashTagList,selectedPost);
 
-        List<HashTag> oldHashTagList = hashTagRepository.findByPost(selectedPost);
-        List<Tag> oldTagList = oldHashTagList.stream().map(HashTag::getTag).toList();
-
-        oldHashTagList.stream()
-                .filter(oldHashTag -> !updateHashTagList.contains(oldHashTag.getTag().getName()))
-                .forEach(hashTagRepository::delete);
-
-        List<HashTag> newHashTagList = updateTagList.stream()
-                .filter(tag -> !oldTagList.contains(tag))
-                .map(tag -> new HashTag(tag, selectedPost))
-                .toList();
-
-        List<HashTag> keepHashTagList = hashTagRepository.findByPostAndTagIn(selectedPost, updateTagList);
-
-        List<HashTag> resultHashTagList = new ArrayList<>();
-
-        resultHashTagList.addAll(keepHashTagList);
-        resultHashTagList.addAll(newHashTagList);
-
+//
         selectedPost.setHashTagList(resultHashTagList);
         selectedPost.update(updateDto);
+
     }
 
     public void deletePost(Long userId, Long postId) throws ValidationException {
@@ -123,11 +90,14 @@ public class PostService {
             throw new ValidationException("접근 권한 없음");
         }
 
-        hashTagRepository.deleteByPostId(postId);
-
+          List<String> deleteHashTag =  post.getHashTagList().stream().map(h->h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
+       hashTagService.deleteHashTagList(deleteHashTag,post);
+       // hashTagRepository.deleteByPostId(post.getId());
         postRepository.delete(post);
+       // tagRepository.deleteByIds(deleteHashTag);
 
     }
+
 
     public UserPostListResponseDto getUserPostList(Long userId, String category, int offset) {
 
