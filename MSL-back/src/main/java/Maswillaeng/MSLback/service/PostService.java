@@ -126,7 +126,13 @@ public class PostService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<PostResponseDto> getUserPostList(Long userId, String category, int offset) {
         return postQueryRepository.findAllPostByUserIdAndCategory(userId, category, offset);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> getReportedPostList(int page) {
+        return postQueryRepository.findByReportCount(PageRequest.of(page - 1, 20));
     }
 }
