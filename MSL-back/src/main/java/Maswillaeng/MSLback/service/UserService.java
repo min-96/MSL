@@ -25,7 +25,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserInfoResponseDto getUser(Long userId) {
         User user = userRepository.findById(userId).get();
-        return UserInfoResponseDto.of(user);
+        return null;
 
     }
 

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-// TODO : followState 추가 -> 미뇽님이
+// TODO : followState, followerCnt, followingCnt 추가 -> 미뇽님이
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -19,11 +19,17 @@ public class UserInfoResponseDto {
 
     private String introduction;
 
-    public static UserInfoResponseDto of(User user) {
-        return new UserInfoResponseDto(
-                user.getEmail(),
-                user.getNickName(),
-                user.getUserImage(),
-                user.getIntroduction());
-    }
+    private boolean followState;
+
+    private int followerCnt;
+
+    private int followingCnt;
+
+//    public static UserInfoResponseDto of(User user) {
+//        return new UserInfoResponseDto(
+//                user.getEmail(),
+//                user.getNickName(),
+//                user.getUserImage(),
+//                user.getIntroduction());
+//    }
 }

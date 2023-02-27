@@ -29,6 +29,7 @@ public class AuthController {
     private final UserRepository userRepository;
     private final ExternalHttpService externalHttpService;
 
+    // TODO : 중복검사 제대로 안되고 있음
     @PostMapping("/api/duplicate-email")
     public ResponseEntity<Object> duplicateEmail(@RequestBody String email) {
         if (userRepository.existsByEmail(email)) {
@@ -38,9 +39,10 @@ public class AuthController {
         }
     }
 
+    // TODO : 중복검사 제대로 안되고 있음
     @PostMapping("/api/duplicate-nickname")
-    public ResponseEntity<Object> duplicateNickname(@RequestBody String nickname) {
-        if (userRepository.existsByNickName(nickname)) {
+    public ResponseEntity<Object> duplicateNickname(@RequestBody String nickName) {
+        if (userRepository.existsByNickName(nickName)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
             return ResponseEntity.ok().build();

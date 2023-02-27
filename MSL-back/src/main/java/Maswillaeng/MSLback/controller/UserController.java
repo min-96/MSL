@@ -39,6 +39,7 @@ public class UserController {
     }
 
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/user")
     public ResponseEntity<Object> updateUserInfo(
@@ -50,6 +51,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/api/user")
     public ResponseEntity<Object> userWithDraw() {
