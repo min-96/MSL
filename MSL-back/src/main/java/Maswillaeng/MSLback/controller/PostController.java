@@ -116,7 +116,7 @@ public class PostController {
     @GetMapping("/api/post/user")
     public ResponseEntity<?> getUserPostList(@RequestParam Long userId,
                                              @RequestParam(required = false) String category,
-                                             @RequestParam int offset) {
+                                             @RequestBody int offset) {
         return ResponseEntity.ok().body(
                 postService.getUserPostList(userId, category, offset));
     }

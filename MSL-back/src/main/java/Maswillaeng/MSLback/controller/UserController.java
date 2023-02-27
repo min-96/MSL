@@ -32,8 +32,8 @@ public class UserController {
     // TODO : 요청 패쓰배리어블로 userId 들어올 것
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/api/userInfo")
-    public ResponseEntity<?> getUserInfo() {
+    @GetMapping("/api/userInfo/{userId}")
+    public ResponseEntity<?> getUserInfo(@PathVariable Long userId) {
         return ResponseEntity.ok().body(
                 userService.getUser(UserContext.userData.get().getUserId()));
     }
