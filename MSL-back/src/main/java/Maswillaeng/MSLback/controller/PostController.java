@@ -50,14 +50,14 @@ public class PostController {
 
 
 
-    @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/api/changeFormatImage")
-    public String Image(File file, HttpServletRequest httpServletRequest){
-        System.out.println(file);
-        System.out.println(httpServletRequest);
-        return "성공";
-    }
+//    @ValidToken
+//    @AuthCheck(role = AuthCheck.Role.USER)
+//    @PostMapping("/api/changeFormatImage")
+//    public String Image(File file, HttpServletRequest httpServletRequest){
+//        System.out.println(file);
+//        System.out.println(httpServletRequest);
+//        return "성공";
+//    }
 
 
 

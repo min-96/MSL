@@ -10,6 +10,7 @@ import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.comment.request.CommentRequestDto;
 import Maswillaeng.MSLback.dto.comment.request.CommentUpdateRequestDto;
 import Maswillaeng.MSLback.dto.comment.request.RecommentRequestDto;
+import Maswillaeng.MSLback.dto.comment.response.CommentResponseDto;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,10 +34,10 @@ public class CommentService {
         User user = userRepository.findById(userId).get();
 
         Comment comment = Comment.builder()
-                                .post(post)
-                                .user(user)
-                                .content(dto.getContent())
-                                .build();
+                .post(post)
+                .user(user)
+                .content(dto.getContent())
+                .build();
         commentRepository.save(comment);
     }
 
@@ -76,8 +77,18 @@ public class CommentService {
         commentRepository.save(recomment);
     }
 
-    public List<Comment> getRecommentList(Long parentId) {
+    public List<CommentResponseDto> getRecommentList(Long parentId) {
+        List<Comment> recommentList = commentRepository.findByParentId(parentId);
 
-        return commentRepository.findByParentId(parentId);
+        if (UserContext.userData.get() == null) {
+            return recommentList.stream().map(
+                    comment -> new CommentResponseDto(
+                            comment, comment.getCommentLikeList().size())).toList();
+        }
+        Long userId = UserContext.userData.get().getUserId();
+        return recommentList.stream().map(
+                comment -> new CommentResponseDto(
+                        comment, comment.getCommentLikeList().size(), userId)).toList();
+
     }
 }

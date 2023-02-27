@@ -75,12 +75,9 @@ public class CommentController {
     @GetMapping("/api/recomment/{parentId}")
     public ResponseEntity<?> getRecommentList(@PathVariable Long parentId) {
 
-//        List<CommentResponseDto> list = commentService.getRecommentList(parentId)
-//                .stream().map(CommentResponseDto::new).collect(Collectors.toList());
-
         return ResponseEntity.ok().body(ResponseDto.of(
                 "대댓글 조회 성공",
-                null
+                commentService.getRecommentList(parentId)
         ));
     }
 
