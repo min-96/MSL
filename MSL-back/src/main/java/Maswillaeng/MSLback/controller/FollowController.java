@@ -6,6 +6,7 @@ import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,15 +30,15 @@ public class FollowController {
     @GetMapping("/api/followingList")
     public ResponseEntity<?> followingList(@RequestParam Long userId){
 
-        return ResponseEntity.ok().body(followService.followingList(userId)); // TODO : responseDto에 안담은 이유가 있는지?
+        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,followService.followingList(userId))); // TODO : responseDto에 안담은 이유가 있는지?
     }
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/followerList")
     public ResponseEntity<?> followerList(@RequestParam Long userId){
-        followService.followerList(userId); // TODO : 왜 리턴값이 없는지?
-        return ResponseEntity.ok().build();
+         // TODO : 왜 리턴값이 없는지?
+        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,followService.followerList(userId)));
     }
 
 

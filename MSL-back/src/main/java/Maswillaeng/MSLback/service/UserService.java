@@ -9,6 +9,7 @@ import Maswillaeng.MSLback.dto.user.reponse.UserInfoResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
+import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +23,17 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FollowService followService;
     @Transactional(readOnly = true)
     public UserInfoResponseDto getUser(Long userId) {
         User user = userRepository.findById(userId).get();
-        return null;
+        if(UserContext.userData.get()==null){
+            return new UserInfoResponseDto(user);
+        }else {
+            User apiUser = userRepository.findById(UserContext.userData.get().getUserId()).get();
+           boolean isFollowed  = followService.alreadyFollow(apiUser,userId);
+            return new UserInfoResponseDto(user,isFollowed);
+        }
 
     }
 
