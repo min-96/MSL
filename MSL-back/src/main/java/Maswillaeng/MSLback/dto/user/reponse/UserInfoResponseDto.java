@@ -17,6 +17,8 @@ public class UserInfoResponseDto {
 
     private String introduction;
 
+    private int postCnt;
+
     private boolean followState;
 
     private int followerCnt;
@@ -28,6 +30,7 @@ public class UserInfoResponseDto {
         this.nickName = user.getNickName();
         this.userImage = user.getUserImage();
         this.introduction = user.getIntroduction();
+        this.postCnt = user.getPostList().size();
         this.followState = false;
         this.followerCnt = user.getFollowingList().size();
         this.followingCnt = user.getFollowerList().size();
@@ -38,6 +41,7 @@ public class UserInfoResponseDto {
         this.nickName = user.getNickName();
         this.userImage = user.getUserImage();
         this.introduction = user.getIntroduction();
+        this.postCnt = user.getPostList().size();
         this.followState =  isFollowed;
         this.followerCnt = user.getFollowingList().size();
         this.followingCnt = user.getFollowerList().size();
