@@ -20,6 +20,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -29,20 +30,18 @@ public class AuthController {
     private final UserRepository userRepository;
     private final ExternalHttpService externalHttpService;
 
-    // TODO : 중복검사 제대로 안되고 있음
     @PostMapping("/api/duplicate-email")
-    public ResponseEntity<Object> duplicateEmail(@RequestBody String email) {
-        if (userRepository.existsByEmail(email)) {
+    public ResponseEntity<Object> duplicateEmail(@RequestBody Map<String, String> email) {
+        if (userRepository.existsByEmail(email.get("email"))) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
             return ResponseEntity.ok().build();
         }
     }
 
-    // TODO : 중복검사 제대로 안되고 있음
     @PostMapping("/api/duplicate-nickname")
-    public ResponseEntity<Object> duplicateNickname(@RequestBody String nickName) {
-        if (userRepository.existsByNickName(nickName)) {
+    public ResponseEntity<Object> duplicateNickname(@RequestBody Map<String, String> nickName) {
+        if (userRepository.existsByNickName(nickName.get("nickName"))) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
             return ResponseEntity.ok().build();
