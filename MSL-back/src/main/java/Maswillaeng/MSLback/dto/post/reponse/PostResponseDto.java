@@ -4,6 +4,7 @@ import Maswillaeng.MSLback.domain.entity.Post;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter @Setter
@@ -39,4 +40,7 @@ public class PostResponseDto {
         this.likeCnt = likeCnt;
         this.commentCnt = commentCnt;
     }
+
+
+
 }

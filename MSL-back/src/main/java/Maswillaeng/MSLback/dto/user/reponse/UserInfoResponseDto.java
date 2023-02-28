@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 // TODO : followState, followerCnt, followingCnt 추가 -> 미뇽님이
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 public class UserInfoResponseDto {
 
@@ -25,11 +23,23 @@ public class UserInfoResponseDto {
 
     private int followingCnt;
 
-//    public static UserInfoResponseDto of(User user) {
-//        return new UserInfoResponseDto(
-//                user.getEmail(),
-//                user.getNickName(),
-//                user.getUserImage(),
-//                user.getIntroduction());
-//    }
+    public UserInfoResponseDto(User user) {
+        this.email = user.getEmail();
+        this.nickName = user.getNickName();
+        this.userImage = user.getUserImage();
+        this.introduction = user.getIntroduction();
+        this.followState = false;
+        this.followerCnt = user.getFollowingList().size();
+        this.followingCnt = user.getFollowerList().size();
+    }
+
+    public UserInfoResponseDto(User user,boolean isFollowed) {
+        this.email = user.getEmail();
+        this.nickName = user.getNickName();
+        this.userImage = user.getUserImage();
+        this.introduction = user.getIntroduction();
+        this.followState =  isFollowed;
+        this.followerCnt = user.getFollowingList().size();
+        this.followingCnt = user.getFollowerList().size();
+    }
 }

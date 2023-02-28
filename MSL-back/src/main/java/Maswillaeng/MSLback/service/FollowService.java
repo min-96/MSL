@@ -38,7 +38,8 @@ public class FollowService {
     }
 
     public boolean alreadyFollow(User user,Long followingUserId){
-        return 1 == user.getFollowingList().stream().filter(f->f.getFollowing().getId().equals(followingUserId)).toList().size();
+        return 1 ==user.getFollowerList().stream().filter(f->f.getFollowing().getId().equals(followingUserId)).toList().size();
+           //     user.getFollowingList().stream().filter(f->f.getFollowing().getId().equals(followingUserId)).toList().size();
     }
 
     public List<UserFollowListDto> followerList(Long userId) {
