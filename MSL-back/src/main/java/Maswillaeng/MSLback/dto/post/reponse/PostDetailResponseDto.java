@@ -23,7 +23,7 @@ public class PostDetailResponseDto {
     private int likeNumber;
     private boolean reported;
     private String content;
-    private boolean isLiked;
+    private Boolean isLiked;
     private List<String> hashTagList;
     private List<CommentResponseDto> commentList;
 

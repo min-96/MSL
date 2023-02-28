@@ -26,11 +26,11 @@ public class UserService {
     private final FollowService followService;
     @Transactional(readOnly = true)
     public UserInfoResponseDto getUser(Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findJoinFollowingById(userId);
         if(UserContext.userData.get()==null){
             return new UserInfoResponseDto(user);
         }else {
-            User apiUser = userRepository.findById(UserContext.userData.get().getUserId()).get();
+            User apiUser = userRepository.findJoinFollowerById(UserContext.userData.get().getUserId());
            boolean isFollowed  = followService.alreadyFollow(apiUser,userId);
             return new UserInfoResponseDto(user,isFollowed);
         }
