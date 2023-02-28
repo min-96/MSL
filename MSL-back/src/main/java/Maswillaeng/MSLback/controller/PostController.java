@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,10 @@ import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,27 +35,21 @@ public class PostController {
     private final PostService postService;
 
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/changeFormatImage")
-    public String Image(HttpServletRequest request) throws IOException {
-        ServletInputStream inputStream = request.getInputStream();
+    public String Image(@RequestParam("photo") MultipartFile imageFile) throws IOException {
 
-        String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
-        log.info(messageBody);
+        byte[] imageData = imageFile.getBytes();
+        UUID uuid = UUID.randomUUID();
+        String uploadDir = "MSL-back/src/main/upload/img/";
+        String savedFileName = uuid.toString() + "_" + imageFile.getOriginalFilename();
+        Path path = Paths.get(uploadDir,savedFileName);
 
-        return "성공";
+        Files.write(path, imageData);
+
+        return "/upload_img/"+savedFileName;
 
     }
 
-
-//    @ValidToken
-//    @AuthCheck(role = AuthCheck.Role.USER)
-//    @PostMapping("/api/changeFormatImage")
-//    public String Image(File file, HttpServletRequest httpServletRequest){
-//        System.out.println(file);
-//        System.out.println(httpServletRequest);
-//        return "성공";
-//    }
 
 
     @ValidToken
