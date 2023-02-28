@@ -107,5 +107,22 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
 
         return new PageImpl<>(result, pageable, total);
     }
+
+    public Page<PostResponseDto> findByKeyword(String keyword, Pageable pageable) {
+        JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
+                .where(
+                        post.title.containsIgnoreCase(keyword)
+                                .or(post.content.containsIgnoreCase(keyword))
+                );
+
+        int total = query.fetch().size();
+
+        List<PostResponseDto> result = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return new PageImpl<>(result, pageable, total);
+    }
 }
 
