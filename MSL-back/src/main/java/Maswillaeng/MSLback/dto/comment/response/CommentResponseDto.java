@@ -19,7 +19,7 @@ public class CommentResponseDto {
     private String userImage;
     private String content;
     private LocalDateTime createAt;
-    private boolean isLiked;
+    private Boolean isLiked;
     private int like;
 
     public CommentResponseDto(Comment comment, int likeCnt, Long userId) {

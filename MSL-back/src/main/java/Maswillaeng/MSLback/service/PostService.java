@@ -93,9 +93,8 @@ public class PostService {
 
           List<String> deleteHashTag =  post.getHashTagList().stream().map(h->h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
        hashTagService.deleteHashTagList(deleteHashTag,post);
-       // hashTagRepository.deleteByPostId(post.getId());
         postRepository.delete(post);
-       // tagRepository.deleteByIds(deleteHashTag);
+
 
     }
 
