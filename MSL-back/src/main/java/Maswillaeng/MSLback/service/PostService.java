@@ -100,13 +100,11 @@ public class PostService {
     }
 
 
-    public List<PostResponseDto> getUserPostList(Long userId, String category, int offset) {
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> getUserPostList(Long userId, String category, int offset) {
 
-      //  User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
-       // boolean followState = followService.alreadyFollow(user,userId);
-
-        return postQueryRepository.findAllPostByUserIdAndCategory(userId, category, offset);
-
+        return postQueryRepository.findAllPostByUserIdAndCategory(userId, category,
+                PageRequest.of(offset/20 - 1, 20));
     }
 
     @Transactional(readOnly = true)

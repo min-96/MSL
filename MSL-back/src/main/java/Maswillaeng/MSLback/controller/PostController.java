@@ -1,10 +1,7 @@
 package Maswillaeng.MSLback.controller;
 
-import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
-import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
-import Maswillaeng.MSLback.dto.post.reponse.UserPostResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
 import Maswillaeng.MSLback.service.PostService;
@@ -22,11 +19,8 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,7 +43,6 @@ public class PostController {
     }
 
 
-
 //    @ValidToken
 //    @AuthCheck(role = AuthCheck.Role.USER)
 //    @PostMapping("/api/changeFormatImage")
@@ -58,7 +51,6 @@ public class PostController {
 //        System.out.println(httpServletRequest);
 //        return "성공";
 //    }
-
 
 
     @ValidToken
@@ -111,18 +103,18 @@ public class PostController {
         ));
     }
 
-    @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/post/user")
     public ResponseEntity<?> getUserPostList(@RequestParam Long userId,
                                              @RequestParam(required = false) String category,
-                                             @RequestBody int offset) {
-        return ResponseEntity.ok().body(
-                postService.getUserPostList(userId, category, offset));
+                                             @RequestParam int offset) {
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "유저 게시글 목록 조회에 성공했습니다",
+                postService.getUserPostList(userId, category, offset))
+        );
     }
 
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
+    @AuthCheck(role = AuthCheck.Role.ADMIN)
     @GetMapping("/api/post/report")
     public ResponseEntity<?> getReportedPostList(@RequestParam int page) {
         return ResponseEntity.ok().body(ResponseDto.of(

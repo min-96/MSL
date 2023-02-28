@@ -73,17 +73,23 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
                 .fetchOne());
     }
 
-    public List<PostResponseDto> findAllPostByUserIdAndCategory(Long userId, String category, int offset) {
+    public Page<PostResponseDto> findAllPostByUserIdAndCategory(Long userId, String category, Pageable pageable) {
         JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
-                                            .where(post.user.id.eq(userId))
-                                            .offset(offset - 20)
-                                            .limit(20);
+                                            .where(post.user.id.eq(userId));
 
         if (category != null) {
             query.where(post.category.eq(Category.valueOf(category)));
         }
 
-        return query.fetch();
+        int total = query.fetch().size();
+
+        List<PostResponseDto> result = query
+                .orderBy(post.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return new PageImpl<>(result, pageable, total);
     }
 
     public Page<PostResponseDto> findByReportCount(Pageable pageable) {
@@ -94,6 +100,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         int total = query.fetch().size();
 
         List<PostResponseDto> result = query
+                .orderBy(post.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
