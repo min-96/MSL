@@ -33,8 +33,8 @@ public class UserController {
     @ValidToken
     @GetMapping("/api/userInfo/{userId}")
     public ResponseEntity<?> getUserInfo(@PathVariable Long userId) {
-        return ResponseEntity.ok().body(
-                userService.getUser(userId));
+        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, userService.getUser(userId)));
+
     }
 
 
