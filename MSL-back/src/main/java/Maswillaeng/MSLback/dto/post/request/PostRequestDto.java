@@ -26,7 +26,7 @@ public class PostRequestDto {
     @NotNull
     private String content;
 
-   // private String category;
+    private String category;
 
     private List<String> hashTagList = new ArrayList<>();
 
@@ -37,7 +37,7 @@ public class PostRequestDto {
                 .title(title)
                 .thumbnail(thumbnail)
                 .content(content)
-           //     .category(Category.valueOf(category))
+                .category(Category.valueOf(category))
                 .build();
     }
 }
