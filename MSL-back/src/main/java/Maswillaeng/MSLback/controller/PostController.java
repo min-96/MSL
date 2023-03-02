@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class PostController {
 
     @ValidToken
     @PostMapping("/api/changeFormatImage")
-    public String Image(@RequestParam("photo") MultipartFile imageFile) throws IOException {
+    public Map<String, String> Image(@RequestParam("photo") MultipartFile imageFile) throws IOException {
 
         byte[] imageData = imageFile.getBytes();
         UUID uuid = UUID.randomUUID();
@@ -45,12 +46,10 @@ public class PostController {
         Path path = Paths.get(uploadDir,savedFileName);
 
         Files.write(path, imageData);
+        String result = "/upload_img/" + savedFileName;
 
-        return "/upload_img/"+savedFileName;
-
+        return Map.of("path", result);
     }
-
-
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
