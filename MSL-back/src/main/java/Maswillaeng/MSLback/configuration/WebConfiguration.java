@@ -9,8 +9,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,6 +53,10 @@ public class WebConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor());//.excludePathPatterns(excludes);
     }
 
-
-
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        Path path = Paths.get("MSL-back/src/main/upload/img/");
+        registry.addResourceHandler("/upload_img/**")
+                .addResourceLocations("file:"+ path.toAbsolutePath()+"/");
+    }
 }
