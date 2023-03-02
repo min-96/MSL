@@ -32,9 +32,8 @@ public class FollowController {
     }
 
     @ValidToken
-    @GetMapping("/api/followerList")
-    public ResponseEntity<?> followerList(@RequestParam Long userId){
-         // TODO : 왜 리턴값이 없는지?
+    @GetMapping("/api/followerList/{userId}")
+    public ResponseEntity<?> followerList(@PathVariable Long userId){
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,followService.followerList(userId)));
     }
 
