@@ -20,15 +20,15 @@ public class FollowController {
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("/api/following")
-    public ResponseEntity<?> following(@RequestParam Long userId){
+    @PostMapping("/api/following/{userId}")
+    public ResponseEntity<?> following(@PathVariable Long userId){
         followService.following(UserContext.userData.get().getUserId(),userId);
         return ResponseEntity.ok().body(ResponseDto.of("구독이 완료되었습니다."));
     }
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/api/followingList")
-    public ResponseEntity<?> followingList(@RequestParam Long userId){
+    @GetMapping("/api/followingList/{userId}")
+    public ResponseEntity<?> followingList(@PathVariable Long userId){
 
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,followService.followingList(userId))); // TODO : responseDto에 안담은 이유가 있는지?
     }
