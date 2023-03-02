@@ -4,6 +4,7 @@ import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
+import Maswillaeng.MSLback.service.HashTagService;
 import Maswillaeng.MSLback.service.PostService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
@@ -33,6 +34,8 @@ import java.util.UUID;
 public class PostController {
 
     private final PostService postService;
+
+    private final HashTagService hashTagService;
 
     @ValidToken
     @PostMapping("/api/changeFormatImage")
@@ -119,5 +122,11 @@ public class PostController {
         return ResponseEntity.ok().body(ResponseDto.of(
                 "신고 횟수가 50회 이상인 게시물 조회에 성공했습니다.",
                 postService.getReportedPostList(page)));
+    }
+
+    @GetMapping("/api/search/tag")
+    public ResponseEntity<?> getPostListHashTag(@RequestParam String name){
+
+            return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.searchPostByHashTag(name)));
     }
 }

@@ -40,7 +40,22 @@ public class PostResponseDto {
         this.likeCnt = likeCnt;
         this.commentCnt = commentCnt;
     }
-
+    public PostResponseDto(long postId, long userId, String nickName, String userImage, String thumbnail
+            ,String title, String content, long hits, LocalDateTime createdAt, LocalDateTime modifiedAt
+            ,int likeCnt, int commentCnt) {
+        this.postId = postId;
+        this.userId = userId;
+        this.nickName = nickName;
+        this.userImage = userImage;
+        this.thumbnail = thumbnail;
+        this.title = title;
+        this.hits = hits;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+        this.likeCnt = (long) likeCnt;
+        this.commentCnt = (long) commentCnt;
+    }
 
 
 }

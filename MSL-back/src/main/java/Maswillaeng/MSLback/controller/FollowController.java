@@ -19,14 +19,12 @@ public class FollowController {
     private final FollowService followService;
 
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/following/{userId}")
     public ResponseEntity<?> following(@PathVariable Long userId){
         followService.following(UserContext.userData.get().getUserId(),userId);
         return ResponseEntity.ok().body(ResponseDto.of("구독이 완료되었습니다."));
     }
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/followingList/{userId}")
     public ResponseEntity<?> followingList(@PathVariable Long userId){
 
@@ -34,7 +32,6 @@ public class FollowController {
     }
 
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/followerList")
     public ResponseEntity<?> followerList(@RequestParam Long userId){
          // TODO : 왜 리턴값이 없는지?

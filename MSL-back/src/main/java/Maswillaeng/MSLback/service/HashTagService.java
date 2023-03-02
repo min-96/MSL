@@ -4,7 +4,11 @@ import Maswillaeng.MSLback.domain.entity.HashTag;
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.Tag;
 import Maswillaeng.MSLback.domain.repository.HashTagRepository;
+import Maswillaeng.MSLback.domain.repository.PostQueryRepository;
+import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.TagRepository;
+import Maswillaeng.MSLback.dto.common.BestTagDto;
+import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +24,8 @@ import java.util.stream.Collectors;
 public class HashTagService {
     private final TagRepository tagRepository;
     private final HashTagRepository hashTagRepository;
+    private final PostQueryRepository postQueryRepository;
+    private final PostRepository postRepository;
 
     public List<HashTag> insertHashTagList(List<String> hashTagList, Post post) {
 
@@ -60,6 +66,15 @@ public class HashTagService {
 
         List<HashTag>  resultHashTagList =  insertHashTagList(insertHashTag ,post);
         return resultHashTagList;
+    }
+
+    public List<PostResponseDto> searchPostByHashTag(String tagName){
+           return postRepository.findByTest(tagName);
+    }
+
+    public void bestHashTag(){
+      List<BestTagDto> hashTags =  hashTagRepository.findByBestTagName().subList(0,5);
+
     }
 
 
