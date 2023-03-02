@@ -71,7 +71,6 @@ public class CommentController {
     }
 
     @ValidToken
-    @AuthCheck(role = AuthCheck.Role.USER)
     @GetMapping("/api/recomment/{parentId}")
     public ResponseEntity<?> getRecommentList(@PathVariable Long parentId) {
 

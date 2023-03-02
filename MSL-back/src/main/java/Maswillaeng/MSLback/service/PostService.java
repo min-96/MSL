@@ -33,7 +33,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostQueryRepository postQueryRepository;
-    private final FollowService followService;
     private final HashTagService hashTagService;
 
     public void registerPost(Long userId, PostRequestDto postRequestDto) {

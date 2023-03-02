@@ -72,10 +72,8 @@ public class HashTagService {
            return postRepository.findByTest(tagName);
     }
 
-    public void bestHashTag(){
-      List<BestTagDto> hashTags =  hashTagRepository.findByBestTagName().subList(0,5);
-
+    public List<BestTagDto> bestHashTag(){
+     return hashTagRepository.findByBestTagName().subList(0,5);
     }
-
 
 }

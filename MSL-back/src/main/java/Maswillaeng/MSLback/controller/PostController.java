@@ -129,4 +129,10 @@ public class PostController {
 
             return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.searchPostByHashTag(name)));
     }
+
+    @GetMapping("api/bestTag")
+    public ResponseEntity<?> getBestHashTagName(){
+        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.bestHashTag()));
+    }
+
 }
