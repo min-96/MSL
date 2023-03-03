@@ -125,9 +125,9 @@ public class PostController {
     }
 
     @GetMapping("/api/search/tag")
-    public ResponseEntity<?> getPostListHashTag(@RequestParam String name){
+    public ResponseEntity<?> getPostListHashTag(@RequestParam String name,@RequestParam int offset){
 
-            return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.searchPostByHashTag(name)));
+            return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.searchPostByHashTag(name,offset)));
     }
 
     @GetMapping("api/bestTag")
