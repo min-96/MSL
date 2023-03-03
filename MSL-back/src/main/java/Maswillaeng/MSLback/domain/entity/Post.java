@@ -10,7 +10,9 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -42,10 +44,10 @@ public class Post extends BaseTimeEntity {
     private Long hits;
 
     @OneToMany(mappedBy = "post")
-    private List<PostLike> postLikeList = new ArrayList<>();
+    private Set<PostLike> postLikeList = new HashSet<>();
 
     @OneToMany(mappedBy = "post")
-    private List<Comment> commentList = new ArrayList<>();
+    private Set<Comment> commentList = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
     private List<HashTag> hashTagList = new ArrayList<>();
