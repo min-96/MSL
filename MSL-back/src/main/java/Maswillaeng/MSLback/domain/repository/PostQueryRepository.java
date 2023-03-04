@@ -18,6 +18,7 @@ import java.util.Optional;
 import static Maswillaeng.MSLback.domain.entity.QPost.post;
 import static Maswillaeng.MSLback.domain.entity.QReport.report;
 import static Maswillaeng.MSLback.domain.entity.QUser.user;
+import static Maswillaeng.MSLback.domain.entity.QHashTag.hashTag;
 
 @Repository
 public class PostQueryRepository extends QuerydslRepositorySupport {
@@ -119,5 +120,32 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
 
         return new PageImpl<>(result, pageable, total);
     }
+
+    public Page<PostResponseDto> findByHashTagNam(String tagName,Pageable pageable){
+        JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
+                .join(post.hashTagList,hashTag)
+                .where(hashTag.tag.name.eq(tagName));
+        int total = query.fetch().size();
+
+        List<PostResponseDto> result = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        return new PageImpl<>(result, pageable, total);
+    }
+
+    public List<PostResponseDto> findByFollowingPost(List<Long> followings){
+        JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
+                .join(post.user,user)
+                .where(user.id.in(followings));
+
+         return  query
+                .offset(0)
+                .limit(500)
+                .fetch();
+
+    }
+
+
 }
 

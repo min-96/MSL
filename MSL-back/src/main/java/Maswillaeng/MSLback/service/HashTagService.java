@@ -71,7 +71,7 @@ public class HashTagService {
     }
 
     public Page<PostResponseDto> searchPostByHashTag(String tagName, int offset){
-           return postRepository.findByHashTagName(tagName, PageRequest.of(offset/20-1,20));
+           return postQueryRepository.findByHashTagNam(tagName, PageRequest.of(offset/20-1,20));
     }
 
     public List<BestTagDto> bestHashTag(){

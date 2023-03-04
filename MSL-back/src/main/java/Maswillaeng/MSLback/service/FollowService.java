@@ -4,6 +4,7 @@ import Maswillaeng.MSLback.domain.entity.Follow;
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.FollowRepository;
+import Maswillaeng.MSLback.domain.repository.PostQueryRepository;
 import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
@@ -24,6 +25,8 @@ public class FollowService {
     private final UserRepository userRepository;
 
     private final PostRepository postRepository;
+
+    private final PostQueryRepository postQueryRepository;
 
     public void following(Long userId, Long followingUserId) {
         //구독중인지 확인
@@ -55,7 +58,7 @@ public class FollowService {
 
     public List<PostResponseDto> followingPostList(Long userId) {
         List<Follow> followings = followRepository.getFollowingList(userId);
-       return postRepository.findByFollowingPost(followings.stream().map(follow -> follow.getFollowing().getId()).toList());
+       return postQueryRepository.findByFollowingPost(followings.stream().map(follow -> follow.getFollowing().getId()).toList());
 
     }
 }
