@@ -10,6 +10,8 @@ import Maswillaeng.MSLback.domain.repository.TagRepository;
 import Maswillaeng.MSLback.dto.common.BestTagDto;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,8 +70,8 @@ public class HashTagService {
         return resultHashTagList;
     }
 
-    public List<PostResponseDto> searchPostByHashTag(String tagName){
-           return postRepository.findByTest(tagName);
+    public Page<PostResponseDto> searchPostByHashTag(String tagName, int offset){
+           return postRepository.findByHashTagName(tagName, PageRequest.of(offset/20-1,20));
     }
 
     public List<BestTagDto> bestHashTag(){

@@ -37,5 +37,11 @@ public class FollowController {
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,followService.followerList(userId)));
     }
 
+    @ValidToken
+    @GetMapping("/api/newpid")
+    public ResponseEntity<?> followingPostList(){
+        followService.followingPostList(UserContext.userData.get().getUserId());
+        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,followService.followingPostList(UserContext.userData.get().getUserId())));
+    }
 
 }

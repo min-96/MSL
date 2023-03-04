@@ -1,9 +1,12 @@
 package Maswillaeng.MSLback.service;
 
 import Maswillaeng.MSLback.domain.entity.Follow;
+import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.FollowRepository;
+import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
+import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserFollowListDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,8 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+
+    private final PostRepository postRepository;
 
     public void following(Long userId, Long followingUserId) {
         //구독중인지 확인
@@ -46,5 +51,11 @@ public class FollowService {
     public List<UserFollowListDto> followerList(Long userId) {
       List<Follow> followers = followRepository.getFollowerList(userId);
       return followers.stream().map(follow -> follow.getFollower()).map(UserFollowListDto::new).toList();
+    }
+
+    public List<PostResponseDto> followingPostList(Long userId) {
+        List<Follow> followings = followRepository.getFollowingList(userId);
+       return postRepository.findByFollowingPost(followings.stream().map(follow -> follow.getFollowing().getId()).toList());
+
     }
 }

@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,7 +41,7 @@ public class PostController {
 
     @ValidToken
     @PostMapping("/api/changeFormatImage")
-    public Map<String, String> Image(@RequestParam("photo") MultipartFile imageFile) throws IOException {
+    public ResponseEntity<?> Image(@RequestParam("photo") MultipartFile imageFile) throws IOException {
 
         byte[] imageData = imageFile.getBytes();
         UUID uuid = UUID.randomUUID();
@@ -49,10 +50,16 @@ public class PostController {
         Path path = Paths.get(uploadDir,savedFileName);
 
         Files.write(path, imageData);
-        String result = "/upload_img/" + savedFileName;
 
-        return Map.of("path", result);
+        Map<String,String> imagePath = new HashMap<>();
+        imagePath.put("img","/upload_img/"+savedFileName);
+
+        return ResponseEntity.ok().body(imagePath);
+
+
     }
+
+
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
@@ -124,9 +131,9 @@ public class PostController {
     }
 
     @GetMapping("/api/search/tag")
-    public ResponseEntity<?> getPostListHashTag(@RequestParam String name){
+    public ResponseEntity<?> getPostListHashTag(@RequestParam String name,@RequestParam int offset){
 
-            return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.searchPostByHashTag(name)));
+            return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.searchPostByHashTag(name,offset)));
     }
 
     @GetMapping("api/bestTag")
