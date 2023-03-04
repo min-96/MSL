@@ -43,18 +43,7 @@ public class PostController {
     @PostMapping("/api/change-format-image")
     public ResponseEntity<?> Image(@RequestParam("photo") MultipartFile imageFile) throws IOException {
 
-        byte[] imageData = imageFile.getBytes();
-        UUID uuid = UUID.randomUUID();
-        String uploadDir = "MSL-back/src/main/upload/img/";
-        String savedFileName = uuid.toString() + "_" + imageFile.getOriginalFilename();
-        Path path = Paths.get(uploadDir,savedFileName);
-
-        Files.write(path, imageData);
-
-        Map<String,String> imagePath = new HashMap<>();
-        imagePath.put("img","/upload_img/"+savedFileName);
-
-        return ResponseEntity.ok().body(imagePath);
+        return ResponseEntity.ok().body(postService.uploadImage(imageFile));
 
 
     }

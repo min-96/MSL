@@ -95,4 +95,8 @@ public class User extends BaseTimeEntity {
         this.withdrawYn = 1;
         this.withdrawAt = LocalDateTime.now();
     }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
 }

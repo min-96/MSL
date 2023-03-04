@@ -16,12 +16,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.ValidationException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -108,5 +111,20 @@ public class PostService {
     @Transactional(readOnly = true)
     public Page<PostResponseDto> getReportedPostList(int page) {
         return postQueryRepository.findByReportCount(PageRequest.of(page - 1, 20));
+    }
+
+    public Map<String,String> uploadImage(MultipartFile imageFile) throws IOException {
+        byte[] imageData = imageFile.getBytes();
+        UUID uuid = UUID.randomUUID();
+        String uploadDir = "MSL-back/src/main/upload/img/";
+        String savedFileName = uuid.toString() + "_" + imageFile.getOriginalFilename();
+        Path path = Paths.get(uploadDir,savedFileName);
+
+        Files.write(path, imageData);
+
+        Map<String,String> imagePath = new HashMap<>();
+        imagePath.put("img","/upload_img/"+savedFileName);
+
+        return imagePath;
     }
 }

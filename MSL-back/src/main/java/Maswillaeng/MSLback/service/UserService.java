@@ -13,9 +13,17 @@ import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +32,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FollowService followService;
+    private final PostService postService;
     @Transactional(readOnly = true)
     public UserInfoResponseDto getUser(Long userId) {
         User user = userRepository.findJoinFollowingById(userId);
@@ -52,5 +61,13 @@ public class UserService {
     public UserApiResponse getUserApi(Long userId) {
        User user = userRepository.findById(userId).get();
        return new UserApiResponse(user,true);
+    }
+
+    public Map<String,String> uploadUserImage(MultipartFile imageFile,Long userId) throws IOException {
+       Map<String,String> image = postService.uploadImage(imageFile);
+       User user =userRepository.findById(userId).get();
+       user.setUserImage(image.get("img"));
+
+       return image;
     }
 }
