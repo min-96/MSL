@@ -20,16 +20,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "delete from Post p where p.id in :postList")
     void deleteAllById(@Param("postList") List<Post> postList);
 
-//    @Query(value = "select p, p.commentList.size(), p.postLikeList.size() from Post p inner join  p.hashTagList h join  p.user u where h.tag.name = :tagName")
-//    @Query("select new Maswillaeng.MSLback.dto.post.reponse.PostResponseDto(" +
-//            "p.id, p.user.id, p.user.nickName, p.user.userImage, p.thumbnail," +
-//            "p.title, p.content, p.hits, p.createdAt, p.modifiedAt, p.postLikeList.size, p.commentList.size)" +
-//            " from Post p join p.hashTagList h where h.tag.name = :tagName order by p.createdAt DESC")
-//    Page<PostResponseDto> findByHashTagName(@Param("tagName") String tagName,PageRequest page);
-//
-//    @Query("select new Maswillaeng.MSLback.dto.post.reponse.PostResponseDto(" +
-//            "p.id, p.user.id, p.user.nickName, p.user.userImage, p.thumbnail," +
-//            "p.title, p.content, p.hits, p.createdAt, p.modifiedAt, p.postLikeList.size, p.commentList.size)"+
-//            "from Post p join p.user u where u.id in :followings order by p.createdAt DESC")
-//    List<PostResponseDto> findByFollowingPost(@Param("followings") List<Long> followings);
 }

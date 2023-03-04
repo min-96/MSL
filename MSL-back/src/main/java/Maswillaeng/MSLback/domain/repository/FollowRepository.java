@@ -3,6 +3,7 @@ package Maswillaeng.MSLback.domain.repository;
 import Maswillaeng.MSLback.domain.entity.Follow;
 import Maswillaeng.MSLback.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -15,6 +16,10 @@ public interface FollowRepository extends JpaRepository<Follow,Long> {
 
     @Query("select f from Follow f join fetch f.follower where f.following.id =:userId")
     List<Follow> getFollowerList(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("delete from Follow f where f.follower.id =:userId and f.following.id =:followingId")
+    void deleteByFollowerId(@Param("userId") Long userId,@Param("followingId") Long followingId);
 }
 
 

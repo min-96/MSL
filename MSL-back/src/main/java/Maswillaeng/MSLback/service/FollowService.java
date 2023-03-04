@@ -30,7 +30,8 @@ public class FollowService {
 
     public void following(Long userId, Long followingUserId) {
         //구독중인지 확인
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findJoinFollowById(userId);
+     //   boolean aa =alreadyFollow(user,followingUserId);
         if(alreadyFollow(user,followingUserId))  throw new IllegalStateException("이미 구독중입니다.");
 
         User followingUser = userRepository.findById(followingUserId).get();
@@ -60,5 +61,12 @@ public class FollowService {
         List<Follow> followings = followRepository.getFollowingList(userId);
        return postQueryRepository.findByFollowingPost(followings.stream().map(follow -> follow.getFollowing().getId()).toList());
 
+    }
+
+    public void followingDelete(Long userId, Long followingUserId) {
+        User user = userRepository.findJoinFollowById(userId);
+        if (alreadyFollow(user, followingUserId)) {
+            followRepository.deleteByFollowerId(user.getId(),followingUserId);
+        } else throw new IllegalStateException("구독중이 아닙니다.");
     }
 }

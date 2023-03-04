@@ -24,6 +24,14 @@ public class FollowController {
         followService.following(UserContext.userData.get().getUserId(),userId);
         return ResponseEntity.ok().body(ResponseDto.of("구독이 완료되었습니다."));
     }
+
+    @ValidToken
+    @DeleteMapping("api/following/{userId}")
+    public ResponseEntity<?> followingDelete(@PathVariable Long userId){
+        followService.followingDelete(UserContext.userData.get().getUserId(),userId);
+        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,"구독이 취소되었습니다."));
+    }
+
     @ValidToken
     @GetMapping("/api/followingList/{userId}")
     public ResponseEntity<?> followingList(@PathVariable Long userId){
