@@ -92,7 +92,7 @@ public class AuthController {
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @GetMapping("/api/updateToken")
+    @GetMapping("/api/update-token")
     public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
         TokenResponseDto token = authService.updateAccessToken(refreshToken);
         return ResponseEntity.ok()

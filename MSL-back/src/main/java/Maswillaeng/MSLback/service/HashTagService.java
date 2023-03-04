@@ -70,12 +70,8 @@ public class HashTagService {
         return resultHashTagList;
     }
 
-    public Page<PostResponseDto> searchPostByHashTag(String tagName, int offset){
-           return postQueryRepository.findByHashTagNam(tagName, PageRequest.of(offset/20-1,20));
-    }
-
     public List<BestTagDto> bestHashTag(){
-     return hashTagRepository.findByBestTagName().subList(0,5);
+     return hashTagRepository.findByBestTagName().subList(0,10);
     }
 
 }

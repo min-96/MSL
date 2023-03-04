@@ -1,8 +1,10 @@
 package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.dto.common.ResponseDto;
+import Maswillaeng.MSLback.service.HashTagService;
 import Maswillaeng.MSLback.service.SearchService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +23,12 @@ public class SearchController {
                 "검색 결과 조회에 성공하였습니다",
                 searchService.searchByKeyword(keyword, page)
         ));
+    }
+
+    @GetMapping("/api/search/tag")
+    public ResponseEntity<?> getPostListHashTag(@RequestParam String name,@RequestParam int page){
+
+        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,searchService.searchPostByHashTag(name,page)));
     }
 
 }

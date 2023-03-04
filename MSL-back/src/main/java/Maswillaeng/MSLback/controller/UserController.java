@@ -11,8 +11,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -36,7 +44,6 @@ public class UserController {
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, userService.getUser(userId)));
 
     }
-
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)

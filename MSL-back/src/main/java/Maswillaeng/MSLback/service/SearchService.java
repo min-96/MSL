@@ -20,4 +20,8 @@ public class SearchService {
         return postQueryRepository.findByKeyword(keyword, PageRequest.of(page - 1, 20));
 
     }
+
+    public Page<PostResponseDto> searchPostByHashTag(String tagName, int page){
+        return postQueryRepository.findByHashTagNam(tagName, PageRequest.of(page-1,20));
+    }
 }

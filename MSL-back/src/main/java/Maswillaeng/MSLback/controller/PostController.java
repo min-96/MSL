@@ -40,7 +40,7 @@ public class PostController {
     private final HashTagService hashTagService;
 
     @ValidToken
-    @PostMapping("/api/changeFormatImage")
+    @PostMapping("/api/change-format-image")
     public ResponseEntity<?> Image(@RequestParam("photo") MultipartFile imageFile) throws IOException {
 
         byte[] imageData = imageFile.getBytes();
@@ -130,13 +130,7 @@ public class PostController {
                 postService.getReportedPostList(page)));
     }
 
-    @GetMapping("/api/search/tag")
-    public ResponseEntity<?> getPostListHashTag(@RequestParam String name,@RequestParam int offset){
-
-            return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.searchPostByHashTag(name,offset)));
-    }
-
-    @GetMapping("api/bestTag")
+    @GetMapping("api/best-tag")
     public ResponseEntity<?> getBestHashTagName(){
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.bestHashTag()));
     }

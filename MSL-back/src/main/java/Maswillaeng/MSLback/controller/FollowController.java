@@ -33,20 +33,20 @@ public class FollowController {
     }
 
     @ValidToken
-    @GetMapping("/api/followingList/{userId}")
+    @GetMapping("/api/following-list/{userId}")
     public ResponseEntity<?> followingList(@PathVariable Long userId){
 
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,followService.followingList(userId))); // TODO : responseDto에 안담은 이유가 있는지?
     }
 
     @ValidToken
-    @GetMapping("/api/followerList/{userId}")
+    @GetMapping("/api/follower-list/{userId}")
     public ResponseEntity<?> followerList(@PathVariable Long userId){
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,followService.followerList(userId)));
     }
 
     @ValidToken
-    @GetMapping("/api/newpid")
+    @GetMapping("/api/new-pid")
     public ResponseEntity<?> followingPostList(){
         followService.followingPostList(UserContext.userData.get().getUserId());
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,followService.followingPostList(UserContext.userData.get().getUserId())));
