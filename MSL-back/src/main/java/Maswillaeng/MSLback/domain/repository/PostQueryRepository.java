@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static Maswillaeng.MSLback.domain.entity.QPost.post;
-import static Maswillaeng.MSLback.domain.entity.QPostLike.postLike;
 import static Maswillaeng.MSLback.domain.entity.QReport.report;
 import static Maswillaeng.MSLback.domain.entity.QUser.user;
 
@@ -35,7 +34,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
 
         if (category != null) {
             if (category == Category.BEST) {
-                query.having(postLike.count().goe(50));
+                query.having(post.postLikeList.size().goe(50));
             } else {
                 query.where(post.category.eq(category));
             }
