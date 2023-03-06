@@ -23,7 +23,7 @@ public class JwtTokenProvider implements InitializingBean {
 //    private final long ACCESS_TOKEN_VALID_TIME = 1; // 만료 테스트
     public static final long REFRESH_TOKEN_VALID_TIME = 1000 * 60 * 60 * 24; // 24시간
 
-    public static final long PASSWORD_RESET_TOKEN_VALID_TIME = 1000 * 60 * 60 * 1; // 1시간
+    public static final long PASSWORD_RESET_TOKEN_VALID_TIME = 1000 * 60 * 10; // 10분
 
 
     @Override
