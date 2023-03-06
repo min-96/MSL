@@ -4,7 +4,7 @@
 #!gradle/wrapper/gradle-wrapper.jar
 #!**/src/main/**/build/
 #!**/src/test/**/build/
-#ll
+#MSL-back/src/main/resources/application.yml
 #### STS ###
 #.apt_generated
 #.classpath
@@ -16,7 +16,7 @@
 #bin/
 #!**/src/main/**/bin/
 #!**/src/test/**/bin/
-#
+#MSL-back/src/main/resources/application.yml
 #### IntelliJ IDEA ###
 #.idea
 #*.iws

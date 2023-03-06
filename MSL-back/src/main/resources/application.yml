@@ -22,17 +22,6 @@ spring:
         default_batch_fetch_size: 100
     open-in-view: false
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: maswillaeng@gmail.com
-    password: sxzrfipxjffamevp
-    properties:
-      mail:
-        smtp:
-          starttls:
-            enable: true
-
 secret:
   access: mslbacksecretkeymslbacksecretkey
 
