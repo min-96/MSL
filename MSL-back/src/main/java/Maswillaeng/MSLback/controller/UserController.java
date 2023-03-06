@@ -2,6 +2,7 @@ package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserApiResponse;
+import Maswillaeng.MSLback.dto.user.request.UserPwdResetRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
@@ -69,5 +70,13 @@ public class UserController {
     public ResponseEntity<Object> userWithDraw() {
         userService.userWithdraw(UserContext.userData.get().getUserId());
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/api/user/reset-pwd")
+    public ResponseEntity<?> resetPassword(@RequestBody UserPwdResetRequestDto requestDto) throws Exception {
+        userService.resetPassword(requestDto);
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "비밀번호 변경에 성공하였습니다."
+        ));
     }
 }

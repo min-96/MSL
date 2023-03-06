@@ -103,10 +103,10 @@ public class PostController {
     @GetMapping("/api/post/user")
     public ResponseEntity<?> getUserPostList(@RequestParam Long userId,
                                              @RequestParam(required = false) String category,
-                                             @RequestParam int offset) {
+                                             @RequestParam int page) {
         return ResponseEntity.ok().body(ResponseDto.of(
                 "유저 게시글 목록 조회에 성공했습니다",
-                postService.getUserPostList(userId, category, offset))
+                postService.getUserPostList(userId, category, page))
         );
     }
 

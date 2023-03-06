@@ -7,8 +7,10 @@ import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserApiResponse;
 import Maswillaeng.MSLback.dto.user.reponse.UserInfoResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
+import Maswillaeng.MSLback.dto.user.request.UserPwdResetRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
+import Maswillaeng.MSLback.utils.auth.AESEncryption;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final FollowService followService;
     private final PostService postService;
+    private final AESEncryption aesEncryption;
+    private final JwtTokenProvider jwtTokenProvider;
+
     @Transactional(readOnly = true)
     public UserInfoResponseDto getUser(Long userId) {
         User user = userRepository.findJoinFollowingById(userId);
@@ -49,8 +54,7 @@ public class UserService {
     public void updateUser(Long userId, UserUpdateRequestDto requestDto) {
         User selectedUser = userRepository.findById(userId).get();
 
-        selectedUser.update(requestDto); // 더티체킹
-//        userRepository.save(selectedUser);
+        selectedUser.update(requestDto);
     }
 
     public void userWithdraw(Long userId) {
@@ -69,5 +73,19 @@ public class UserService {
        user.setUserImage(image.get("img"));
 
        return image;
+    }
+
+    public void resetPassword(UserPwdResetRequestDto requestDto) throws Exception {
+
+        try {
+            jwtTokenProvider.getClaims(requestDto.getToken());
+        } catch (Exception e) {
+            throw new RuntimeException("유효하지 않은 토큰입니다.");
+        }
+
+        User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+                () -> new EntityNotFoundException("유저가 존재하지 않습니다."));
+        String encryptedPassword = aesEncryption.encrypt(requestDto.getPassword());
+        user.resetPassword(encryptedPassword);
     }
 }

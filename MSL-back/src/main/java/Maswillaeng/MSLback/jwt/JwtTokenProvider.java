@@ -23,9 +23,24 @@ public class JwtTokenProvider implements InitializingBean {
 //    private final long ACCESS_TOKEN_VALID_TIME = 1; // 만료 테스트
     public static final long REFRESH_TOKEN_VALID_TIME = 1000 * 60 * 60 * 24; // 24시간
 
+    public static final long PASSWORD_RESET_TOKEN_VALID_TIME = 1000 * 60 * 10; // 10분
+
+
     @Override
     public void afterPropertiesSet() throws Exception {
         SECRET_KEY = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
+    }
+
+    public String createPasswordResetToken() {
+        Claims claims = Jwts.claims();
+
+        Date now = new Date();
+        return Jwts.builder()
+                .setClaims(claims) // 정보 저장
+                .setIssuedAt(now) // 토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + PASSWORD_RESET_TOKEN_VALID_TIME)) // set Expire Time
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)  // 사용할 암호화 알고리즘과
+                .compact();
     }
 
 
