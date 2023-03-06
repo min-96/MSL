@@ -16,7 +16,7 @@
 #bin/
 #!**/src/main/**/bin/
 #!**/src/test/**/bin/
-#
+#MSL-back/src/main/resources/application.yml
 #### IntelliJ IDEA ###
 #.idea
 #*.iws
