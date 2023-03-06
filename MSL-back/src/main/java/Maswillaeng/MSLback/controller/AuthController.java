@@ -11,6 +11,7 @@ import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
 import Maswillaeng.MSLback.service.AuthService;
 import Maswillaeng.MSLback.service.ExternalHttpService;
+import Maswillaeng.MSLback.service.MailService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import Maswillaeng.MSLback.utils.auth.ValidToken;
@@ -29,6 +30,7 @@ public class AuthController {
     private final AuthService authService;
     private final UserRepository userRepository;
     private final ExternalHttpService externalHttpService;
+    private final MailService mailService;
 
     @PostMapping("/api/duplicate-email")
     public ResponseEntity<Object> duplicateEmail(@RequestBody Map<String, String> email) {
@@ -108,5 +110,13 @@ public class AuthController {
         authService.adultIdentify(dto.getBody().getBirth());
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/api/pwd-reset-mail")
+    public ResponseEntity<?> sendPwdResetMail(@RequestBody Map<String, String> email) {
+        mailService.sendPasswordResetMail(email.get("email"));
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "비밀번호 재발급 메일 전송에 성공하였습니다."
+        ));
     }
 }
