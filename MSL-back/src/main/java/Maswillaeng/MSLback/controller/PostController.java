@@ -13,22 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -120,8 +110,8 @@ public class PostController {
     }
 
     @GetMapping("api/best-tag")
-    public ResponseEntity<?> getBestHashTagName(){
-        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.bestHashTag()));
+    public ResponseEntity<?> getBestHashTagName() {
+        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, hashTagService.bestHashTag()));
     }
 
 }
