@@ -47,7 +47,7 @@ public class UserController {
     }
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
-    @PostMapping("api/user/image")
+    @PostMapping("/api/user/image")
     public ResponseEntity<?> userImageUpdate(@RequestParam("photo") MultipartFile imageFile) throws IOException {
 
        return ResponseEntity.ok().body(userService.uploadUserImage(imageFile,UserContext.userData.get().getUserId()));
