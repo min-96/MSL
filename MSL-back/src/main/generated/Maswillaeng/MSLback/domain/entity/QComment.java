@@ -26,8 +26,6 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final ListPath<CommentLike, QCommentLike> commentLikeList = this.<CommentLike, QCommentLike>createList("commentLikeList", CommentLike.class, QCommentLike.class, PathInits.DIRECT2);
 
-    public final ListPath<Comment, QComment> commentList = this.<Comment, QComment>createList("commentList", Comment.class, QComment.class, PathInits.DIRECT2);
-
     public final StringPath content = createString("content");
 
     //inherited
@@ -41,6 +39,8 @@ public class QComment extends EntityPathBase<Comment> {
     public final QComment parentId;
 
     public final QPost post;
+
+    public final ListPath<Comment, QComment> recommentList = this.<Comment, QComment>createList("recommentList", Comment.class, QComment.class, PathInits.DIRECT2);
 
     public final QUser user;
 

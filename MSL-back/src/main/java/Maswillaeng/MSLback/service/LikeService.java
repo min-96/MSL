@@ -5,9 +5,11 @@ import Maswillaeng.MSLback.domain.entity.*;
 import Maswillaeng.MSLback.domain.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class LikeService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
