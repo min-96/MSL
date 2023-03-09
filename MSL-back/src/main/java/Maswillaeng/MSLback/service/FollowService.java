@@ -10,6 +10,9 @@ import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserFollowListDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,9 +60,9 @@ public class FollowService {
       return followers.stream().map(follow -> follow.getFollower()).map(UserFollowListDto::new).toList();
     }
 
-    public List<PostResponseDto> followingPostList(Long userId) {
+    public Page<PostResponseDto> followingPostList(Long userId, int page) {
         List<Follow> followings = followRepository.getFollowingList(userId);
-       return postQueryRepository.findByFollowingPost(followings.stream().map(follow -> follow.getFollowing().getId()).toList());
+       return postQueryRepository.findByFollowingPost(followings.stream().map(follow -> follow.getFollowing().getId()).toList(), PageRequest.of(page-1,20));
 
     }
 

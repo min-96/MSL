@@ -134,15 +134,18 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         return new PageImpl<>(result, pageable, total);
     }
 
-    public List<PostResponseDto> findByFollowingPost(List<Long> followings){
+    public Page<PostResponseDto> findByFollowingPost(List<Long> followings,Pageable pageable){
         JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
                 .join(post.user,user)
                 .where(user.id.in(followings));
 
-         return  query
-                .offset(0)
-                .limit(500)
+        int total = query.fetch().size();
+
+        List<PostResponseDto> result = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+        return new PageImpl<>(result, pageable, total);
     }
 }
 

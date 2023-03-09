@@ -71,7 +71,8 @@ public class HashTagService {
     }
 
     public List<BestTagDto> bestHashTag(){
-     return hashTagRepository.findByBestTagName().subList(0,10);
+        List<BestTagDto> lst = hashTagRepository.findByBestTagName();
+        return lst.subList(0, Math.min(lst.size(), 5) );
     }
 
 }
