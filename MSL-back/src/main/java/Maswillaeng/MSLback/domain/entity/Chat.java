@@ -1,8 +1,10 @@
 package Maswillaeng.MSLback.domain.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -26,13 +28,29 @@ public class Chat {
 
     private String sender;
 
-    private String recipient;
+    private String recipient; // ??  room 으로 브로드캐스트 하는데 굳이?
 
     private String content;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @ColumnDefault("false")
     private boolean state;
+
+
+    @Builder
+    public Chat(ChatRoom chatRoom, String sender, String recipient, String content, LocalDateTime createdAt, boolean state) {
+        this.chatRoom = chatRoom;
+        this.sender = sender;
+        this.recipient = recipient;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.state = state;
+    }
+
+    public void updateState() {
+        this.state = true;
+    }
 
 }

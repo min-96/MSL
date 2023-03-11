@@ -40,8 +40,8 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedOriginPatterns("*")
+               // .allowedOrigins("http://localhost:3000")
+               .allowedOriginPatterns("*")
                 .allowedMethods("OPTIONS","GET","POST","PUT","DELETE")
                 .allowCredentials(true)
                 .maxAge(3000); // 이게 뭐죠?

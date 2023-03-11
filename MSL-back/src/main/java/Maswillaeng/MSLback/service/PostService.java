@@ -71,7 +71,7 @@ public class PostService {
         Post selectedPost = postRepository.findById(updateDto.getPostId()).get();
 
         if (!Objects.equals(selectedPost.getUser().getId(), userId)) {
-            throw new Exception("접근 권한 없음");
+            throw new ValidationException("접근 권한 없음");
         }
 
         List<String> updateHashTagList = updateDto.getHashTagList();

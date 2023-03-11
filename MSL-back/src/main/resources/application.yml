@@ -5,9 +5,9 @@ spring:
       path: /h2-console
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/msl
+    url: jdbc:h2:../test2
     driver-class-name: org.h2.Driver
-    username: root
+    username: sa
     password:
 
   jpa:
@@ -21,13 +21,17 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     open-in-view: false
+  freemarker:
+    cache: false
+    template-loader-path: classpath:/templates
+    suffix: .ftlh
 
 secret:
   access: mslbacksecretkeymslbacksecretkey
 
 import:
   key: 5161304000601633
-  secret: EZiNkyjk3eOAnikh95U24zgwsDcyzD4wYmuLr3WtnG1v9LkV1t3I3PYyIlp8TTCNNx7i9yd6Lw2JK5Ki
+  secret: EZiN kyjk3eOAnikh95U24zgwsDcyzD4wYmuLr3WtnG1v9LkV1t3I3PYyIlp8TTCNNx7i9yd6Lw2JK5Ki
 
 
 logging:

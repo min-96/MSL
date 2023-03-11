@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.utils.interceptor;
 
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
+import Maswillaeng.MSLback.utils.auth.UserContext;
 import Maswillaeng.MSLback.utils.auth.ValidTokenProcess;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

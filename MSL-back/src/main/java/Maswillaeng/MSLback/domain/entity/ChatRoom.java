@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.domain.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,9 @@ public class ChatRoom {
 
     // 회원이 탈퇴하면 채팅방은 그냥 사라지는가?
 
+    @Builder
+    public ChatRoom(User owner, User invited) {
+        this.owner = owner;
+        this.invited = invited;
+    }
 }

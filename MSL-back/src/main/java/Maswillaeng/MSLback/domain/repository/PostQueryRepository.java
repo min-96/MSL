@@ -23,6 +23,7 @@ import static Maswillaeng.MSLback.domain.entity.QPost.post;
 import static Maswillaeng.MSLback.domain.entity.QPostLike.postLike;
 import static Maswillaeng.MSLback.domain.entity.QReport.*;
 import static Maswillaeng.MSLback.domain.entity.QUser.user;
+import static Maswillaeng.MSLback.domain.entity.QHashTag.hashTag;
 
 @Repository
 public class PostQueryRepository extends QuerydslRepositorySupport {
@@ -107,5 +108,13 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
 
         return new PageImpl<>(result, pageable, total);
     }
+
+
+
+//    public List<PostResponseDto> findAllPostByTagName(String tagName) {
+//        JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
+//                .leftJoin(post.hashTagList, hashTag).where(hashTag.tag.name.eq(tagName));
+//        return query.fetch();
+//    }
 }
 
