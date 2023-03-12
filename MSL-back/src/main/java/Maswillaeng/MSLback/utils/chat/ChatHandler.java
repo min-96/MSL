@@ -43,7 +43,6 @@ public class ChatHandler extends TextWebSocketHandler {
        // ChatMessageDto chat = objectMapper.readValue(payload,ChatMessageDto.class);
         switch (type) {
             case ENTER :
-
                 String[] str = payload.split(":");
                 Long userId = Long.parseLong(str[1]);
                 userSocketList.put(userId, session);

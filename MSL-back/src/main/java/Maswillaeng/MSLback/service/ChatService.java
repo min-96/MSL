@@ -34,7 +34,6 @@ public class ChatService {
         User targetUser = userRepository.findById(targetId).orElseThrow(
                 () -> new EntityNotFoundException("회원이 존재하지 않습니다."));
         ChatRoom chatRoom = new ChatRoom(user,targetUser);
-        // 현재 user가 targetuser이 있는 채팅방이 있는지 예외처리
         if(getChatRoom(userId,targetId).equals(null)){
             throw new  IllegalStateException("이미 채팅방이 존재합니다");
         }
