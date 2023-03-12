@@ -1,16 +1,13 @@
 package Maswillaeng.MSLback.domain.repository;
 
 import Maswillaeng.MSLback.domain.entity.Post;
-import Maswillaeng.MSLback.domain.entity.QReport;
 import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
-import com.querydsl.core.QueryFactory;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -18,10 +15,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static Maswillaeng.MSLback.domain.entity.QComment.comment;
 import static Maswillaeng.MSLback.domain.entity.QPost.post;
-import static Maswillaeng.MSLback.domain.entity.QPostLike.postLike;
-import static Maswillaeng.MSLback.domain.entity.QReport.*;
+import static Maswillaeng.MSLback.domain.entity.QReport.report;
 import static Maswillaeng.MSLback.domain.entity.QUser.user;
 import static Maswillaeng.MSLback.domain.entity.QHashTag.hashTag;
 
@@ -40,7 +35,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
 
         if (category != null) {
             if (category == Category.BEST) {
-                query.having(postLike.count().goe(50));
+                query.having(post.postLikeList.size().goe(50));
             } else {
                 query.where(post.category.eq(category));
             }
@@ -55,11 +50,11 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
                         post.id.as("postId"), user.id.as("userId"),
                         user.nickName, user.userImage, post.thumbnail, post.title,
                         post.content, post.createdAt, post.modifiedAt,
-                        postLike.count().as("likeCnt"), comment.count().as("commentCnt"), post.hits))
+                        post.postLikeList.size().longValue().as("likeCnt"),
+                        post.commentList.size().longValue().as("commentCnt"),
+                        post.hits))
                 .from(post)
                 .join(post.user, user)
-                .leftJoin(post.commentList, comment)
-                .leftJoin(post.postLikeList, postLike)
                 .groupBy(post.id)
                 .orderBy(post.createdAt.desc());
     }
@@ -76,7 +71,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
 
     public Page<PostResponseDto> findAllPostByUserIdAndCategory(Long userId, String category, Pageable pageable) {
         JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
-                                            .where(post.user.id.eq(userId));
+                .where(post.user.id.eq(userId));
 
         if (category != null) {
             query.where(post.category.eq(Category.valueOf(category)));
@@ -109,12 +104,48 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         return new PageImpl<>(result, pageable, total);
     }
 
+    public Page<PostResponseDto> findByKeyword(String keyword, Pageable pageable) {
+        JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
+                .where(
+                        post.title.containsIgnoreCase(keyword)
+                                .or(post.content.containsIgnoreCase(keyword))
+                );
 
+        int total = query.fetch().size();
 
-//    public List<PostResponseDto> findAllPostByTagName(String tagName) {
-//        JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
-//                .leftJoin(post.hashTagList, hashTag).where(hashTag.tag.name.eq(tagName));
-//        return query.fetch();
-//    }
+        List<PostResponseDto> result = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return new PageImpl<>(result, pageable, total);
+    }
+
+    public Page<PostResponseDto> findByHashTagNam(String tagName,Pageable pageable){
+        JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
+                .join(post.hashTagList,hashTag)
+                .where(hashTag.tag.name.eq(tagName));
+        int total = query.fetch().size();
+
+        List<PostResponseDto> result = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        return new PageImpl<>(result, pageable, total);
+    }
+
+    public Page<PostResponseDto> findByFollowingPost(List<Long> followings,Pageable pageable){
+        JPAQuery<PostResponseDto> query = getPostResponseDtoJPAQuery()
+                .join(post.user,user)
+                .where(user.id.in(followings));
+
+        int total = query.fetch().size();
+
+        List<PostResponseDto> result = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        return new PageImpl<>(result, pageable, total);
+    }
 }
 

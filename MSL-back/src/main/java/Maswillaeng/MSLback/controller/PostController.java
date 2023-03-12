@@ -13,20 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -38,18 +30,11 @@ public class PostController {
     private final HashTagService hashTagService;
 
     @ValidToken
-    @PostMapping("/api/changeFormatImage")
-    public String Image(@RequestParam("photo") MultipartFile imageFile) throws IOException {
+    @PostMapping("/api/change-format-image")
+    public ResponseEntity<?> Image(@RequestParam("photo") MultipartFile imageFile) throws IOException {
 
-        byte[] imageData = imageFile.getBytes();
-        UUID uuid = UUID.randomUUID();
-        String uploadDir = "MSL-back/src/main/upload/img/";
-        String savedFileName = uuid.toString() + "_" + imageFile.getOriginalFilename();
-        Path path = Paths.get(uploadDir,savedFileName);
+        return ResponseEntity.ok().body(postService.uploadImage(imageFile));
 
-        Files.write(path, imageData);
-
-        return "/upload_img/"+savedFileName;
 
     }
 
@@ -108,10 +93,10 @@ public class PostController {
     @GetMapping("/api/post/user")
     public ResponseEntity<?> getUserPostList(@RequestParam Long userId,
                                              @RequestParam(required = false) String category,
-                                             @RequestParam int offset) {
+                                             @RequestParam int page) {
         return ResponseEntity.ok().body(ResponseDto.of(
                 "유저 게시글 목록 조회에 성공했습니다",
-                postService.getUserPostList(userId, category, offset))
+                postService.getUserPostList(userId, category, page))
         );
     }
 
@@ -124,15 +109,9 @@ public class PostController {
                 postService.getReportedPostList(page)));
     }
 
-    @GetMapping("/api/search/tag")
-    public ResponseEntity<?> getPostListHashTag(@RequestParam String name,@RequestParam int offset){
-
-            return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.searchPostByHashTag(name,offset)));
-    }
-
-    @GetMapping("api/bestTag")
-    public ResponseEntity<?> getBestHashTagName(){
-        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,hashTagService.bestHashTag()));
+    @GetMapping("api/best-tag")
+    public ResponseEntity<?> getBestHashTagName() {
+        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, hashTagService.bestHashTag()));
     }
 
 }

@@ -2,6 +2,7 @@ package Maswillaeng.MSLback.controller;
 
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserApiResponse;
+import Maswillaeng.MSLback.dto.user.request.UserPwdResetRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
@@ -11,8 +12,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -36,8 +45,13 @@ public class UserController {
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, userService.getUser(userId)));
 
     }
+    @ValidToken
+    @AuthCheck(role = AuthCheck.Role.USER)
+    @PostMapping("/api/user/image")
+    public ResponseEntity<?> userImageUpdate(@RequestParam("photo") MultipartFile imageFile) throws IOException {
 
-
+       return ResponseEntity.ok().body(userService.uploadUserImage(imageFile,UserContext.userData.get().getUserId()));
+    }
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/user")
@@ -56,5 +70,13 @@ public class UserController {
     public ResponseEntity<Object> userWithDraw() {
         userService.userWithdraw(UserContext.userData.get().getUserId());
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/api/user/reset-pwd")
+    public ResponseEntity<?> resetPassword(@RequestBody UserPwdResetRequestDto requestDto) throws Exception {
+        userService.resetPassword(requestDto);
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "비밀번호 변경에 성공하였습니다."
+        ));
     }
 }

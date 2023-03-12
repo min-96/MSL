@@ -1,14 +1,8 @@
 package Maswillaeng.MSLback.service;
 
-import Maswillaeng.MSLback.domain.entity.Post;
-import Maswillaeng.MSLback.domain.entity.PostLike;
-import Maswillaeng.MSLback.domain.entity.Report;
-import Maswillaeng.MSLback.domain.entity.User;
+import Maswillaeng.MSLback.domain.entity.*;
 import Maswillaeng.MSLback.domain.enums.Category;
-import Maswillaeng.MSLback.domain.repository.PostLikeRepository;
-import Maswillaeng.MSLback.domain.repository.PostRepository;
-import Maswillaeng.MSLback.domain.repository.ReportRepository;
-import Maswillaeng.MSLback.domain.repository.UserRepository;
+import Maswillaeng.MSLback.domain.repository.*;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +32,92 @@ class PostServiceTest {
 
     @Autowired
     private ReportRepository reportRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private CommentLikeRepository commentLikeRepository;
+
+    @Test
+    @Transactional
+    void 전체게시글조회_테스트() {
+        // given
+        List<User> users = new ArrayList<>();
+        List<Post> posts = new ArrayList<>();
+        List<PostLike> postLikes = new ArrayList<>();
+        List<Comment> commentLists = new ArrayList<>();
+        List<CommentLike> commentLikes = new ArrayList<>();
+
+        // 20명의 유저 만들기
+        for (int i = 0; i < 20; i++) {
+            User user = User.builder()
+                    .nickName(String.valueOf(i))
+                    .email(String.valueOf(i))
+                    .password(String.valueOf(i))
+                    .build();
+            userRepository.save(user);
+            users.add(user);
+        }
+
+        // 10개의 포스트 만들기
+        for (int i = 0; i < 10; i++) {
+            Post post = Post.builder()
+                    .user(users.get(i % 100))
+                    .title("post" + i)
+                    .content("content" + i)
+                    .category(Category.FREE)
+                    .build();
+            postRepository.save(post);
+            posts.add(post);
+        }
+
+        // 포스트에 좋아요 누르기
+        for (Post post : posts) {
+            for (int i = 0; i < 20; i++) {
+                PostLike postLike = PostLike.builder()
+                        .post(post)
+                        .user(users.get(i))
+                        .build();
+                postLikeRepository.save(postLike);
+                postLikes.add(postLike);
+            }
+
+            // 댓글 달기
+            for (int i = 0; i < 20; i++) {
+                Comment comment = Comment.builder()
+                        .post(post)
+                        .user(users.get(i))
+                        .content("content" + i)
+                        .build();
+                commentRepository.save(comment);
+                commentLists.add(comment);
+            }
+        }
+
+        // 댓글에 좋아요 누르기
+        for (Comment comment : commentLists) {
+            for (int i = 0; i < 20; i++) {
+                CommentLike commentLike = CommentLike.builder()
+                        .comment(comment)
+                        .user(users.get(i))
+                        .build();
+                commentLikeRepository.save(commentLike);
+                commentLikes.add(commentLike);
+            }
+        }
+
+
+        // When
+        List<PostResponseDto> postList = postService.getPostList(Category.FREE);
+
+        // Then
+        assertThat(postList.size()).isEqualTo(10);
+        for (PostResponseDto postResponseDto : postList) {
+            assertThat(postResponseDto.getCommentCnt()).isEqualTo(20L);
+            assertThat(postResponseDto.getLikeCnt()).isEqualTo(20L);
+        }
+    }
 
     @Test
     @Transactional

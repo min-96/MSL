@@ -38,8 +38,5 @@ public class ChatController {
 //
 //        return ResponseEntity.ok().build();
 //    }
-    //websocket -> 직접 컨트롤가능 -> 이 방식 을 사용하던가
-    // stomp -> state 가 곤란해짐 -> 이걸 빼던가
-    //  user1 <-> 서버 <-> user2
 
 }

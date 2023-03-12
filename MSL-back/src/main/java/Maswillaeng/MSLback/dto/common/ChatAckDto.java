@@ -6,4 +6,6 @@ import lombok.Getter;
 public class ChatAckDto {
 
     private Long roomId;
+
+    private Long senderId;
 }

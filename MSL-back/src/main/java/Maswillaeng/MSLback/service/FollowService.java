@@ -4,11 +4,15 @@ import Maswillaeng.MSLback.domain.entity.Follow;
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.FollowRepository;
+import Maswillaeng.MSLback.domain.repository.PostQueryRepository;
 import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserFollowListDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +29,12 @@ public class FollowService {
 
     private final PostRepository postRepository;
 
+    private final PostQueryRepository postQueryRepository;
+
     public void following(Long userId, Long followingUserId) {
         //구독중인지 확인
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findJoinFollowById(userId);
+     //   boolean aa =alreadyFollow(user,followingUserId);
         if(alreadyFollow(user,followingUserId))  throw new IllegalStateException("이미 구독중입니다.");
 
         User followingUser = userRepository.findById(followingUserId).get();
@@ -53,9 +60,16 @@ public class FollowService {
       return followers.stream().map(follow -> follow.getFollower()).map(UserFollowListDto::new).toList();
     }
 
-    public List<PostResponseDto> followingPostList(Long userId) {
+    public Page<PostResponseDto> followingPostList(Long userId, int page) {
         List<Follow> followings = followRepository.getFollowingList(userId);
-       return postRepository.findByFollowingPost(followings.stream().map(follow -> follow.getFollowing().getId()).toList());
+       return postQueryRepository.findByFollowingPost(followings.stream().map(follow -> follow.getFollowing().getId()).toList(), PageRequest.of(page-1,20));
 
+    }
+
+    public void followingDelete(Long userId, Long followingUserId) {
+        User user = userRepository.findJoinFollowById(userId);
+        if (alreadyFollow(user, followingUserId)) {
+            followRepository.deleteByFollowerId(user.getId(),followingUserId);
+        } else throw new IllegalStateException("구독중이 아닙니다.");
     }
 }

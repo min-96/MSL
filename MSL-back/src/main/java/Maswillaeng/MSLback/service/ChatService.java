@@ -44,18 +44,11 @@ public class ChatService {
 
 
     public void findAllChatRoom(Long userId) {
-       List<ChatRoom> chatRoomList = chatRoomRepository.findAllChatRoom(userId);
-        // false 고 roomId ;
-       // chatRoomList.stream().map(chatRoom ->  chatRepository.findByRoomIdAndState(chatRoom.getId())).toList();
 
-        // 안읽은 메세지가 몇개인지 확인
-        //Map 으로 줘야하나 ? 아니면 dto 로 ?
     }
 
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
-
-      //  ChatRoom chatRoom =chatRoomRepository.findByOwnerAndInvited(chat.getSenderUserId(),chat.getDestinationUserId());
-       ChatRoom chatRoom =  getChatRoom(chat.getSenderUserId(),chat.getDestinationUserId());
+        ChatRoom chatRoom =  getChatRoom(chat.getSenderUserId(),chat.getDestinationUserId());
         //fetch join 으로 한번에 가져올수있는데 sender/ recipient 가 owner에속하는지 Invited에 속하는지를 모름 ㅠ
         User senderUser =userRepository.findById(chat.getSenderUserId()).get();
         User recipientUser = userRepository.findById(chat.getDestinationUserId()).get();
@@ -65,21 +58,13 @@ public class ChatService {
         return new ChatResponseDto(chatResponse);
     }
 
-    public void stateUpdate(Long roomId) {
-
-       List<Chat> beforeState = chatRepository.findByChatRoom(roomId);
-       // 어디까지 읽었는지 체크 chatId 가져오기
-       beforeState.stream().forEach(state -> state.updateState());
-//       return ChatResponseDto.;
+    public boolean stateUpdate(Long roomId) {
+        chatRepository.findByChatRoom(roomId);
+        return true;
     }
 
     public ChatRoom getChatRoom(Long senderId , Long recipientId){
         return chatRoomRepository.findByOwnerAndInvited(senderId,recipientId);
     }
-
-    // 채팅 알림 몇개 왔는지?
-    // 채팅방마다 알림 몇개 왓는지?
-    // 쌓인 메세지도 보여주기
-
 
 }

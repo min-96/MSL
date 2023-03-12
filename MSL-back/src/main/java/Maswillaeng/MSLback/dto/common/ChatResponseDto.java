@@ -8,13 +8,13 @@ import java.util.List;
 
 @Getter
 public class ChatResponseDto {
-
     private String sender;
     private String recipient;
     private String content;
     private Long roomId;
     private LocalDateTime createdAt;
     private Boolean state;
+
 
     public ChatResponseDto(Chat chat) {
         this.sender = chat.getSender();

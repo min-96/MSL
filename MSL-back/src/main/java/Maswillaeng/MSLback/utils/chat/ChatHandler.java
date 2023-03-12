@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.utils.chat;
 
 
+import Maswillaeng.MSLback.domain.repository.ChatRoomRepository;
 import Maswillaeng.MSLback.dto.common.*;
 import Maswillaeng.MSLback.service.ChatService;
 import Maswillaeng.MSLback.utils.auth.UserContext;
@@ -25,7 +26,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 @AllArgsConstructor
 public class ChatHandler extends TextWebSocketHandler {
-    private Map<Long,WebSocketSession> userSocketList;
+    private final ChatRoomRepository chatRoomRepository;
+    private final Map<Long,WebSocketSession> userSocketList;
 
     private final ChatService chatService;
     private final ObjectMapper objectMapper;
@@ -40,23 +42,27 @@ public class ChatHandler extends TextWebSocketHandler {
         MessageEnum type = objectMapper.readValue(payload, MessageType.class).getType();
        // ChatMessageDto chat = objectMapper.readValue(payload,ChatMessageDto.class);
         switch (type) {
-            case DM:
+            case ENTER :
+
+                String[] str = payload.split(":");
+                Long userId = Long.parseLong(str[1]);
+                userSocketList.put(userId, session);
+                break;
+
+            case MESSAGE:
                 // TODO: static 으로 함수만들기.
                 ChatMessageDto chat = objectMapper.readValue(payload, ChatMessageDto.class);
-                ChatResponseDto result = chatService.saveMessage(chat);
+                ChatResponseDto result = chatService.saveMessage(chat); //
                 if (userSocketList.get(chat.getDestinationUserId()) != null) {
                     // 클라이언트에서 메세지 받고 location 확인후 알림 쌓기
                     userSocketList.get(chat.getDestinationUserId()).sendMessage(new TextMessage(objectMapper.writeValueAsString(result)));
                 }
                 break;
             case ACK:
-                //상대가 그 채팅방에 있는지 없는지 확인  이걸 클라이언트에서 알려줘야되는데 ..
-                //destinationUSerID에 메세지가 오면 상태값 알려주는게 가능한가?
                 ChatAckDto ack = objectMapper.readValue(payload, ChatAckDto.class);
-                chatService.stateUpdate(ack.getRoomId());
-                // 서버가 굳이 응답을 안해줘도 클라이언트에서 읽음표시로 바꾸면 안되는가?
-                //상대도 읽음표시 떠야되고 나도 읽음표시가 떠야됨
-
+                if(chatService.stateUpdate(ack.getRoomId())) {
+                    userSocketList.get(ack.getSenderId()).sendMessage(new TextMessage("ok"));
+                }
                 break;
         }
     }
@@ -64,9 +70,9 @@ public class ChatHandler extends TextWebSocketHandler {
     //클라이언트가 연결 된 후
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        userSocketList.put(UserContext.userData.get().getUserId(), session);
-        log.info(UserContext.userData.get().getUserId() + " 클라이언트 접속");
-        UserContext.remove();
+    //    userSocketList.put(UserContext.userData.get().getUserId(), session);
+        log.info(" 클라이언트 접속");
+     //   UserContext.remove();
 
     }
 

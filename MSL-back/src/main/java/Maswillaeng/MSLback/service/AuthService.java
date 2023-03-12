@@ -29,7 +29,7 @@ public class AuthService {
 
     public void join(User user) throws Exception {
         String encryptPwd = aesEncryption.encrypt(user.getPassword());
-        user.encryptPassword(encryptPwd);
+        user.resetPassword(encryptPwd);
         userRepository.save(user);
     }
 

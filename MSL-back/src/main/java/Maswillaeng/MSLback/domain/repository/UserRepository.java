@@ -20,4 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u left join fetch u.followerList where u.id = :userId")
     User findJoinFollowerById(@Param("userId") Long userId);
+
+    @Query("select u from User u left join fetch u.followerList where u.id =:userId")
+    User findJoinFollowById(@Param("userId") Long userId);
 }
