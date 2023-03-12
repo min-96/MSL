@@ -50,12 +50,15 @@ public class ChatController {
 
     }
 
-//    @MessageMapping("/chat/{roomId}")
-//    @SendTo("/sub/chat/{roomId}")
-//    public ResponseEntity<?> chat(@DestinationVariable Long roomId, ChatMessageDto message){
-//        chatService.saveMessage(roomId,message);
-//
-//        return ResponseEntity.ok().build();
-//    }
-
-}
+    @ValidToken
+    @GetMapping("/api/exist/chat-alarm")
+    public ResponseEntity<?> messageAlarm(){
+        Map<String,Boolean> response = new HashMap<>();
+        if(chatService.existChatMessage(UserContext.userData.get().getUserId())){
+            response.put("alarm",true);
+            return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,response));
+        }
+            response.put("alarm",false);
+        return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK,response));
+        }
+;    }

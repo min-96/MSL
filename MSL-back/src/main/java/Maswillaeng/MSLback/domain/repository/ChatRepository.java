@@ -11,8 +11,11 @@ import java.util.List;
 
 public interface ChatRepository extends JpaRepository<Chat,Long> {
 
-    @Query("select c from Chat c join fetch c.chatRoom cr where cr.id =:roomId and c.state =:false")
+    @Query("select c from Chat c join fetch c.chatRoom cr where cr.id =:roomId and c.state =false")
     List<Chat> findByChatRoom(@Param("roomId") Long roomId);
+
+    @Query("select c from Chat c where c.recipient =:userId and c.state = false")
+    Chat findByChatMessage(@Param("userId") Long userId);
 
 
 //    @Modifying(clearAutomatically = true)

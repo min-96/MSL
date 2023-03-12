@@ -48,7 +48,6 @@ public class ChatService {
 
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
         ChatRoom chatRoom =  getChatRoom(chat.getSenderUserId(),chat.getDestinationUserId());
-        //fetch join 으로 한번에 가져올수있는데 sender/ recipient 가 owner에속하는지 Invited에 속하는지를 모름 ㅠ
         User senderUser =userRepository.findById(chat.getSenderUserId()).get();
         User recipientUser = userRepository.findById(chat.getDestinationUserId()).get();
 
@@ -63,7 +62,12 @@ public class ChatService {
     }
 
     public ChatRoom getChatRoom(Long senderId , Long recipientId){
-        return chatRoomRepository.findByOwnerAndInvited(senderId,recipientId);
+        return chatRoomRepository.findByOwnerAndInvited( senderId,recipientId);
     }
 
+
+    public boolean existChatMessage(Long userId) {
+        if (chatRepository.findByChatMessage(userId) != null) return true;
+        else return false;
+    }
 }
