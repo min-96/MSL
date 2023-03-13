@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.bind.ValidationException;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public void updateComment(CommentUpdateRequestDto dto) throws ValidationException {
+    public void updateComment(CommentUpdateRequestDto dto) throws AccessDeniedException {
         Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(
                 () -> new EntityNotFoundException("댓글이 존재하지 않습니다")
         );
@@ -49,7 +50,7 @@ public class CommentService {
         comment.updateComment(dto.getContent());
     }
 
-    public void deleteComment(Long commentId) throws ValidationException {
+    public void deleteComment(Long commentId) throws AccessDeniedException {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new EntityNotFoundException("댓글이 존재하지 않습니다")
         );
@@ -57,9 +58,9 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public void validateUser(Long userId, Comment comment) throws ValidationException {
+    public void validateUser(Long userId, Comment comment) throws AccessDeniedException {
         if (!comment.getUser().getId().equals(userId)) {
-            throw new ValidationException("권한이 없습니다");
+            throw new AccessDeniedException("권한이 없습니다");
         }
     }
 

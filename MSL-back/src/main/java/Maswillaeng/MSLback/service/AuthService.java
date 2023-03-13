@@ -8,6 +8,7 @@ import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AESEncryption;
 import Maswillaeng.MSLback.utils.auth.UserContext;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class AuthService {
                 .build();
     }
 
-    public TokenResponseDto updateAccessToken(String refresh_token) throws Exception {
+    public TokenResponseDto updateAccessToken(String refresh_token){
         String updateAccessToken;
 
            User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
@@ -67,7 +68,7 @@ public class AuthService {
            } else {
                user.destroyRefreshToken();
                userRepository.save(user);
-               throw new Exception("변조된 토큰");
+               throw new JwtException("변조된 토큰");
            }
 
         return TokenResponseDto.builder()
@@ -75,7 +76,7 @@ public class AuthService {
                 .build();
     }
 
-    public ResponseCookie getAccessTokenCookie(String accessToken) throws Exception {
+    public ResponseCookie getAccessTokenCookie(String accessToken){
         return ResponseCookie.from(
                         "ACCESS_TOKEN", accessToken)
                 .path("/")
@@ -85,7 +86,7 @@ public class AuthService {
                 .build();
     }
 
-    public ResponseCookie getRefreshTokenCookie(String refreshToken) throws Exception {
+    public ResponseCookie getRefreshTokenCookie(String refreshToken){
         return ResponseCookie.from(
                         "REFRESH_TOKEN", refreshToken)
                 .path("/updateToken")
@@ -105,14 +106,14 @@ public class AuthService {
         user.destroyRefreshToken();
     }
 
-    public void adultIdentify(String birth) throws Exception {
+    public void adultIdentify(String birth){
         LocalDate birthDate = LocalDate.parse(birth, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         int userAge = LocalDate.now().getYear() - birthDate.getYear();
         if (birthDate.getDayOfYear() > LocalDate.now().getDayOfYear()) {
             userAge--;
         }
         if (userAge < 18) {
-            throw new Exception("성인이 아닙니다");
+            throw new IllegalStateException("성인이 아닙니다");
         }
     }
 }

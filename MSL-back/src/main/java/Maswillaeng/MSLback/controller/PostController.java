@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 
 @RequiredArgsConstructor
 @RestController
@@ -83,7 +84,7 @@ public class PostController {
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/api/post/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) throws ValidationException {
+    public ResponseEntity<?> deletePost(@PathVariable Long postId) throws AccessDeniedException {
         postService.deletePost(UserContext.userData.get().getUserId(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 HttpStatus.OK
