@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
+
 @RequiredArgsConstructor
 @Service
 @Transactional
@@ -47,23 +49,23 @@ public class LikeService {
         commentLikeRepository.save(postLike);
     }
 
-    public void deletePostLike(Long userId, Long postId) {
+    public void deletePostLike(Long userId, Long postId) throws AccessDeniedException {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
         User user = userRepository.findById(userId).get();
         if (!userId.equals(post.getUser().getId())) {
-            throw new RuntimeException("접근 권한 없음");
+            throw new AccessDeniedException("접근 권한 없음");
         }
         postLikeRepository.deleteByUserAndPost(user, post);
 
     }
 
-    public void deleteCommentLike(Long userId, Long commentId) {
+    public void deleteCommentLike(Long userId, Long commentId) throws AccessDeniedException {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
         User user = userRepository.findById(userId).get();
         if (!userId.equals(comment.getUser().getId())) {
-            throw new RuntimeException("접근 권한 없음");
+            throw new AccessDeniedException("접근 권한 없음");
         }
 
         commentLikeRepository.deleteByUserAndComment(user, comment);

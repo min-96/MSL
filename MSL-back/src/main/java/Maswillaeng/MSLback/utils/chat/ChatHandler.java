@@ -26,7 +26,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 @AllArgsConstructor
 public class ChatHandler extends TextWebSocketHandler {
-    private final ChatRoomRepository chatRoomRepository;
     private final Map<Long,WebSocketSession> userSocketList;
 
     private final ChatService chatService;
@@ -64,6 +63,7 @@ public class ChatHandler extends TextWebSocketHandler {
                 }
                 break;
         }
+
     }
 
     //클라이언트가 연결 된 후

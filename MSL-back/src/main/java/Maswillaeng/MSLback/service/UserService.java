@@ -12,6 +12,7 @@ import Maswillaeng.MSLback.dto.user.request.UserUpdateRequestDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AESEncryption;
 import Maswillaeng.MSLback.utils.auth.UserContext;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,8 +80,8 @@ public class UserService {
 
         try {
             jwtTokenProvider.getClaims(requestDto.getToken());
-        } catch (Exception e) {
-            throw new RuntimeException("유효하지 않은 토큰입니다.");
+        } catch (JwtException e) {
+            throw new JwtException("유효하지 않은 토큰입니다.");
         }
 
         User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
