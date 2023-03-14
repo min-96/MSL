@@ -15,8 +15,10 @@ import Maswillaeng.MSLback.dto.common.CreateRoomResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +37,7 @@ public class ChatService {
         User targetUser = userRepository.findById(targetId).orElseThrow(
                 () -> new EntityNotFoundException("회원이 존재하지 않습니다."));
         ChatRoom chatRoom = new ChatRoom(user,targetUser);
-        // 현재 user가 targetuser이 있는 채팅방이 있는지 예외처리
-        if(getChatRoom(userId, targetId) != null){
+        if(getChatRoom(userId,targetId)!= null){
             throw new  IllegalStateException("이미 채팅방이 존재합니다");
         }
         ChatRoom createRoom = chatRoomRepository.save(chatRoom);
@@ -60,12 +61,17 @@ public class ChatService {
     }
 
     public boolean stateUpdate(Long roomId) {
-        chatRepository.findByChatRoom(roomId);
+       chatRepository.findByChatRoom(roomId);
         return true;
     }
 
     public ChatRoom getChatRoom(Long senderId , Long recipientId){
-        return chatRoomRepository.findByOwnerAndInvited(senderId,recipientId);
+        return chatRoomRepository.findByOwnerAndInvited( senderId,recipientId);
     }
 
+
+    public boolean existChatMessage(Long userId) {
+        if (chatRepository.findByChatMessage(userId) != null) return true;
+        else return false;
+    }
 }

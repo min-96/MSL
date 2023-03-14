@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.file.AccessDeniedException;
+
 @RequiredArgsConstructor
 @RestController
 public class LikeController {
@@ -40,7 +42,7 @@ public class LikeController {
 
     @ValidToken
     @DeleteMapping("/api/post-like/{postId}")
-    public ResponseEntity<Object> deletePostLike(@PathVariable Long postId) {
+    public ResponseEntity<Object> deletePostLike(@PathVariable Long postId) throws AccessDeniedException {
         likeService.deletePostLike(UserContext.userData.get().getUserId(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 "게시물 좋아요가 성공적으로 취소되었습니다"
@@ -49,7 +51,7 @@ public class LikeController {
 
     @ValidToken
     @DeleteMapping("/api/comment-like/{commentId}")
-    public ResponseEntity<Object> deleteCommentLike(@PathVariable Long commentId) {
+    public ResponseEntity<Object> deleteCommentLike(@PathVariable Long commentId) throws AccessDeniedException {
         likeService.deleteCommentLike(UserContext.userData.get().getUserId(), commentId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 "댓글 좋아요가 성공적으로 취소되었습니다"

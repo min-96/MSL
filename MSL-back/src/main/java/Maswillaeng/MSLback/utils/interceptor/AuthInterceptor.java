@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.security.auth.message.AuthException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.file.AccessDeniedException;
 
 @ComponentScan
 @NoArgsConstructor
@@ -37,20 +38,21 @@ public class AuthInterceptor implements HandlerInterceptor, Ordered {
         TokenUserData userData = UserContext.userData.get();
 
         if (userData==null) {
-            response.setStatus(403);
+            new AccessDeniedException("토큰이 존재하지 않아요");
+
             return false;
         }
 
         if (auth.role().equals(AuthCheck.Role.USER)) {
             if (!userData.getUserRole().equals(AuthCheck.Role.USER.toString())) {
-                response.setStatus(403);
+                new AccessDeniedException("접근권한이 없습니다.");
                 return false;
             }
         }
 
         if (auth.role().equals(AuthCheck.Role.ADMIN)) {
             if (!userData.getUserRole().equals(AuthCheck.Role.ADMIN.toString())) {
-                response.setStatus(403);
+                new AccessDeniedException("접근권한이 없습니다.");
                 return false;
             }
         }

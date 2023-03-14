@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.service;
 
+import Maswillaeng.MSLback.common.exception.EntityNotFoundException;
 import Maswillaeng.MSLback.domain.entity.HashTag;
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.Tag;
@@ -18,9 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.ValidationException;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -74,7 +75,7 @@ public class PostService {
         Post selectedPost = postRepository.findById(updateDto.getPostId()).get();
 
         if (!Objects.equals(selectedPost.getUser().getId(), userId)) {
-            throw new ValidationException("접근 권한 없음");
+            throw new AccessDeniedException("접근 권한 없음");
         }
 
         List<String> updateHashTagList = updateDto.getHashTagList();
@@ -87,10 +88,10 @@ public class PostService {
 
     }
 
-    public void deletePost(Long userId, Long postId) throws ValidationException {
+    public void deletePost(Long userId, Long postId) throws AccessDeniedException {
         Post post = postRepository.findById(postId).get();
         if (!Objects.equals(userId, post.getUser().getId())) {
-            throw new ValidationException("접근 권한 없음");
+            throw new AccessDeniedException("접근 권한 없음");
         }
 
           List<String> deleteHashTag =  post.getHashTagList().stream().map(h->h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));

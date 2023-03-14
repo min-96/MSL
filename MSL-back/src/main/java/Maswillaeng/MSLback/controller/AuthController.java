@@ -102,7 +102,7 @@ public class AuthController {
     }
 
     @PostMapping("/api/certifications") // 쓸일 없음
-    public ResponseEntity<Objects> impUid(@RequestBody String imp_uid) throws Exception {
+    public ResponseEntity<Objects> impUid(@RequestBody String imp_uid){
 
         System.out.println("imp_uid = " + imp_uid);
         String access_token = String.valueOf(externalHttpService.importGetToken());

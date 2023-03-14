@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.xml.bind.ValidationException;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class CommentController {
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/comment")
-    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) throws ValidationException {
+    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) throws  AccessDeniedException {
 
         commentService.updateComment(updateRequestDto);
 
@@ -61,7 +62,7 @@ public class CommentController {
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/api/comment/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) throws ValidationException {
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) throws AccessDeniedException {
 
         commentService.deleteComment(commentId);
 

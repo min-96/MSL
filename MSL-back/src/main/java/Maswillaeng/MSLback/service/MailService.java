@@ -52,6 +52,7 @@ public class MailService {
         try {
             javaMailSender.send(msg);
         } catch (Exception e) {
+            // TODO : 서버에러인가? 클라이언트에러인가?
             throw new RuntimeException("메일 전송에 실패하였습니다. : " + e.getMessage());
         }
     }
