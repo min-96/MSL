@@ -5,9 +5,9 @@ spring:
       path: /h2-console
 
   datasource:
-    url: jdbc:h2:../test2
+    url: jdbc:h2:tcp://localhost/~/msl
     driver-class-name: org.h2.Driver
-    username: sa
+    username: root
     password:
 
   jpa:
@@ -21,6 +21,18 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     open-in-view: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: maswillaeng@gmail.com
+    password: sxzrfipxjffamevp
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+
   freemarker:
     cache: false
     template-loader-path: classpath:/templates

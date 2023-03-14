@@ -8,8 +8,8 @@ import java.util.List;
 
 @Getter
 public class ChatResponseDto {
-    private String sender;
-    private String recipient;
+    private Long senderId;
+    private Long recipientId;
     private String content;
     private Long roomId;
     private LocalDateTime createdAt;
@@ -17,8 +17,8 @@ public class ChatResponseDto {
 
 
     public ChatResponseDto(Chat chat) {
-        this.sender = chat.getSender();
-        this.recipient = chat.getRecipient();
+        this.senderId = chat.getSenderId();
+        this.recipientId = chat.getRecipientId();
         this.content = chat.getContent();
         this.roomId = chat.getChatRoom().getId();
         this.createdAt = chat.getCreatedAt();

@@ -5,10 +5,12 @@ import Maswillaeng.MSLback.domain.entity.Chat;
 import Maswillaeng.MSLback.domain.entity.ChatRoom;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.ChatRepository;
+import Maswillaeng.MSLback.domain.repository.ChatRoomQueryRepository;
 import Maswillaeng.MSLback.domain.repository.ChatRoomRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.common.ChatMessageDto;
 import Maswillaeng.MSLback.dto.common.ChatResponseDto;
+import Maswillaeng.MSLback.dto.common.ChatRoomResponseDto;
 import Maswillaeng.MSLback.dto.common.CreateRoomResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class ChatService {
     private final ChatRepository chatRepository;
 
     private final UserRepository userRepository;
+    private final ChatRoomQueryRepository chatRoomQueryRepository;
 
     public CreateRoomResponseDto createRoom(Long userId, Long targetId) {
         User user = userRepository.findById(userId).get();
@@ -35,7 +38,7 @@ public class ChatService {
                 () -> new EntityNotFoundException("회원이 존재하지 않습니다."));
         ChatRoom chatRoom = new ChatRoom(user,targetUser);
         // 현재 user가 targetuser이 있는 채팅방이 있는지 예외처리
-        if(getChatRoom(userId,targetId).equals(null)){
+        if(getChatRoom(userId, targetId) != null){
             throw new  IllegalStateException("이미 채팅방이 존재합니다");
         }
         ChatRoom createRoom = chatRoomRepository.save(chatRoom);
@@ -43,8 +46,8 @@ public class ChatService {
     }
 
 
-    public void findAllChatRoom(Long userId) {
-
+    public List<ChatRoomResponseDto> findAllChatRoom(Long userId) {
+        return chatRoomQueryRepository.findAllByUserId(userId);
     }
 
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
@@ -53,7 +56,7 @@ public class ChatService {
         User senderUser =userRepository.findById(chat.getSenderUserId()).get();
         User recipientUser = userRepository.findById(chat.getDestinationUserId()).get();
 
-        Chat chatMessage =  Chat.builder().chatRoom(chatRoom).sender(senderUser.getNickName()).recipient(recipientUser.getNickName()).content(chat.getContent()).state(false).build();
+        Chat chatMessage =  Chat.builder().chatRoom(chatRoom).senderId(senderUser.getId()).recipientId(recipientUser.getId()).content(chat.getContent()).state(false).build();
         Chat chatResponse = chatRepository.save(chatMessage);
         return new ChatResponseDto(chatResponse);
     }
