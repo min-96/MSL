@@ -8,17 +8,12 @@ import Maswillaeng.MSLback.domain.repository.ChatRepository;
 import Maswillaeng.MSLback.domain.repository.ChatRoomQueryRepository;
 import Maswillaeng.MSLback.domain.repository.ChatRoomRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
-import Maswillaeng.MSLback.dto.common.ChatMessageDto;
-import Maswillaeng.MSLback.dto.common.ChatResponseDto;
-import Maswillaeng.MSLback.dto.common.ChatRoomResponseDto;
-import Maswillaeng.MSLback.dto.common.CreateRoomResponseDto;
+import Maswillaeng.MSLback.dto.common.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +31,12 @@ public class ChatService {
         User user = userRepository.findById(userId).get();
         User targetUser = userRepository.findById(targetId).orElseThrow(
                 () -> new EntityNotFoundException("회원이 존재하지 않습니다."));
-        ChatRoom chatRoom = new ChatRoom(user,targetUser);
-        if(getChatRoom(userId,targetId)!= null){
-            throw new  IllegalStateException("이미 채팅방이 존재합니다");
+        ChatRoom chatRoom = new ChatRoom(user, targetUser);
+        if (getChatRoom(userId, targetId) != null) {
+            throw new IllegalStateException("이미 채팅방이 존재합니다");
         }
         ChatRoom createRoom = chatRoomRepository.save(chatRoom);
-         return new CreateRoomResponseDto(createRoom);
+        return new CreateRoomResponseDto(createRoom);
     }
 
 
@@ -50,28 +45,35 @@ public class ChatService {
     }
 
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
-        ChatRoom chatRoom =  getChatRoom(chat.getSenderUserId(),chat.getDestinationUserId());
+        ChatRoom chatRoom = getChatRoom(chat.getSenderId(), chat.getRecipientId());
         //fetch join 으로 한번에 가져올수있는데 sender/ recipient 가 owner에속하는지 Invited에 속하는지를 모름 ㅠ
-        User senderUser =userRepository.findById(chat.getSenderUserId()).get();
-        User recipientUser = userRepository.findById(chat.getDestinationUserId()).get();
+        User senderUser = userRepository.findById(chat.getSenderId()).get();
+        User recipientUser = userRepository.findById(chat.getRecipientId()).get();
 
-        Chat chatMessage =  Chat.builder().chatRoom(chatRoom).senderId(senderUser.getId()).recipientId(recipientUser.getId()).content(chat.getContent()).state(false).build();
+        Chat chatMessage = Chat.builder().chatRoom(chatRoom).senderId(senderUser.getId()).recipientId(recipientUser.getId()).content(chat.getContent()).state(false).build();
         Chat chatResponse = chatRepository.save(chatMessage);
         return new ChatResponseDto(chatResponse);
     }
 
-    public boolean stateUpdate(Long roomId) {
-       chatRepository.findByChatRoom(roomId);
+    public ChatMessageListResponseDto getChatList(Long roomId, Long partnerId) {
+        chatRepository.updateStateByRoomIdAndPartnerId(roomId, partnerId);
+        List<ChatMessageDto> chatMessageDtoList = chatRepository.findAllByChatRoomId(roomId)
+                .stream().map(ChatMessageDto::new).toList();
+        User partner = userRepository.findById(partnerId).get();
+        return new ChatMessageListResponseDto(partner, chatMessageDtoList);
+    }
+
+    public boolean updateState(Long roomId) {
+        chatRepository.updateState(roomId);
         return true;
     }
 
-    public ChatRoom getChatRoom(Long senderId , Long recipientId){
-        return chatRoomRepository.findByOwnerAndInvited( senderId,recipientId);
+    public ChatRoom getChatRoom(Long senderId, Long recipientId) {
+        return chatRoomRepository.findByOwnerAndInvited(senderId, recipientId);
     }
 
 
     public boolean existChatMessage(Long userId) {
-        if (chatRepository.findByChatMessage(userId) != null) return true;
-        else return false;
+        return chatRepository.findByChatMessage(userId) != null;
     }
 }

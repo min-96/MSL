@@ -1,26 +1,18 @@
 package Maswillaeng.MSLback.utils.chat;
 
 
-import Maswillaeng.MSLback.domain.repository.ChatRoomRepository;
 import Maswillaeng.MSLback.dto.common.*;
 import Maswillaeng.MSLback.service.ChatService;
-import Maswillaeng.MSLback.utils.auth.UserContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
 @Slf4j
@@ -51,14 +43,14 @@ public class ChatHandler extends TextWebSocketHandler {
                 // TODO: static 으로 함수만들기.
                 ChatMessageDto chat = objectMapper.readValue(payload, ChatMessageDto.class);
                 ChatResponseDto result = chatService.saveMessage(chat); //
-                if (userSocketList.get(chat.getDestinationUserId()) != null) {
+                if (userSocketList.get(chat.getRecipientId()) != null) {
                     // 클라이언트에서 메세지 받고 location 확인후 알림 쌓기
-                    userSocketList.get(chat.getDestinationUserId()).sendMessage(new TextMessage(objectMapper.writeValueAsString(result)));
+                    userSocketList.get(chat.getRecipientId()).sendMessage(new TextMessage(objectMapper.writeValueAsString(result)));
                 }
                 break;
             case ACK:
                 ChatAckDto ack = objectMapper.readValue(payload, ChatAckDto.class);
-                if(chatService.stateUpdate(ack.getRoomId())) {
+                if(chatService.updateState(ack.getRoomId())) {
                     userSocketList.get(ack.getSenderId()).sendMessage(new TextMessage("ok"));
                 }
                 break;
