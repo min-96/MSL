@@ -30,7 +30,7 @@ public class ChatRoomQueryRepository extends QuerydslRepositorySupport {
                         chatRoom.id.as("chatRoomId"),
                         user.nickName,
                         user.userImage,
-                        chat.count().intValue().as("unReadMsgCnt")
+                        chat.count().as("unReadMsgCnt")
                 ))
                 .from(chatRoom)
                 .leftJoin(chat).on(chat.chatRoom.eq(chatRoom)
