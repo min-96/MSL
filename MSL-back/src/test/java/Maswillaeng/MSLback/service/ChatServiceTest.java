@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class ChatServiceTest {
 
     @Autowired
@@ -38,12 +38,12 @@ class ChatServiceTest {
     void 채팅방_전체조회_테스트() {
         //given
         User user1 = User.builder()
-                .email("test1")
+                .email("tes1")
                 .password("test1")
                 .nickName("tes1")
                 .build();
         User user2 = User.builder()
-                .email("test2")
+                .email("tes2")
                 .password("test2")
                 .nickName("tet2")
                 .build();
@@ -58,6 +58,7 @@ class ChatServiceTest {
                 .senderId(user1.getId())
                 .recipientId(user2.getId())
                 .content("hello")
+                .state(false)
                 .build();
 
         userRepository.save(user1);
@@ -66,15 +67,15 @@ class ChatServiceTest {
         chatRepository.save(chat);
 
         //when
-        List<ChatRoomResponseDto> result = chatService.findAllChatRoom(user1.getId());
+        List<ChatRoomResponseDto> result = chatService.getChatRoomList(user2.getId());
 
         //then
-        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.size()).isEqualTo(1L);
         ChatRoomResponseDto chatRoomDto = result.get(0);
         assertThat(chatRoomDto.getChatRoomId()).isEqualTo(chatRoom.getId());
-        assertThat(chatRoomDto.getNickName()).isEqualTo(user2.getNickName());
-        assertThat(chatRoomDto.getUserImage()).isEqualTo(user2.getUserImage());
-        assertThat(chatRoomDto.getUnReadMsgCnt()).isEqualTo(1);
+        assertThat(chatRoomDto.getNickName()).isEqualTo(user1.getNickName());
+        assertThat(chatRoomDto.getUserImage()).isEqualTo(user1.getUserImage());
+        assertThat(chatRoomDto.getUnReadMsgCnt()).isEqualTo(1L);
     }
 
 }

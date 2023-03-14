@@ -15,10 +15,8 @@ import Maswillaeng.MSLback.dto.common.CreateRoomResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +44,7 @@ public class ChatService {
     }
 
 
-    public List<ChatRoomResponseDto> findAllChatRoom(Long userId) {
+    public List<ChatRoomResponseDto> getChatRoomList(Long userId) {
         return chatRoomQueryRepository.findAllByUserId(userId);
     }
 

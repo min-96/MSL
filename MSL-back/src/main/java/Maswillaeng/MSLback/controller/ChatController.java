@@ -1,8 +1,5 @@
 package Maswillaeng.MSLback.controller;
 
-import Maswillaeng.MSLback.domain.entity.Chat;
-import Maswillaeng.MSLback.dto.common.ChatMessageDto;
-import Maswillaeng.MSLback.dto.common.ChatRoomResponseDto;
 import Maswillaeng.MSLback.dto.common.CreateRoomResponseDto;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.service.ChatService;
@@ -10,12 +7,7 @@ import Maswillaeng.MSLback.utils.auth.UserContext;
 import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -36,11 +28,19 @@ public class ChatController {
 
     @ValidToken
     @GetMapping("/api/chat-room/list")
-    public ResponseEntity<?> chatRoomList(){
-        List<ChatRoomResponseDto> chatRoomList = chatService.findAllChatRoom(UserContext.userData.get().getUserId());
+    public ResponseEntity<?> getChatRoomList(){
         return ResponseEntity.ok().body(ResponseDto.of(
                 "채팅방이 성공적으로 조회되었습니다.",
-                    chatRoomList
+                chatService.getChatRoomList(UserContext.userData.get().getUserId())
+        ));
+    }
+
+    @ValidToken
+    @GetMapping("/api/chat/list/{roomId}")
+    public ResponseEntity<?> getChatRoomList(@PathVariable Long roomId){
+        return ResponseEntity.ok().body(ResponseDto.of(
+                "채팅 목록이 성공적으로 조회되었습니다.",
+                chatService.getChatRoomList(UserContext.userData.get().getUserId())
         ));
     }
 
