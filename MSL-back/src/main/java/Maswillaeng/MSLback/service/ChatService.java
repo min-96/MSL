@@ -9,6 +9,7 @@ import Maswillaeng.MSLback.domain.repository.ChatRoomQueryRepository;
 import Maswillaeng.MSLback.domain.repository.ChatRoomRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.common.*;
+import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,19 @@ public class ChatService {
 
 
     public List<ChatRoomResponseDto> getChatRoomList(Long userId) {
-        return chatRoomQueryRepository.findAllByUserId(userId);
+        List<ChatRoomResponseDto> chatRoomResponseDtos = chatRoomQueryRepository.findAllByUserId(userId);
+        List<Chat> lastChatByUserId = chatRepository.findLastChatByUserId(userId);
+
+        // 채팅방에 채팅이 하나도 없으면 둘이 size가 안맞음.. 도대체 어떻게 해야하는겨
+
+        for (int i = 0; i < chatRoomResponseDtos.size(); i++) {
+            chatRoomResponseDtos.get(i).setLastMessage(lastChatByUserId.get(i).getContent());
+            chatRoomResponseDtos.get(i).setLastMessageTime(lastChatByUserId.get(i).getCreatedAt());
+        }
+
+        chatRoomResponseDtos.sort((o1, o2) -> o2.getLastMessageTime().compareTo(o1.getLastMessageTime()));
+
+        return chatRoomResponseDtos;
     }
 
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
@@ -55,11 +68,12 @@ public class ChatService {
         return new ChatResponseDto(chatResponse);
     }
 
-    public ChatMessageListResponseDto getChatList(Long roomId, Long partnerId) {
-        chatRepository.updateStateByRoomIdAndPartnerId(roomId, partnerId);
+    public ChatMessageListResponseDto getChatList(Long roomId) {
+        Long userId = UserContext.userData.get().getUserId();
+        chatRepository.updateStateByRoomIdAndUserId(roomId, userId);
         List<ChatMessageDto> chatMessageDtoList = chatRepository.findAllByChatRoomId(roomId)
                 .stream().map(ChatMessageDto::new).toList();
-        User partner = userRepository.findById(partnerId).get();
+        User partner = userRepository.findPartnerByRoomIdAndUserId(roomId, userId);
         return new ChatMessageListResponseDto(partner, chatMessageDtoList);
     }
 

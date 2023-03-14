@@ -1,9 +1,14 @@
 package Maswillaeng.MSLback.domain.repository;
 
 
+import Maswillaeng.MSLback.domain.entity.Chat;
 import Maswillaeng.MSLback.domain.entity.ChatRoom;
+import Maswillaeng.MSLback.domain.entity.QChat;
 import Maswillaeng.MSLback.dto.common.ChatRoomResponseDto;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -28,6 +33,7 @@ public class ChatRoomQueryRepository extends QuerydslRepositorySupport {
         return queryFactory
                 .select(Projections.bean(ChatRoomResponseDto.class,
                         chatRoom.id.as("chatRoomId"),
+                        user.id.as("partnerId"),
                         user.nickName,
                         user.userImage,
                         chat.count().as("unReadMsgCnt")
@@ -41,6 +47,7 @@ public class ChatRoomQueryRepository extends QuerydslRepositorySupport {
                         .and(user.id.ne(userId)))
                 .where(chatRoom.invited.id.eq(userId).or(chatRoom.owner.id.eq(userId)))
                 .groupBy(chatRoom.id)
+                .orderBy(chatRoom.id.asc())
                 .fetch();
     }
 }

@@ -42,13 +42,12 @@ public class ChatController {
     }
 
     @ValidToken
-    @GetMapping("/api/chat/list")
-    public ResponseEntity<?> getChatList(@RequestParam Long roomId,
-                                         @RequestParam Long partnerId) {
+    @GetMapping("/api/chat/list/{roomId}")
+    public ResponseEntity<?> getChatList(@PathVariable Long roomId) {
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 "채팅 목록이 성공적으로 조회되었습니다.",
-                chatService.getChatList(roomId, partnerId)
+                chatService.getChatList(roomId)
         ));
     }
 
