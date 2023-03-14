@@ -44,7 +44,7 @@ public class ValidTokenProcess {
                 Claims claims = jwtTokenProvider.getClaims(accessToken);
                 UserContext.userData.set(new TokenUserData(claims));
             } catch (ExpiredJwtException exception) {
-                res.setStatus(401);
+                res.setStatus(401);  // 에러 만들기
                 return false;
             }
             // TODO : 나중에 Exception Handler JwtException, NullPointerException 로 관리

@@ -34,7 +34,7 @@ public class ChatService {
         User targetUser = userRepository.findById(targetId).orElseThrow(
                 () -> new EntityNotFoundException("회원이 존재하지 않습니다."));
         ChatRoom chatRoom = new ChatRoom(user,targetUser);
-        if(getChatRoom(userId,targetId).equals(null)){
+        if(getChatRoom(userId,targetId)!= null){
             throw new  IllegalStateException("이미 채팅방이 존재합니다");
         }
         ChatRoom createRoom = chatRoomRepository.save(chatRoom);
@@ -48,16 +48,14 @@ public class ChatService {
 
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
         ChatRoom chatRoom =  getChatRoom(chat.getSenderUserId(),chat.getDestinationUserId());
-        User senderUser =userRepository.findById(chat.getSenderUserId()).get();
-        User recipientUser = userRepository.findById(chat.getDestinationUserId()).get();
 
-        Chat chatMessage =  Chat.builder().chatRoom(chatRoom).sender(senderUser.getNickName()).recipient(recipientUser.getNickName()).content(chat.getContent()).state(false).build();
+        Chat chatMessage =  Chat.builder().chatRoom(chatRoom).sender(chat.getSenderUserId()).recipient(chat.getDestinationUserId()).content(chat.getContent()).state(false).build();
         Chat chatResponse = chatRepository.save(chatMessage);
         return new ChatResponseDto(chatResponse);
     }
 
     public boolean stateUpdate(Long roomId) {
-        chatRepository.findByChatRoom(roomId);
+       chatRepository.findByChatRoom(roomId);
         return true;
     }
 

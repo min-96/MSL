@@ -38,7 +38,8 @@ public class AuthInterceptor implements HandlerInterceptor, Ordered {
         TokenUserData userData = UserContext.userData.get();
 
         if (userData==null) {
-            new NullPointerException("토큰이 없습니다.");
+            new AccessDeniedException("토큰이 존재하지 않아요");
+
             return false;
         }
 

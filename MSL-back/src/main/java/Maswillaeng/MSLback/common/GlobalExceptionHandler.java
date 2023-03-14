@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<?> AccessDeniedExceptionHandler(AccessDeniedException e){
+    public ResponseEntity<?> c(AccessDeniedException e){
         return new ResponseEntity<>(e.getMessage(),HttpStatus.FORBIDDEN);
     }
 }

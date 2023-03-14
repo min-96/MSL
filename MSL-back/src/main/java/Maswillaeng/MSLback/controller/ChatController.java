@@ -5,6 +5,7 @@ import Maswillaeng.MSLback.dto.common.ChatMessageDto;
 import Maswillaeng.MSLback.dto.common.CreateRoomResponseDto;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.service.ChatService;
+import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,16 @@ public class ChatController {
 
     private final ChatService chatService;
 
+    @ValidToken
+   // @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/create/chat-room/{targetId}")
     public ResponseEntity<?> createRoom(@PathVariable Long targetId){
 
         CreateRoomResponseDto chatRoom =  chatService.createRoom(UserContext.userData.get().getUserId(),targetId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(chatRoom);
     }
 
+    @ValidToken
     @GetMapping("/api/chat-room/list")
     public ResponseEntity<?> chatRoomList(){
         chatService.findAllChatRoom(UserContext.userData.get().getUserId());
