@@ -49,8 +49,7 @@ public class Chat {
         this.state = state;
     }
 
-    public void updateState() {
+    public void setState() {
         this.state = true;
     }
-
 }

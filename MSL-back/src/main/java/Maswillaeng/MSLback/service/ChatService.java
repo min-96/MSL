@@ -13,8 +13,10 @@ import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,35 +34,21 @@ public class ChatService {
         User user = userRepository.findById(userId).get();
         User targetUser = userRepository.findById(targetId).orElseThrow(
                 () -> new EntityNotFoundException("회원이 존재하지 않습니다."));
-        ChatRoom chatRoom = new ChatRoom(user, targetUser);
-        if (getChatRoom(userId, targetId) != null) {
-            throw new IllegalStateException("이미 채팅방이 존재합니다");
+        ChatRoom chatRoom = new ChatRoom(user,targetUser);
+        if(getChatRoom(userId,targetId)!= null){
+            throw new  IllegalStateException("이미 채팅방이 존재합니다");
         }
         ChatRoom createRoom = chatRoomRepository.save(chatRoom);
-        return new CreateRoomResponseDto(createRoom);
+         return new CreateRoomResponseDto(createRoom);
     }
 
 
     public List<ChatRoomResponseDto> getChatRoomList(Long userId) {
-        List<ChatRoomResponseDto> chatRoomResponseDtos = chatRoomQueryRepository.findAllByUserId(userId);
-        System.out.println("s");
-     //   List<Chat> lastChatByUserId = chatRepository.findLastChatByUserId(userId);
-
-        // 채팅방에 채팅이 하나도 없으면 둘이 size가 안맞음.. 도대체 어떻게 해야하는겨
-
-//        for (int i = 0; i < chatRoomResponseDtos.size(); i++) {
-//            chatRoomResponseDtos.get(i).setLastMessage(lastChatByUserId.get(i).getContent());
-//            chatRoomResponseDtos.get(i).setLastMessageTime(lastChatByUserId.get(i).getCreatedAt());
-//        }
-//
-//        chatRoomResponseDtos.sort((o1, o2) -> o2.getLastMessageTime().compareTo(o1.getLastMessageTime()));
-
-        return chatRoomResponseDtos;
+        return chatRoomQueryRepository.findAllByUserId(userId);
     }
 
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
         ChatRoom chatRoom = getChatRoom(chat.getSenderId(), chat.getRecipientId());
-
         Chat chatMessage = Chat.builder().chatRoom(chatRoom).senderId(chat.getSenderId()).recipientId(chat.getRecipientId()).content(chat.getContent()).state(false).build();
         Chat chatResponse = chatRepository.save(chatMessage);
         return new ChatResponseDto(chatResponse);
@@ -75,13 +63,14 @@ public class ChatService {
         return new ChatMessageListResponseDto(partner, chatMessageDtoList);
     }
 
-    public boolean updateState(Long roomId) {
-        chatRepository.updateState(roomId);
+    public boolean stateUpdate(Long roomId) {
+        List<Chat> chatList = chatRepository.findByChatRoom(roomId);
+        chatList.stream().forEach(chat -> chat.setState());
         return true;
     }
 
-    public ChatRoom getChatRoom(Long senderId, Long recipientId) {
-        return chatRoomRepository.findByOwnerAndInvited(senderId, recipientId);
+    public ChatRoom getChatRoom(Long senderId , Long recipientId){
+        return chatRoomRepository.findByOwnerAndInvited( senderId,recipientId);
     }
 
 
