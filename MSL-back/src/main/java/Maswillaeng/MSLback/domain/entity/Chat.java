@@ -26,9 +26,9 @@ public class Chat {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom; // 채팅방이 사라지면 채팅 데이터도 사라지는가?
 
-    private Long sender;
+    private Long senderId;
 
-    private Long recipient; // ??  room 으로 브로드캐스트 하는데 굳이?
+    private Long recipientId; // ??  room 으로 브로드캐스트 하는데 굳이?
 
     private String content;
 
@@ -40,17 +40,16 @@ public class Chat {
 
 
     @Builder
-    public Chat(ChatRoom chatRoom, Long sender, Long recipient, String content, LocalDateTime createdAt, boolean state) {
+    public Chat(ChatRoom chatRoom, Long senderId, Long recipientId, String content, LocalDateTime createdAt, boolean state) {
         this.chatRoom = chatRoom;
-        this.sender = sender;
-        this.recipient = recipient;
+        this.senderId = senderId;
+        this.recipientId = recipientId;
         this.content = content;
         this.createdAt = createdAt;
         this.state = state;
     }
 
-    public void updateState() {
+    public void setState() {
         this.state = true;
     }
-
 }
