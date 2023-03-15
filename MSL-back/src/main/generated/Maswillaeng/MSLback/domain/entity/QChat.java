@@ -30,9 +30,9 @@ public class QChat extends EntityPathBase<Chat> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath recipient = createString("recipient");
+    public final NumberPath<Long> recipientId = createNumber("recipientId", Long.class);
 
-    public final StringPath sender = createString("sender");
+    public final NumberPath<Long> senderId = createNumber("senderId", Long.class);
 
     public final BooleanPath state = createBoolean("state");
 

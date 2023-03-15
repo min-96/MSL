@@ -25,25 +25,27 @@ public class UserInfoResponseDto {
 
     private int followingCnt;
 
-    public UserInfoResponseDto(User user) {
-        this.email = user.getEmail();
-        this.nickName = user.getNickName();
-        this.userImage = user.getUserImage();
-        this.introduction = user.getIntroduction();
-        this.postCnt = user.getPostList().size();
-        this.followState = false;
-        this.followerCnt = user.getFollowingList().size();
-        this.followingCnt = user.getFollowerList().size();
-    }
 
-    public UserInfoResponseDto(User user,boolean isFollowed) {
+    public UserInfoResponseDto(int followingCnt, int followerCnt, User user,boolean isFollowed) {
         this.email = user.getEmail();
         this.nickName = user.getNickName();
         this.userImage = user.getUserImage();
         this.introduction = user.getIntroduction();
         this.postCnt = user.getPostList().size();
         this.followState =  isFollowed;
-        this.followerCnt = user.getFollowingList().size();
-        this.followingCnt = user.getFollowerList().size();
+        this.followerCnt = followerCnt;
+        this.followingCnt = followingCnt;
+    }
+
+    public UserInfoResponseDto(int followingCnt, int followerCnt, User user) {
+        this.email = user.getEmail();
+        this.nickName = user.getNickName();
+        this.userImage = user.getUserImage();
+        this.introduction = user.getIntroduction();
+        this.postCnt = user.getPostList().size();
+        this.followState = false;
+        this.followerCnt = followerCnt;
+        this.followingCnt = followingCnt;
+
     }
 }

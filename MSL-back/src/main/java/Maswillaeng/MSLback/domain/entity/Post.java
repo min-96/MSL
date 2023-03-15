@@ -43,16 +43,16 @@ public class Post extends BaseTimeEntity {
     @ColumnDefault("0")
     private Long hits;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY)
     private Set<PostLike> postLikeList = new HashSet<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY)
     private Set<Comment> commentList = new HashSet<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private List<HashTag> hashTagList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
     private List<Report> reportList = new ArrayList<>();
 
     @Builder

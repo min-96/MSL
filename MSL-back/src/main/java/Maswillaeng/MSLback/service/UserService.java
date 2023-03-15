@@ -40,16 +40,18 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional(readOnly = true)
-    public UserInfoResponseDto getUser(Long userId) {
-        User user = userRepository.findJoinFollowingById(userId);
-        if(UserContext.userData.get()==null){
-            return new UserInfoResponseDto(user);
-        }else {
-            User apiUser = userRepository.findJoinFollowerById(UserContext.userData.get().getUserId());
-           boolean isFollowed  = followService.alreadyFollow(apiUser,userId);
-            return new UserInfoResponseDto(user,isFollowed);
-        }
+    public UserInfoResponseDto getUser(Long targetId) {
+        User followerListCnt = userRepository.findJoinFollowerById(targetId);
+        User followingListCnt = userRepository.findJoinFollowingById(targetId);
+        User UserandPostCnt = userRepository.findByPostList(targetId);
 
+        if(UserContext.userData.get()==null){
+            return new UserInfoResponseDto(followerListCnt.getFollowerList().size(),followingListCnt.getFollowingList().size(),UserandPostCnt);
+        }else {
+         boolean isFollowed =
+                 1 == followingListCnt.getFollowingList().stream().filter(follower -> follower.getFollower().getId().equals(UserContext.userData.get().getUserId())).toList().size();
+            return new UserInfoResponseDto(followerListCnt.getFollowerList().size(),followingListCnt.getFollowingList().size(),UserandPostCnt,isFollowed);
+        }
     }
 
     public void updateUser(Long userId, UserUpdateRequestDto requestDto) {

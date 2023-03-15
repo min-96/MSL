@@ -49,16 +49,16 @@ public class User extends BaseTimeEntity {
 
     private LocalDateTime withdrawAt;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private Set<Post> postList = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>(); // 회원이 탈퇴해도 댓글은 그대로 유지할 것인가?
 
-    @OneToMany(mappedBy = "follower")
+    @OneToMany(mappedBy = "follower",fetch = FetchType.LAZY)
     private Set<Follow> followerList = new HashSet<>();
 
-    @OneToMany(mappedBy = "following")
+    @OneToMany(mappedBy = "following",fetch = FetchType.LAZY)
     private Set<Follow> followingList = new HashSet<>();
 
 //    @OneToMany(mappedBy = "owner")
