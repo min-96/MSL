@@ -17,6 +17,6 @@ public class ChatRoomResponseDto {
     private String userImage;
     private Long unReadMsgCnt;
     private String lastMessage;
-    private LocalDateTime lastMessageTime;
+    private LocalDateTime lastMessageCreatedAt;
 
 }

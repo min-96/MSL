@@ -43,27 +43,25 @@ public class ChatService {
 
     public List<ChatRoomResponseDto> getChatRoomList(Long userId) {
         List<ChatRoomResponseDto> chatRoomResponseDtos = chatRoomQueryRepository.findAllByUserId(userId);
-        List<Chat> lastChatByUserId = chatRepository.findLastChatByUserId(userId);
+        System.out.println("s");
+     //   List<Chat> lastChatByUserId = chatRepository.findLastChatByUserId(userId);
 
         // 채팅방에 채팅이 하나도 없으면 둘이 size가 안맞음.. 도대체 어떻게 해야하는겨
 
-        for (int i = 0; i < chatRoomResponseDtos.size(); i++) {
-            chatRoomResponseDtos.get(i).setLastMessage(lastChatByUserId.get(i).getContent());
-            chatRoomResponseDtos.get(i).setLastMessageTime(lastChatByUserId.get(i).getCreatedAt());
-        }
-
-        chatRoomResponseDtos.sort((o1, o2) -> o2.getLastMessageTime().compareTo(o1.getLastMessageTime()));
+//        for (int i = 0; i < chatRoomResponseDtos.size(); i++) {
+//            chatRoomResponseDtos.get(i).setLastMessage(lastChatByUserId.get(i).getContent());
+//            chatRoomResponseDtos.get(i).setLastMessageTime(lastChatByUserId.get(i).getCreatedAt());
+//        }
+//
+//        chatRoomResponseDtos.sort((o1, o2) -> o2.getLastMessageTime().compareTo(o1.getLastMessageTime()));
 
         return chatRoomResponseDtos;
     }
 
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
         ChatRoom chatRoom = getChatRoom(chat.getSenderId(), chat.getRecipientId());
-        //fetch join 으로 한번에 가져올수있는데 sender/ recipient 가 owner에속하는지 Invited에 속하는지를 모름 ㅠ
-        User senderUser = userRepository.findById(chat.getSenderId()).get();
-        User recipientUser = userRepository.findById(chat.getRecipientId()).get();
 
-        Chat chatMessage = Chat.builder().chatRoom(chatRoom).senderId(senderUser.getId()).recipientId(recipientUser.getId()).content(chat.getContent()).state(false).build();
+        Chat chatMessage = Chat.builder().chatRoom(chatRoom).senderId(chat.getSenderId()).recipientId(chat.getRecipientId()).content(chat.getContent()).state(false).build();
         Chat chatResponse = chatRepository.save(chatMessage);
         return new ChatResponseDto(chatResponse);
     }
