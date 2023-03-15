@@ -1,16 +1,14 @@
 package Maswillaeng.MSLback.utils.interceptor;
 
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
-import Maswillaeng.MSLback.utils.auth.AuthCheck;
-import Maswillaeng.MSLback.utils.auth.TokenUserData;
-import Maswillaeng.MSLback.utils.auth.UserContext;
-import Maswillaeng.MSLback.utils.auth.ValidToken;
+import Maswillaeng.MSLback.utils.auth.*;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Ordered;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -30,8 +28,9 @@ public class ValidInterceptor implements Ordered, HandlerInterceptor {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) throws Exception {
 
         HandlerMethod handlerMethod;
 
@@ -44,51 +43,7 @@ public class ValidInterceptor implements Ordered, HandlerInterceptor {
             return true;
         }
 
-
-        String accessToken = new String();
-        String refreshToken = new String();
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
-
-        String uri = req.getRequestURI();
-
-        System.out.println(uri);
-
-        Cookie[] cookies = req.getCookies();
-        if (cookies != null) { // 쿠키가 존재한다면
-            for (Cookie cookie : cookies) {
-                switch (cookie.getName()) {
-                    case "ACCESS_TOKEN":
-                        accessToken = cookie.getValue();
-                        break;
-                    case "REFRESH_TOKEN":
-                        refreshToken = cookie.getValue();
-                }
-            }
-        }
-
-        if (!refreshToken.equals("")) { // 리프레시 토큰이 있다면
-            try {
-                System.out.println("refresh Token");
-                Claims claims = jwtTokenProvider.getClaims(refreshToken);
-                UserContext.userData.set(new TokenUserData(claims));
-            } catch (ExpiredJwtException exception) {
-                res.sendRedirect("/api/login");
-                return false;
-            }
-            // TODO : 나중에 Exception Handler JwtException, NullPointerException 로 관리 (401)
-
-        } else if (!accessToken.equals("")) {
-            try {
-                Claims claims = jwtTokenProvider.getClaims(accessToken);
-                UserContext.userData.set(new TokenUserData(claims));
-            } catch (ExpiredJwtException exception) {
-                res.setStatus(401);
-                return false;
-            }
-            // TODO : 나중에 Exception Handler JwtException, NullPointerException 로 관리
-        }
-        return true;
+        return ValidTokenProcess.execute(req,res,jwtTokenProvider);
     }
 
     @Override

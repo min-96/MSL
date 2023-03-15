@@ -23,4 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u left join fetch u.followerList where u.id =:userId")
     User findJoinFollowById(@Param("userId") Long userId);
+
+    @Query("select u from User u left join ChatRoom cr on (cr.owner.id = u.id or cr.invited.id = u.id) where cr.id = :roomId and not u.id = :userId")
+    User findPartnerByRoomIdAndUserId(@Param("roomId") Long roomId, @Param("userId") Long userId);
 }

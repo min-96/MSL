@@ -61,6 +61,12 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "following")
     private Set<Follow> followingList = new HashSet<>();
 
+//    @OneToMany(mappedBy = "owner")
+//    private List<ChatRoom> ownerRooms = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "invited")
+//    private List<ChatRoom> invitedRooms = new ArrayList<>();
+
     public void destroyRefreshToken(){
         this.refreshToken = null;
     }

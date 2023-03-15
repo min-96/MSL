@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.domain.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,13 +18,18 @@ public class ChatRoom {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "owner_id" , updatable = false)
     private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "invited_id",  updatable = false)
     private User invited; // 비식별관계로 왜래키를 둘 다 물고있는게 맞나?
 
     // 회원이 탈퇴하면 채팅방은 그냥 사라지는가?
 
+    @Builder
+    public ChatRoom(User owner, User invited) {
+        this.owner = owner;
+        this.invited = invited;
+    }
 }
