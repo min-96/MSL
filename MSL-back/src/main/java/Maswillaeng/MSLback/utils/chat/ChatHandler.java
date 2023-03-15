@@ -50,7 +50,7 @@ public class ChatHandler extends TextWebSocketHandler {
                 break;
             case ACK:
                 ChatAckDto ack = objectMapper.readValue(payload, ChatAckDto.class);
-                if(chatService.updateState(ack.getRoomId())) {
+                if(chatService.stateUpdate(ack.getRoomId())) {
                     userSocketList.get(ack.getSenderId()).sendMessage(new TextMessage("ok"));
                 }
                 break;

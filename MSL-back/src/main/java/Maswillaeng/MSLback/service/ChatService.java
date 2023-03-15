@@ -64,8 +64,7 @@ public class ChatService {
     }
 
     public boolean stateUpdate(Long roomId) {
-        List<Chat> chatList = chatRepository.findByChatRoom(roomId);
-        chatList.stream().forEach(chat -> chat.setState());
+        chatRepository.updateState(roomId);
         return true;
     }
 

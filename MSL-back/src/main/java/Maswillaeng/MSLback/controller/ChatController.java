@@ -75,4 +75,10 @@ public class ChatController {
         response.put("alarm", false);
         return ResponseEntity.ok().body(ResponseDto.of(HttpStatus.OK, response));
     }
+
+    @PutMapping("api/update/chat-room/{roomId}")
+    public ResponseEntity<?> updateTest(@PathVariable Long roomId) {
+
+        return ResponseEntity.ok().body(chatService.stateUpdate(roomId));
+    }
 }
