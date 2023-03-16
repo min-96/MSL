@@ -77,7 +77,7 @@ public class ChatRoomQueryRepository extends QuerydslRepositorySupport {
                         .and(user.id.ne(userId)))
                 .leftJoin(chat).on(chat.chatRoom.eq(chatRoom))
                 .where(chatRoom.invited.id.eq(userId).or(chatRoom.owner.id.eq(userId)))
-                .groupBy(chatRoom.id)
+                .groupBy(chatRoom.id, user.id)
                 .orderBy(chatRoom.id.asc())
                 .fetch();
     }

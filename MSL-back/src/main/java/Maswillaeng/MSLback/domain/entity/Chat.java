@@ -39,7 +39,8 @@ public class Chat {
 
 
     @Builder
-    public Chat(ChatRoom chatRoom, Long senderId, Long recipientId, String content, LocalDateTime createdAt, boolean state) {
+    public Chat(String id, ChatRoom chatRoom, Long senderId, Long recipientId, String content, LocalDateTime createdAt, boolean state) {
+        this.id = id;
         this.chatRoom = chatRoom;
         this.senderId = senderId;
         this.recipientId = recipientId;

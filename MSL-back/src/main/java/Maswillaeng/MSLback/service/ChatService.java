@@ -51,7 +51,7 @@ public class ChatService {
 
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
         ChatRoom chatRoom = getChatRoom(chat.getSenderId(), chat.getRecipientId());
-        Chat chatMessage = Chat.builder().chatRoom(chatRoom).senderId(chat.getSenderId()).recipientId(chat.getRecipientId()).content(chat.getContent()).state(false).build();
+        Chat chatMessage = Chat.builder().id(chat.getChatId()).chatRoom(chatRoom).senderId(chat.getSenderId()).recipientId(chat.getRecipientId()).content(chat.getContent()).state(false).build();
         Chat chatResponse = chatRepository.save(chatMessage);
         return new ChatResponseDto(chatResponse);
     }
