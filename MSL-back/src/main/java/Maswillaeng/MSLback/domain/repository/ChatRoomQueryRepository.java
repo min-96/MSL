@@ -2,7 +2,7 @@ package Maswillaeng.MSLback.domain.repository;
 
 
 import Maswillaeng.MSLback.domain.entity.ChatRoom;
-import Maswillaeng.MSLback.dto.common.ChatRoomResponseDto;
+import Maswillaeng.MSLback.dto.chat.response.ChatRoomResponseDto;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;

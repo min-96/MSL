@@ -1,5 +1,6 @@
-package Maswillaeng.MSLback.dto.common;
+package Maswillaeng.MSLback.dto.chat.request;
 import Maswillaeng.MSLback.domain.entity.Chat;
+import Maswillaeng.MSLback.domain.enums.MessageEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 public class ChatMessageDto {
-
     private Long chatId;
     private Long senderId;
     private Long recipientId;

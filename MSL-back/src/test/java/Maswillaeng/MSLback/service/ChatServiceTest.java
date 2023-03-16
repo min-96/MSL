@@ -6,7 +6,7 @@ import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.ChatRepository;
 import Maswillaeng.MSLback.domain.repository.ChatRoomRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
-import Maswillaeng.MSLback.dto.common.ChatRoomResponseDto;
+import Maswillaeng.MSLback.dto.chat.response.ChatRoomResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

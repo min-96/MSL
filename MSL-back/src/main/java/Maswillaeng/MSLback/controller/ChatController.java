@@ -1,10 +1,7 @@
 package Maswillaeng.MSLback.controller;
 
-import Maswillaeng.MSLback.dto.common.ChatMessageDto;
-import Maswillaeng.MSLback.dto.common.CreateRoomResponseDto;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.service.ChatService;
-import Maswillaeng.MSLback.service.UserService;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import Maswillaeng.MSLback.utils.auth.ValidToken;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
