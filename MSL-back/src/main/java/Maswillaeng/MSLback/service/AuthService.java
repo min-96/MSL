@@ -89,7 +89,7 @@ public class AuthService {
     public ResponseCookie getRefreshTokenCookie(String refreshToken){
         return ResponseCookie.from(
                         "REFRESH_TOKEN", refreshToken)
-                .path("/updateToken")
+                .path("/api/update-token")
                 .httpOnly(true)
                 .maxAge(REFRESH_TOKEN_VALID_TIME)
                 .sameSite("Lax")
