@@ -11,6 +11,8 @@ import java.util.List;
 
 @Getter
 public class ChatResponseDto {
+
+    private String chatId;
     private Long senderId;
     private Long recipientId;
     private String content;
@@ -21,6 +23,7 @@ public class ChatResponseDto {
 
 
     public ChatResponseDto(Chat chat) {
+        this.chatId = chat.getId();
         this.senderId = chat.getSenderId();
         this.recipientId = chat.getRecipientId();
         this.content = chat.getContent();
