@@ -92,7 +92,6 @@ public class AuthController {
                 );
     }
 
-    @ValidToken
     @GetMapping("/api/update-token")
     public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
         TokenResponseDto token = authService.updateAccessToken(refreshToken);
