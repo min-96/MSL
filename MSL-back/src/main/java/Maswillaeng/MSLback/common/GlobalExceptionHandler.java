@@ -3,6 +3,7 @@ package Maswillaeng.MSLback.common;
 import Maswillaeng.MSLback.common.exception.EntityNotFoundException;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -42,4 +43,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> AccessDeniedExceptionHandler(AccessDeniedException e){
         return new ResponseEntity<>(e.getMessage(),HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<?> FileUploadExceptionHandler(FileUploadException e){
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
+    }
+
 }
