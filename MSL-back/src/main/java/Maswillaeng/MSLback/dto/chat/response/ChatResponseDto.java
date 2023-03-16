@@ -2,6 +2,8 @@ package Maswillaeng.MSLback.dto.chat.response;
 
 import Maswillaeng.MSLback.domain.entity.Chat;
 import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
