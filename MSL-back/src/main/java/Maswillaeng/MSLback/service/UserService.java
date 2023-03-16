@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.service;
 
+import Maswillaeng.MSLback.domain.entity.ChatRoom;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
@@ -34,7 +35,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final FollowService followService;
+    private final ChatService chatService;
     private final PostService postService;
     private final AESEncryption aesEncryption;
     private final JwtTokenProvider jwtTokenProvider;
@@ -43,14 +44,15 @@ public class UserService {
     public UserInfoResponseDto getUser(Long targetId) {
         User followerListCnt = userRepository.findJoinFollowerById(targetId);
         User followingListCnt = userRepository.findJoinFollowingById(targetId);
-        User UserandPostCnt = userRepository.findByPostList(targetId);
+        User UserAndPostCnt = userRepository.findByPostList(targetId);
 
         if(UserContext.userData.get()==null){
-            return new UserInfoResponseDto(followerListCnt.getFollowerList().size(),followingListCnt.getFollowingList().size(),UserandPostCnt);
+            return new UserInfoResponseDto(followerListCnt.getFollowerList().size(),followingListCnt.getFollowingList().size(),UserAndPostCnt);
         }else {
+         ChatRoom existChatRoom = chatService.getChatRoom(UserContext.userData.get().getUserId(),targetId);
          boolean isFollowed =
                  1 == followingListCnt.getFollowingList().stream().filter(follower -> follower.getFollower().getId().equals(UserContext.userData.get().getUserId())).toList().size();
-            return new UserInfoResponseDto(followerListCnt.getFollowerList().size(),followingListCnt.getFollowingList().size(),UserandPostCnt,isFollowed);
+            return new UserInfoResponseDto(followerListCnt.getFollowerList().size(),followingListCnt.getFollowingList().size(),UserAndPostCnt,isFollowed,existChatRoom);
         }
     }
 
