@@ -1,10 +1,10 @@
-package Maswillaeng.MSLback.dto.common;
+package Maswillaeng.MSLback.dto.chat.response;
 
 import Maswillaeng.MSLback.domain.entity.User;
+import Maswillaeng.MSLback.dto.chat.request.ChatMessageDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor

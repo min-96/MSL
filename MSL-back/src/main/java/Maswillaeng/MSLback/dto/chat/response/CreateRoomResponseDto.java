@@ -1,4 +1,4 @@
-package Maswillaeng.MSLback.dto.common;
+package Maswillaeng.MSLback.dto.chat.response;
 
 import Maswillaeng.MSLback.domain.entity.ChatRoom;
 import lombok.Getter;

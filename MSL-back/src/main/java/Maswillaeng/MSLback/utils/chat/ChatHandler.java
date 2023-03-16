@@ -1,17 +1,24 @@
 package Maswillaeng.MSLback.utils.chat;
 
 
-import Maswillaeng.MSLback.dto.common.*;
+import Maswillaeng.MSLback.domain.enums.MessageEnum;
+import Maswillaeng.MSLback.dto.chat.request.ChatAckDto;
+import Maswillaeng.MSLback.dto.chat.request.ChatMessageDto;
+import Maswillaeng.MSLback.dto.chat.request.MessageType;
+import Maswillaeng.MSLback.dto.chat.response.ChatResponseDto;
 import Maswillaeng.MSLback.service.ChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import javax.management.RuntimeErrorException;
+import java.sql.SQLException;
 import java.util.Map;
 
 @Component
@@ -22,7 +29,7 @@ public class ChatHandler extends TextWebSocketHandler {
 
     private final ChatService chatService;
     private final ObjectMapper objectMapper;
-
+    private final ChatTypeUtils chatTypeUtils;
 
     // WebSocket으로 받은 메시지 처리 로직
     @Override
@@ -31,28 +38,17 @@ public class ChatHandler extends TextWebSocketHandler {
         log.info("payload : {} " ,payload);
 
         MessageEnum type = objectMapper.readValue(payload, MessageType.class).getType();
-       // ChatMessageDto chat = objectMapper.readValue(payload,ChatMessageDto.class);
+
         switch (type) {
             case ENTER :
-                String[] str = payload.split(":");
-                Long userId = Long.parseLong(str[1]);
-                userSocketList.put(userId, session);
+                chatTypeUtils.EnterTypeProcess(payload,session,userSocketList);
                 break;
 
             case MESSAGE:
-                // TODO: static 으로 함수만들기.
-                ChatMessageDto chat = objectMapper.readValue(payload, ChatMessageDto.class);
-                ChatResponseDto result = chatService.saveMessage(chat); //
-                if (userSocketList.get(chat.getRecipientId()) != null) {
-                    // 클라이언트에서 메세지 받고 location 확인후 알림 쌓기
-                    userSocketList.get(chat.getRecipientId()).sendMessage(new TextMessage(objectMapper.writeValueAsString(result)));
-                }
+              chatTypeUtils.MessageTypeProcess(payload,userSocketList);
                 break;
             case ACK:
-                ChatAckDto ack = objectMapper.readValue(payload, ChatAckDto.class);
-                if(chatService.stateUpdate(ack.getRoomId())) {
-                    userSocketList.get(ack.getSenderId()).sendMessage(new TextMessage("ok"));
-                }
+                chatTypeUtils.ACKTypeProcess(payload,userSocketList);
                 break;
         }
 

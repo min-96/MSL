@@ -1,4 +1,4 @@
-package Maswillaeng.MSLback.dto.common;
+package Maswillaeng.MSLback.dto.chat.request;
 
 import lombok.Getter;
 

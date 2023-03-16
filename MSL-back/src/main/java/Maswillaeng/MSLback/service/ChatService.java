@@ -8,15 +8,17 @@ import Maswillaeng.MSLback.domain.repository.ChatRepository;
 import Maswillaeng.MSLback.domain.repository.ChatRoomQueryRepository;
 import Maswillaeng.MSLback.domain.repository.ChatRoomRepository;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
-import Maswillaeng.MSLback.dto.common.*;
+import Maswillaeng.MSLback.dto.chat.request.ChatMessageDto;
+import Maswillaeng.MSLback.dto.chat.response.ChatMessageListResponseDto;
+import Maswillaeng.MSLback.dto.chat.response.ChatResponseDto;
+import Maswillaeng.MSLback.dto.chat.response.ChatRoomResponseDto;
+import Maswillaeng.MSLback.dto.chat.response.CreateRoomResponseDto;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,4 +78,5 @@ public class ChatService {
     public boolean existChatMessage(Long userId) {
         return chatRepository.findByChatMessage(userId) != null;
     }
+
 }
