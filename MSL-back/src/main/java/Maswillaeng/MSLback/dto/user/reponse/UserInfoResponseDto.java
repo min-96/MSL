@@ -38,7 +38,7 @@ public class UserInfoResponseDto {
         this.followState = isFollowed;
         this.followerCnt = followerCnt;
         this.followingCnt = followingCnt;
-        this.hasChatted = chatRoom.equals("");
+        this.hasChatted = !(chatRoom == null);
     }
     public UserInfoResponseDto(int followingCnt, int followerCnt, User user) {
         this.email = user.getEmail();
