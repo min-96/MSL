@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Getter
 public class ChatMessageDto {
     private String chatId;
-    private Long chatRoomId;
     private Long senderId;
     private Long recipientId;
     private String content;

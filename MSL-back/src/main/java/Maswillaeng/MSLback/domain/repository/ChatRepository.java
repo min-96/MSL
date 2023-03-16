@@ -26,7 +26,7 @@ public interface ChatRepository extends JpaRepository<Chat,Long> {
     @Query("update Chat c set c.state = true where c.chatRoom.id = :roomId and not c.senderId = :userId and c.state = false")
     void updateStateByRoomIdAndUserId(@Param("roomId") Long roomId, @Param("userId") Long userId);
 
-    @Query ("select c from Chat c where c.chatRoom.id = :roomId order by c.createdAt desc ")
+    @Query ("select c from Chat c where c.chatRoom.id = :roomId order by c.createdAt asc ")
     List<Chat> findAllByChatRoomId(@Param("roomId") Long roomId);
 
     @Query("SELECT c FROM Chat c " +

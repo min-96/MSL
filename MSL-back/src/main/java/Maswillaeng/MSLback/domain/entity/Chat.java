@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class Chat {
 
     @Id
@@ -31,6 +32,7 @@ public class Chat {
 
     private String content;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @ColumnDefault("false")
