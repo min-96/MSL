@@ -95,9 +95,13 @@ public class AuthController {
     @ValidToken
     @GetMapping("/api/update-token")
     public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
+
         TokenResponseDto token = authService.updateAccessToken(refreshToken);
+        ResponseCookie AccessToken = authService.getAccessTokenCookie(
+                token.getACCESS_TOKEN());
+
         return ResponseEntity.ok()
-                .header("Set-Cookie", "ACCESS_TOKEN=" + token.getACCESS_TOKEN()).build();
+                .header("Set-Cookie", AccessToken.toString()).build();
     }
 
     @PostMapping("/api/certifications") // 쓸일 없음
