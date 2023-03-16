@@ -44,6 +44,9 @@ public class Post extends BaseTimeEntity {
     @ColumnDefault("0")
     private Long hits;
 
+    @ColumnDefault("0")
+    private int disabled;
+
     @OneToMany(mappedBy = "post",fetch = FetchType.LAZY)
     private Set<PostLike> postLikeList = new HashSet<>();
 
@@ -57,13 +60,14 @@ public class Post extends BaseTimeEntity {
     private List<Report> reportList = new ArrayList<>();
 
     @Builder
-    public Post(String thumbnail, String title, String content, User user, Category category) {
+    public Post(String thumbnail, String title, String content, User user, Category category,int disabled) {
         this.thumbnail = thumbnail;
         this.title = title;
         this.content = content;
         this.user = user;
         this.hits = 1L;
         this.category = category;
+        this.disabled = 0;
     }
 
     public void update(PostUpdateDto postUpdateDto) {

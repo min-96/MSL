@@ -33,6 +33,8 @@ public class QPost extends EntityPathBase<Post> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final NumberPath<Integer> disabled = createNumber("disabled", Integer.class);
+
     public final ListPath<HashTag, QHashTag> hashTagList = this.<HashTag, QHashTag>createList("hashTagList", HashTag.class, QHashTag.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> hits = createNumber("hits", Long.class);

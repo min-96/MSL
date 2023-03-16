@@ -55,6 +55,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
                         post.hits))
                 .from(post)
                 .join(post.user, user)
+                .where(post.disabled.eq(0))
                 .groupBy(post.id)
                 .orderBy(post.createdAt.desc());
     }
@@ -65,7 +66,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
                 .from(post)
                 .leftJoin(post.user).fetchJoin()
                 .leftJoin(post.postLikeList).fetchJoin()
-                .where(post.id.eq(postId))
+                .where(post.id.eq(postId).and(post.disabled.eq(0)))
                 .fetchOne());
     }
 
