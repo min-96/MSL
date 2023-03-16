@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class ChatAckDto {
 
-    private Long roomId;
+    private Long chatId;
 
     private Long senderId;
 }

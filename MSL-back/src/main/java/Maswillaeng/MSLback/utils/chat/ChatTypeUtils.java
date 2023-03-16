@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class ChatTypeUtils {
 
@@ -34,22 +36,23 @@ public class ChatTypeUtils {
     public void MessageTypeProcess(String payload, Map<Long, WebSocketSession> userSocketList) throws IOException {
         ChatMessageDto chat = objectMapper.readValue(payload, ChatMessageDto.class);
         ChatResponseDto responseDto = null;
-        SocketStatus socketStatus = null;
+        SocketStatus socketStatus = new SocketStatus(400, "duplicateError");
         try {
             responseDto = chatService.saveMessage(chat);
         } catch (DuplicateKeyException e) {
             userSocketList.get(chat.getSenderId()).sendMessage(new TextMessage(objectMapper.writeValueAsString(socketStatus)));
         }
         if (userSocketList.get(chat.getRecipientId()) != null) {
-            // 클라이언트에서 메세지 받고 location 확인후 알림 쌓기
              userSocketList.get(chat.getRecipientId()).sendMessage(new TextMessage(objectMapper.writeValueAsString(responseDto)));
         }
     }
 
     public void ACKTypeProcess(String payload,Map<Long, WebSocketSession> userSocketList) throws IOException {
+
         SocketStatus socketStatus = new SocketStatus(400, "true");
         ChatAckDto ack = objectMapper.readValue(payload, ChatAckDto.class);
-        if(chatService.stateUpdate(ack.getRoomId())) {
+        log.info("보낼사람 : {}" ,  ack.getSenderId());
+        if(chatService.stateUpdate(ack.getChatId())) {
             userSocketList.get(ack.getSenderId()).sendMessage(new TextMessage(objectMapper.writeValueAsString(socketStatus)));
         }
 

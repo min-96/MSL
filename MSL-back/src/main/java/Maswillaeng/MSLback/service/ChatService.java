@@ -65,8 +65,8 @@ public class ChatService {
         return new ChatMessageListResponseDto(partner, chatMessageDtoList);
     }
 
-    public boolean stateUpdate(Long roomId) {
-        chatRepository.updateState(roomId);
+    public boolean stateUpdate(Long chatId) {
+        chatRepository.updateState(chatId);
         return true;
     }
 
