@@ -45,7 +45,7 @@ public class HashTagService {
 
 
         public void deleteHashTagList(List<String> removeTags, Post post) {
-            hashTagRepository.deleteByPostId(post.getId());
+            hashTagRepository.deleteByName(removeTags,post.getId());
             tagRepository.deleteByIds(removeTags.stream().filter(t->hashTagRepository.findByNames(t).size() == 0).toList());
         }
 
