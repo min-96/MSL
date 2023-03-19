@@ -94,9 +94,8 @@ public class PostService {
             throw new AccessDeniedException("접근 권한 없음");
         }
 
-          List<String> deleteHashTag =  post.getHashTagList().stream().map(h->h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
-       hashTagService.deleteHashTagList(deleteHashTag,post);
-      //  postRepository.delete(post);
+        List<String> deleteHashTag =  post.getHashTagList().stream().map(h->h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
+        hashTagService.deleteHashTagList(deleteHashTag,post);
         post.disablePost();
 
 

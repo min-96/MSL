@@ -3,7 +3,6 @@ package Maswillaeng.MSLback.controller;
 import Maswillaeng.MSLback.dto.comment.request.CommentRequestDto;
 import Maswillaeng.MSLback.dto.comment.request.CommentUpdateRequestDto;
 import Maswillaeng.MSLback.dto.comment.request.RecommentRequestDto;
-import Maswillaeng.MSLback.dto.comment.response.CommentResponseDto;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.service.CommentService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
@@ -13,10 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.bind.ValidationException;
 import java.nio.file.AccessDeniedException;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import static Maswillaeng.MSLback.common.message.SuccessMessage.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,8 +29,7 @@ public class CommentController {
         commentService.registerComment(UserContext.userData.get().getUserId(), commentRequestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                "댓글 등록 성공"
-        ));
+                SUCCESS_SAVE_COMMENT));
     }
 
     @ValidToken
@@ -43,20 +40,18 @@ public class CommentController {
         commentService.registerRecomment(UserContext.userData.get().getUserId(), recommentRequestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                "댓글 등록 성공"
-        ));
+                SUCCESS_SAVE_RECOMMENT));
     }
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/comment")
-    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) throws  AccessDeniedException {
+    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) throws AccessDeniedException {
 
         commentService.updateComment(updateRequestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                "댓글 수정 성공"
-        ));
+                SUCCESS_UPDATE_COMMENT));
     }
 
     @ValidToken
@@ -67,18 +62,15 @@ public class CommentController {
         commentService.deleteComment(commentId);
 
         return ResponseEntity.ok().body(ResponseDto.of(
-                "댓글 삭제 성공"
-        ));
+                SUCCESS_DELETE_COMMENT));
     }
 
     @ValidToken
     @GetMapping("/api/recomment/{parentId}")
     public ResponseEntity<?> getRecommentList(@PathVariable Long parentId) {
-
         return ResponseEntity.ok().body(ResponseDto.of(
-                "대댓글 조회 성공",
-                commentService.getRecommentList(parentId)
-        ));
+                SUCCESS_GET_RECOMMENT_LIST,
+                commentService.getRecommentList(parentId)));
     }
 
 }

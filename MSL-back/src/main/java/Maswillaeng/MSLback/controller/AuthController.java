@@ -3,14 +3,12 @@ package Maswillaeng.MSLback.controller;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
-import Maswillaeng.MSLback.dto.user.reponse.ImportResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.TokenResponseDto;
 import Maswillaeng.MSLback.dto.user.reponse.UserLoginResponseDto;
 import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.dto.user.request.UserJoinDto;
 import Maswillaeng.MSLback.service.AuthService;
-import Maswillaeng.MSLback.service.ExternalHttpService;
 import Maswillaeng.MSLback.service.MailService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
@@ -22,14 +20,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Objects;
+
+import static Maswillaeng.MSLback.common.message.SuccessMessage.*;
 
 @RequiredArgsConstructor
 @RestController
 public class AuthController {
     private final AuthService authService;
     private final UserRepository userRepository;
-    private final ExternalHttpService externalHttpService;
     private final MailService mailService;
 
     @PostMapping("/api/duplicate-email")
@@ -37,7 +35,8 @@ public class AuthController {
         if (userRepository.existsByEmail(email.get("email"))) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(ResponseDto.of(
+                    SUCCESS_CHECK_DUPLICATE_EMAIL));
         }
     }
 
@@ -46,7 +45,8 @@ public class AuthController {
         if (userRepository.existsByNickName(nickName.get("nickName"))) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(ResponseDto.of(
+                    SUCCESS_CHECK_DUPLICATE_NICKNAME));
         }
     }
 
@@ -57,24 +57,26 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } else {
             authService.join(user);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(ResponseDto.of(
+                    SUCCESS_SIGNED_UP));
         }
     }
 
     @PostMapping("/api/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request) throws Exception {
-        LoginResponseDto dto = authService.login(request);
 
+        LoginResponseDto dto = authService.login(request);
         ResponseCookie AccessToken = authService.getAccessTokenCookie(
                 dto.getTokenResponseDto().getACCESS_TOKEN());
-
         ResponseCookie RefreshToken = authService.getRefreshTokenCookie(
                 dto.getTokenResponseDto().getREFRESH_TOKEN());
 
         return ResponseEntity.ok()
                 .header("Set-Cookie", AccessToken.toString())
                 .header("Set-Cookie", RefreshToken.toString())
-                .body(new UserLoginResponseDto(dto.getNickName(), dto.getUserImage()));
+                .body(ResponseDto.of(
+                        SUCCESS_LOGGED_IN,
+                        new UserLoginResponseDto(dto.getNickName(), dto.getUserImage())));
     }
 
 
@@ -82,14 +84,15 @@ public class AuthController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/logout")
     public ResponseEntity<Object> logout() {
+
         Long userId = UserContext.userData.get().getUserId();
         authService.removeRefreshToken(userId);
+
         return ResponseEntity.ok()
                 .header("Set-Cookie", "ACCESS_TOKEN=; path=/; max-age=0; expires=0;")
                 .header("Set-Cookie", "REFRESH_TOKEN=; path=/updateToken; max-age=0; expires=0;")
                 .body(ResponseDto.of(
-                        "로그아웃 성공")
-                );
+                        SUCCESS_LOGGED_OUT));
     }
 
     @ValidToken
@@ -101,25 +104,15 @@ public class AuthController {
                 token.getACCESS_TOKEN());
 
         return ResponseEntity.ok()
-                .header("Set-Cookie", AccessToken.toString()).build();
-    }
-
-    @PostMapping("/api/certifications") // 쓸일 없음
-    public ResponseEntity<Objects> impUid(@RequestBody String imp_uid){
-
-        System.out.println("imp_uid = " + imp_uid);
-        String access_token = String.valueOf(externalHttpService.importGetToken());
-        ResponseEntity<ImportResponseDto> dto = externalHttpService.importGetCertifications(imp_uid, access_token);
-        authService.adultIdentify(dto.getBody().getBirth());
-
-        return ResponseEntity.ok().build();
+                .header("Set-Cookie", AccessToken.toString())
+                .body(ResponseDto.of(
+                        SUCCESS_REISSUE_TOKEN));
     }
 
     @PostMapping("/api/pwd-reset-mail")
     public ResponseEntity<?> sendPwdResetMail(@RequestBody Map<String, String> email) {
         mailService.sendPasswordResetMail(email.get("email"));
         return ResponseEntity.ok().body(ResponseDto.of(
-                "비밀번호 재발급 메일 전송에 성공하였습니다."
-        ));
+                SUCCESS_SEND_PASSWORD_RESET_MAIL));
     }
 }
