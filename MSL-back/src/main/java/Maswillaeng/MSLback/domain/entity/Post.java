@@ -84,4 +84,8 @@ public class Post extends BaseTimeEntity {
     public void increaseHits() {
         this.hits = this.hits + 1L;
     }
+
+    public void disablePost(){
+        this.disabled = 1;
+    }
 }
