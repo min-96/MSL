@@ -79,7 +79,7 @@ public class UserController {
     }
 
     @PutMapping("/api/user/reset-pwd")
-    public ResponseEntity<?> resetPassword(@RequestBody UserPwdResetRequestDto requestDto) throws Exception {
+    public ResponseEntity<?> resetPassword(@RequestBody UserPwdResetRequestDto requestDto) {
 
         userService.resetPassword(requestDto);
 

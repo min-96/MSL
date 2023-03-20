@@ -1,13 +1,13 @@
 package Maswillaeng.MSLback.service;
 
+import Maswillaeng.MSLback.common.exception.AlreadyExistException;
 import Maswillaeng.MSLback.common.exception.EntityNotFoundException;
+import Maswillaeng.MSLback.common.exception.NotAuthorizedException;
 import Maswillaeng.MSLback.domain.entity.*;
 import Maswillaeng.MSLback.domain.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.nio.file.AccessDeniedException;
 
 @RequiredArgsConstructor
 @Service
@@ -22,10 +22,10 @@ public class LikeService {
     public void savePostLike(Long userId, Long postId) {
         User user = userRepository.findById(userId).get();
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
+                () -> new EntityNotFoundException(Post.class.getSimpleName()));
 
         if (postLikeRepository.existsByUserAndPost(user, post)) {
-            throw new IllegalStateException("해당 게시물에 이미 좋아요를 눌렀습니다");
+            throw new AlreadyExistException(PostLike.class.getSimpleName());
         }
 
         PostLike postLike = PostLike.builder()
@@ -37,10 +37,10 @@ public class LikeService {
     public void saveCommentLike(Long userId, Long commentId) {
         User user = userRepository.findById(userId).get();
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new EntityNotFoundException("존재하지 않는 댓글입니다."));
+                () -> new EntityNotFoundException(Comment.class.getSimpleName()));
 
         if (commentLikeRepository.existsByUserAndComment(user, comment)) {
-            throw new IllegalStateException("해당 댓글에 이미 좋아요를 눌렀습니다");
+            throw new AlreadyExistException(Comment.class.getSimpleName());
         }
 
         CommentLike postLike = CommentLike.builder()
@@ -49,23 +49,23 @@ public class LikeService {
         commentLikeRepository.save(postLike);
     }
 
-    public void deletePostLike(Long userId, Long postId) throws AccessDeniedException {
+    public void deletePostLike(Long userId, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
+                () -> new EntityNotFoundException(Post.class.getSimpleName()));
         User user = userRepository.findById(userId).get();
         if (!userId.equals(post.getUser().getId())) {
-            throw new AccessDeniedException("접근 권한 없음");
+            throw new NotAuthorizedException(PostLike.class.getSimpleName());
         }
         postLikeRepository.deleteByUserAndPost(user, post);
 
     }
 
-    public void deleteCommentLike(Long userId, Long commentId) throws AccessDeniedException {
+    public void deleteCommentLike(Long userId, Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
+                () -> new EntityNotFoundException(Comment.class.getSimpleName()));
         User user = userRepository.findById(userId).get();
         if (!userId.equals(comment.getUser().getId())) {
-            throw new AccessDeniedException("접근 권한 없음");
+            throw new NotAuthorizedException(CommentLike.class.getSimpleName());
         }
 
         commentLikeRepository.deleteByUserAndComment(user, comment);

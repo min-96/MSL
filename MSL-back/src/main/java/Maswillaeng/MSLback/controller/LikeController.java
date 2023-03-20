@@ -42,7 +42,7 @@ public class LikeController {
 
     @ValidToken
     @DeleteMapping("/api/post-like/{postId}")
-    public ResponseEntity<Object> deletePostLike(@PathVariable Long postId) throws AccessDeniedException {
+    public ResponseEntity<Object> deletePostLike(@PathVariable Long postId) {
         likeService.deletePostLike(UserContext.userData.get().getUserId(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 SUCCESS_DELETE_POST_LIKE));
@@ -50,7 +50,7 @@ public class LikeController {
 
     @ValidToken
     @DeleteMapping("/api/comment-like/{commentId}")
-    public ResponseEntity<Object> deleteCommentLike(@PathVariable Long commentId) throws AccessDeniedException {
+    public ResponseEntity<Object> deleteCommentLike(@PathVariable Long commentId) {
         likeService.deleteCommentLike(UserContext.userData.get().getUserId(), commentId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 SUCCESS_DELETE_COMMENT_LIKE));

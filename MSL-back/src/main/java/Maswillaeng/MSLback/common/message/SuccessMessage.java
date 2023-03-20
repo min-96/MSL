@@ -2,8 +2,10 @@ package Maswillaeng.MSLback.common.message;
 
 public class SuccessMessage {
 
-    public static String SUCCESS_CHECK_DUPLICATE_EMAIL = "중복되지 않는 이메일입니다.";
-    public static String SUCCESS_CHECK_DUPLICATE_NICKNAME = "중복되지 않는 닉네임입니다.";
+    public static String SUCCESS_CHECK_NOT_DUPLICATE_EMAIL = "중복되지 않는 이메일입니다.";
+    public static String SUCCESS_CHECK_DUPLICATE_EMAIL = "이미 존재하는 이메일입니다.";
+    public static String SUCCESS_CHECK_NOT_DUPLICATE_NICKNAME = "중복되지 않는 닉네임입니다.";
+    public static String SUCCESS_CHECK_DUPLICATE_NICKNAME = "이미 존재하는 닉네임입니다.";
     public static String SUCCESS_SIGNED_UP = "회원가입에 성공했습니다.";
     public static String SUCCESS_LOGGED_IN = "로그인에 성공했습니다.";
     public static String SUCCESS_LOGGED_OUT = "로그아웃에 성공했습니다.";

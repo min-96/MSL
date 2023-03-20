@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.service;
 
+import Maswillaeng.MSLback.common.exception.*;
 import Maswillaeng.MSLback.domain.entity.User;
 import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.dto.user.reponse.LoginResponseDto;
@@ -8,15 +9,10 @@ import Maswillaeng.MSLback.dto.user.request.LoginRequestDto;
 import Maswillaeng.MSLback.jwt.JwtTokenProvider;
 import Maswillaeng.MSLback.utils.auth.AESEncryption;
 import Maswillaeng.MSLback.utils.auth.UserContext;
-import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import static Maswillaeng.MSLback.jwt.JwtTokenProvider.REFRESH_TOKEN_VALID_TIME;
 
@@ -28,21 +24,21 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AESEncryption aesEncryption;
 
-    public void join(User user) throws Exception {
+    public void sign(User user) {
         String encryptPwd = aesEncryption.encrypt(user.getPassword());
         user.resetPassword(encryptPwd);
         userRepository.save(user);
     }
 
-    public LoginResponseDto login(LoginRequestDto requestDto) throws Exception {
+    public LoginResponseDto login(LoginRequestDto requestDto) {
         User user = userRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new EntityNotFoundException(User.class.getSimpleName()));
         String encryptedPassword = aesEncryption.encrypt(requestDto.getPassword());
 
         if (!user.getPassword().equals(encryptedPassword)) {
-            throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
+            throw new PasswordNotMatchedException();
         } else if (user.getWithdrawYn() == 1) {
-            throw new EntityNotFoundException("탈퇴한 회원입니다.");
+            throw new UserAlreadyWithdrewException();
         }
 
         String accessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
@@ -68,7 +64,7 @@ public class AuthService {
            } else {
                user.destroyRefreshToken();
                userRepository.save(user);
-               throw new JwtException("변조된 토큰");
+               throw new JwtTamperedException();
            }
 
         return TokenResponseDto.builder()
@@ -96,24 +92,15 @@ public class AuthService {
                 .build();
     }
 
-    public boolean joinDuplicate(User user) {
-        return userRepository.existsByNickName(user.getNickName()) ||
-                userRepository.existsByEmail(user.getEmail());
+    public void checkDuplicateUser(User user) {
+        if (userRepository.existsByNickName(user.getNickName()) ||
+                userRepository.existsByEmail(user.getEmail())) {
+            throw new AlreadyExistException(User.class.getSimpleName());
+        }
     }
 
     public void removeRefreshToken(Long userId) {
         User user = userRepository.findById(userId).get();
         user.destroyRefreshToken();
-    }
-
-    public void adultIdentify(String birth){
-        LocalDate birthDate = LocalDate.parse(birth, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        int userAge = LocalDate.now().getYear() - birthDate.getYear();
-        if (birthDate.getDayOfYear() > LocalDate.now().getDayOfYear()) {
-            userAge--;
-        }
-        if (userAge < 18) {
-            throw new IllegalStateException("성인이 아닙니다");
-        }
     }
 }

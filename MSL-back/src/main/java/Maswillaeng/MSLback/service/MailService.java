@@ -24,7 +24,7 @@ public class MailService {
 
     public void sendPasswordResetMail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new EntityNotFoundException("해당 이메일을 가진 유저가 존재하지 않습니다.")
+                () -> new EntityNotFoundException(User.class.getSimpleName())
         );
 
         String token = jwtTokenProvider.createPasswordResetToken();
@@ -42,18 +42,22 @@ public class MailService {
 
         MimeMessagePreparator msg = new MimeMessagePreparator() {
             @Override
-            public void prepare(MimeMessage mimeMessage) throws Exception {
-                MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-                mimeMessageHelper.setTo(email);
-                mimeMessageHelper.setSubject(subject);
-                mimeMessageHelper.setText(text, true);
+            public void prepare(MimeMessage mimeMessage) {
+                try {
+                    MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+                    mimeMessageHelper.setTo(email);
+                    mimeMessageHelper.setSubject(subject);
+                    mimeMessageHelper.setText(text, true);
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage());
+                }
             }
         };
         try {
             javaMailSender.send(msg);
         } catch (Exception e) {
-            // TODO : 서버에러인가? 클라이언트에러인가?
-            throw new RuntimeException("메일 전송에 실패하였습니다. : " + e.getMessage());
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

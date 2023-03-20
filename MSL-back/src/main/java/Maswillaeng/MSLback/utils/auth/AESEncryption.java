@@ -15,20 +15,26 @@ public class AESEncryption {
     @Value("${secret.access}")
     private String SECRET_KEY;
 
-    public String encrypt(String password) throws Exception {
-        Cipher cipher = Cipher.getInstance(encryptionAlgo);
-        SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
-        IvParameterSpec ivParamSpec = new IvParameterSpec(SECRET_KEY.substring(0,16).getBytes());
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParamSpec);
+    public String encrypt(String password) {
 
-        byte[] encrypted = cipher.doFinal(password.getBytes("UTF-8"));
+        byte[] encrypted = {};
+        try {
+            Cipher cipher = Cipher.getInstance(encryptionAlgo);
+            SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
+            IvParameterSpec ivParamSpec = new IvParameterSpec(SECRET_KEY.substring(0, 16).getBytes());
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParamSpec);
+            encrypted = cipher.doFinal(password.getBytes("UTF-8"));
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
         return Base64.getEncoder().encodeToString(encrypted);
     }
 
     public String decrypt(String cipherText) throws Exception {
         Cipher cipher = Cipher.getInstance(encryptionAlgo);
         SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
-        IvParameterSpec ivParamSpec = new IvParameterSpec(SECRET_KEY.substring(0,16).getBytes());
+        IvParameterSpec ivParamSpec = new IvParameterSpec(SECRET_KEY.substring(0, 16).getBytes());
         cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParamSpec);
 
         byte[] decodedBytes = Base64.getDecoder().decode(cipherText);

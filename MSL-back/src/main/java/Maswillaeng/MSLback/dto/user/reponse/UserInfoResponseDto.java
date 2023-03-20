@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-// TODO : followState, followerCnt, followingCnt 추가 -> 미뇽님이
 @Getter
 public class UserInfoResponseDto {
 

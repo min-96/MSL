@@ -31,39 +31,42 @@ public class AuthController {
     private final MailService mailService;
 
     @PostMapping("/api/duplicate-email")
-    public ResponseEntity<Object> duplicateEmail(@RequestBody Map<String, String> email) {
+    public ResponseEntity<Object> checkDuplicateEmail(@RequestBody Map<String, String> email) {
+
         if (userRepository.existsByEmail(email.get("email"))) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ResponseDto.of(
+                    SUCCESS_CHECK_DUPLICATE_EMAIL));
         } else {
             return ResponseEntity.ok().body(ResponseDto.of(
-                    SUCCESS_CHECK_DUPLICATE_EMAIL));
+                    SUCCESS_CHECK_NOT_DUPLICATE_EMAIL));
         }
     }
 
     @PostMapping("/api/duplicate-nickname")
-    public ResponseEntity<Object> duplicateNickname(@RequestBody Map<String, String> nickName) {
+    public ResponseEntity<Object> checkDuplicateNickname(@RequestBody Map<String, String> nickName) {
+
         if (userRepository.existsByNickName(nickName.get("nickName"))) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ResponseDto.of(
+                    SUCCESS_CHECK_DUPLICATE_NICKNAME));
         } else {
             return ResponseEntity.ok().body(ResponseDto.of(
-                    SUCCESS_CHECK_DUPLICATE_NICKNAME));
+                    SUCCESS_CHECK_NOT_DUPLICATE_NICKNAME));
         }
     }
 
     @PostMapping("/api/sign")
-    public ResponseEntity<Object> join(@RequestBody UserJoinDto userJoinDto) throws Exception {
-        User user = userJoinDto.toEntity();
-        if (authService.joinDuplicate(user)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } else {
-            authService.join(user);
-            return ResponseEntity.ok().body(ResponseDto.of(
-                    SUCCESS_SIGNED_UP));
-        }
+    public ResponseEntity<Object> sign(@RequestBody UserJoinDto userSignDto) {
+
+        User user = userSignDto.toEntity();
+        authService.checkDuplicateUser(user);
+        authService.sign(user);
+
+        return ResponseEntity.ok().body(ResponseDto.of(
+                SUCCESS_SIGNED_UP));
     }
 
     @PostMapping("/api/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto request) throws Exception {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto request) {
 
         LoginResponseDto dto = authService.login(request);
         ResponseCookie AccessToken = authService.getAccessTokenCookie(
@@ -97,7 +100,7 @@ public class AuthController {
 
     @ValidToken
     @GetMapping("/api/update-token")
-    public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken) throws Exception {
+    public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken) {
 
         TokenResponseDto token = authService.updateAccessToken(refreshToken);
         ResponseCookie AccessToken = authService.getAccessTokenCookie(

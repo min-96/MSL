@@ -1,6 +1,7 @@
 package Maswillaeng.MSLback.service;
 
 import Maswillaeng.MSLback.common.exception.EntityNotFoundException;
+import Maswillaeng.MSLback.common.exception.NotAuthorizedException;
 import Maswillaeng.MSLback.domain.entity.Comment;
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.User;
@@ -16,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.bind.ValidationException;
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class CommentService {
 
     public void registerComment(Long userId, CommentRequestDto dto) {
         Post post = postRepository.findById(dto.getPostId()).orElseThrow(
-                () -> new EntityNotFoundException("게시물이 존재하지 않습니다")
+                () -> new EntityNotFoundException(Post.class.getSimpleName())
         );
         User user = userRepository.findById(userId).get();
 
@@ -42,31 +41,31 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public void updateComment(CommentUpdateRequestDto dto) throws AccessDeniedException {
+    public void updateComment(CommentUpdateRequestDto dto) {
         Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(
-                () -> new EntityNotFoundException("댓글이 존재하지 않습니다")
+                () -> new EntityNotFoundException(Comment.class.getSimpleName())
         );
         validateUser(UserContext.userData.get().getUserId(), comment);
         comment.updateComment(dto.getContent());
     }
 
-    public void deleteComment(Long commentId) throws AccessDeniedException {
+    public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new EntityNotFoundException("댓글이 존재하지 않습니다")
+                () -> new EntityNotFoundException(Comment.class.getSimpleName())
         );
         validateUser(UserContext.userData.get().getUserId(), comment);
         commentRepository.delete(comment);
     }
 
-    public void validateUser(Long userId, Comment comment) throws AccessDeniedException {
+    public void validateUser(Long userId, Comment comment) {
         if (!comment.getUser().getId().equals(userId)) {
-            throw new AccessDeniedException("권한이 없습니다");
+            throw new NotAuthorizedException(Comment.class.getSimpleName());
         }
     }
 
     public void registerRecomment(Long userId, RecommentRequestDto dto) {
         Comment parentComment = commentRepository.findById(dto.getParentId()).orElseThrow(
-                () -> new EntityNotFoundException("댓글이 존재하지 않습니다.")
+                () -> new EntityNotFoundException(Comment.class.getSimpleName())
         );
         User user = userRepository.findById(userId).get();
         Comment recomment = Comment.builder()

@@ -46,7 +46,7 @@ public class CommentController {
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/comment")
-    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) throws AccessDeniedException {
+    public ResponseEntity<?> updateComment(@RequestBody CommentUpdateRequestDto updateRequestDto) {
 
         commentService.updateComment(updateRequestDto);
 
@@ -57,7 +57,7 @@ public class CommentController {
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/api/comment/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) throws AccessDeniedException {
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) {
 
         commentService.deleteComment(commentId);
 

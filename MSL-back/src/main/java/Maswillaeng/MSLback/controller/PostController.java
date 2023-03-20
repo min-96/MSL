@@ -68,7 +68,7 @@ public class PostController {
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @PutMapping("/api/post")
-    public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) throws Exception {
+    public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDto updateDto) {
 
         postService.updatePost(UserContext.userData.get().getUserId(), updateDto);
 
@@ -79,7 +79,7 @@ public class PostController {
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/api/post/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) throws AccessDeniedException {
+    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
 
         postService.deletePost(UserContext.userData.get().getUserId(), postId);
 

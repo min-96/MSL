@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.service;
 
+import Maswillaeng.MSLback.common.exception.AlreadyExistException;
 import Maswillaeng.MSLback.common.exception.EntityNotFoundException;
 import Maswillaeng.MSLback.domain.entity.Chat;
 import Maswillaeng.MSLback.domain.entity.ChatRoom;
@@ -35,10 +36,10 @@ public class ChatService {
     public CreateRoomResponseDto createRoom(Long userId, Long targetId) {
         User user = userRepository.findById(userId).get();
         User targetUser = userRepository.findById(targetId).orElseThrow(
-                () -> new EntityNotFoundException("회원이 존재하지 않습니다."));
+                () -> new EntityNotFoundException(User.class.getSimpleName()));
         ChatRoom chatRoom = new ChatRoom(user,targetUser);
         if(getChatRoom(userId,targetId)!= null){
-            throw new  IllegalStateException("이미 채팅방이 존재합니다");
+            throw new AlreadyExistException(ChatRoom.class.getSimpleName());
         }
         ChatRoom createRoom = chatRoomRepository.save(chatRoom);
          return new CreateRoomResponseDto(createRoom);
