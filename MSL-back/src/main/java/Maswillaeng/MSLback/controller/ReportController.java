@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static Maswillaeng.MSLback.common.message.SuccessMessage.*;
-
 @RequiredArgsConstructor
 @RestController
 public class ReportController {
@@ -25,22 +23,20 @@ public class ReportController {
     @AuthCheck(role = AuthCheck.Role.USER)
     @PostMapping("/api/report/{postId}")
     public ResponseEntity<?> saveReport(@PathVariable Long postId) {
-
         reportService.saveReport(postId);
-
         return ResponseEntity.ok().body(ResponseDto.of(
-                SUCCESS_SAVE_REPORT));
+                "성공적으로 신고되었습니다."
+        ));
     }
 
     @ValidToken
     @AuthCheck(role = AuthCheck.Role.USER)
     @DeleteMapping("/api/report/{postId}")
     public ResponseEntity<?> deleteReport(@PathVariable Long postId) {
-
         reportService.deleteReport(postId);
-
         return ResponseEntity.ok().body(ResponseDto.of(
-                SUCCESS_DELETE_REPORT));
+                "신고가 취소되었습니다."
+        ));
     }
 
 
@@ -48,11 +44,7 @@ public class ReportController {
     @AuthCheck(role = AuthCheck.Role.ADMIN)
     @DeleteMapping("/api/report/posts")
     public ResponseEntity<?> deleteReportPosts(@RequestBody List<Post> postList){
-
         postRepository.deleteAllById(postList);
-
-        return ResponseEntity.ok().body(ResponseDto.of(
-                SUCCESS_DELETE_REPORTED_POST_LIST));
+        return ResponseEntity.ok().body(ResponseDto.of("게시글이 삭제 되었습니다."));
     }
-
 }

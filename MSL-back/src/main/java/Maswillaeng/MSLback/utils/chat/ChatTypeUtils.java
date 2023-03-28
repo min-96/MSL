@@ -1,5 +1,6 @@
 package Maswillaeng.MSLback.utils.chat;
 
+import Maswillaeng.MSLback.domain.enums.MessageEnum;
 import Maswillaeng.MSLback.dto.chat.request.ChatAckDto;
 import Maswillaeng.MSLback.dto.chat.request.ChatMessageDto;
 import Maswillaeng.MSLback.dto.chat.request.EnterTypeDto;
@@ -11,7 +12,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -28,6 +31,7 @@ public class ChatTypeUtils {
 
     private final ChatService chatService;
 
+
     public void EnterTypeProcess(String payload, WebSocketSession session, Map<Long,WebSocketSession> userSocketList) throws JsonProcessingException {
         EnterTypeDto data = objectMapper.readValue(payload, EnterTypeDto.class);
         userSocketList.put(data.getUserId(), session);
@@ -36,7 +40,7 @@ public class ChatTypeUtils {
     public void MessageTypeProcess(String payload, Map<Long, WebSocketSession> userSocketList) throws IOException {
         ChatMessageDto chat = objectMapper.readValue(payload, ChatMessageDto.class);
         ChatResponseDto responseDto = null;
-        SocketStatus socketStatus = new SocketStatus(400, "duplicateError");
+        SocketStatus socketStatus = new SocketStatus(400, "duplicateError", MessageEnum.MESSAGE);
         try {
             responseDto = chatService.saveMessage(chat);
         } catch (DuplicateKeyException e) {
@@ -49,7 +53,7 @@ public class ChatTypeUtils {
 
     public void ACKTypeProcess(String payload,Map<Long, WebSocketSession> userSocketList) throws IOException {
 
-        SocketStatus socketStatus = new SocketStatus(400, "true");
+        SocketStatus socketStatus = new SocketStatus(200, "true",MessageEnum.ACK);
         ChatAckDto ack = objectMapper.readValue(payload, ChatAckDto.class);
         log.info("보낼사람 : {}" ,  ack.getSenderId());
         if(chatService.stateUpdate(ack.getChatId())) {

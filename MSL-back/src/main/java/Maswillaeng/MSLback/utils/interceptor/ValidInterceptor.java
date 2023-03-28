@@ -11,6 +11,7 @@ import org.springframework.core.Ordered;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -44,6 +45,11 @@ public class ValidInterceptor implements Ordered, HandlerInterceptor {
         }
 
         return ValidTokenProcess.execute(req,res,jwtTokenProvider);
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        UserContext.remove();
     }
 
     @Override

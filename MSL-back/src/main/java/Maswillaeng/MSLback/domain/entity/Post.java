@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -60,8 +64,8 @@ public class Post extends BaseTimeEntity {
     private List<Report> reportList = new ArrayList<>();
 
     @Builder
-    public Post(String thumbnail, String title, String content, User user, Category category,int disabled) {
-        this.thumbnail = thumbnail;
+    public Post(String title, String content, User user, Category category,int disabled) {
+        this.thumbnail = getThumbnail(content);
         this.title = title;
         this.content = content;
         this.user = user;
@@ -70,11 +74,23 @@ public class Post extends BaseTimeEntity {
         this.disabled = 0;
     }
 
+    private String getThumbnail(String content) {
+        Document doc = Jsoup.parse(content);
+        Elements imgTags = doc.select("img");
+        if (imgTags.size() > 0) {
+            Element firstImgTag = imgTags.get(0);
+            return firstImgTag.attr("src");
+        } else {
+            return null;
+        }
+    }
+
+
     public void update(PostUpdateDto postUpdateDto) {
-        this.thumbnail = postUpdateDto.getThumbnail();
         this.title = postUpdateDto.getTitle();
         this.content = postUpdateDto.getContent();
         this.category = postUpdateDto.getCategory();
+        this.thumbnail = getThumbnail(this.content);
     }
 
     public void setHashTagList(List<HashTag> hashTagList) {

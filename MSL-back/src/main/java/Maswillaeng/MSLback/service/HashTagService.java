@@ -4,9 +4,14 @@ import Maswillaeng.MSLback.domain.entity.HashTag;
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.Tag;
 import Maswillaeng.MSLback.domain.repository.HashTagRepository;
+import Maswillaeng.MSLback.domain.repository.PostQueryRepository;
+import Maswillaeng.MSLback.domain.repository.PostRepository;
 import Maswillaeng.MSLback.domain.repository.TagRepository;
 import Maswillaeng.MSLback.dto.common.BestTagDto;
+import Maswillaeng.MSLback.dto.post.reponse.PostResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +22,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class HashTagService {
     private final TagRepository tagRepository;
     private final HashTagRepository hashTagRepository;
 
-    @Transactional
     public List<HashTag> insertHashTagList(List<String> hashTagList, Post post) {
 
         List<Tag> existHashTagList = tagRepository.findByNameList(hashTagList);
@@ -36,13 +41,14 @@ public class HashTagService {
     }
 
 
-    @Transactional
-    public void deleteHashTagList(List<String> removeTags, Post post) {
-        hashTagRepository.deleteByName(removeTags, post.getId());
-        tagRepository.deleteByIds(removeTags.stream().filter(t -> hashTagRepository.findByNames(t).size() == 0).toList());
-    }
 
-    @Transactional
+        public void deleteHashTagList(List<String> removeTags, Post post) {
+            hashTagRepository.deleteByName(removeTags,post.getId());
+            tagRepository.deleteByIds(removeTags.stream().filter(t->hashTagRepository.findByNames(t).size() == 0).toList());
+        }
+
+
+
     public List<HashTag> updateHashTagList(List<String> updateHashTagList, Post post) {
         List<HashTag> oldHashTagList = hashTagRepository.findByPost(post);
         List<String> oldStringTagList = oldHashTagList.stream().map(h -> h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
@@ -55,17 +61,16 @@ public class HashTagService {
                 .filter(update -> oldStringTagList.stream().noneMatch(Predicate.isEqual(update)))
                 .collect(Collectors.toList());
 
-        deleteHashTagList(removeHashTag, post);
+        deleteHashTagList(removeHashTag,post);
 
 
-        List<HashTag> resultHashTagList = insertHashTagList(insertHashTag, post);
+        List<HashTag>  resultHashTagList =  insertHashTagList(insertHashTag ,post);
         return resultHashTagList;
     }
 
-    @Transactional(readOnly = true)
-    public List<BestTagDto> getBestHashTag() {
+    public List<BestTagDto> bestHashTag(){
         List<BestTagDto> lst = hashTagRepository.findByBestTagName();
-        return lst.subList(0, Math.min(lst.size(), 5));
+        return lst.subList(0, Math.min(lst.size(), 5) );
     }
 
 }

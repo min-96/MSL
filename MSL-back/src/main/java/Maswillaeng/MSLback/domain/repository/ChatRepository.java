@@ -20,7 +20,7 @@ public interface ChatRepository extends JpaRepository<Chat,Long> {
 
     @Modifying(clearAutomatically = true)
     @Query("update Chat c set c.state = true where c.id = :chatId and c.state = false")
-    void updateState(@Param("chatId") Long roomId);
+    void updateState(@Param("chatId") String chatId);
 
     @Modifying(clearAutomatically = true)
     @Query("update Chat c set c.state = true where c.chatRoom.id = :roomId and not c.senderId = :userId and c.state = false")

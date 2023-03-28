@@ -35,7 +35,6 @@ public class PostRequestDto {
         return Post.builder()
                 .user(user)
                 .title(title)
-                .thumbnail(thumbnail)
                 .content(content)
                 .category(Category.valueOf(category))
                 .build();

@@ -30,7 +30,7 @@
 //        if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
 //            HttpServletRequest req = (HttpServletRequest) request;
 //            HttpServletResponse res = (HttpServletResponse) response;
-//            System.out.println("Asd");
+//
 //            return ValidTokenProcess.execute(req,res,jwtTokenProvider);
 //        }
 //        return false;
@@ -38,6 +38,7 @@
 //
 //    @Override
 //    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
+//        UserContext.remove();
 //    }
 //
 //

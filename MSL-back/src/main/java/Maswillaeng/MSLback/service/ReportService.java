@@ -1,8 +1,6 @@
 package Maswillaeng.MSLback.service;
 
-import Maswillaeng.MSLback.common.exception.AlreadyExistException;
 import Maswillaeng.MSLback.common.exception.EntityNotFoundException;
-import Maswillaeng.MSLback.common.exception.NotExistException;
 import Maswillaeng.MSLback.domain.entity.Post;
 import Maswillaeng.MSLback.domain.entity.Report;
 import Maswillaeng.MSLback.domain.entity.User;
@@ -27,11 +25,11 @@ public class ReportService {
     public void saveReport(Long postId) {
         User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new EntityNotFoundException(Post.class.getSimpleName())
+                () -> new EntityNotFoundException("존재하지 않는 게시물입니다")
         );
 
         if (reportRepository.existsByUserAndPost(user, post)) {
-            throw new AlreadyExistException(Report.class.getSimpleName());
+            throw new IllegalStateException("이미 신고한 게시물입니다");
         }
 
         Report report = Report.builder()
@@ -44,9 +42,9 @@ public class ReportService {
     public void deleteReport(Long postId) {
         User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new EntityNotFoundException(Post.class.getSimpleName()));
+                () -> new EntityNotFoundException("존재하지 않는 게시물입니다"));
         Report report = reportRepository.findByUserAndPost(user, post).orElseThrow(
-                () -> new NotExistException(Report.class.getSimpleName()));
+                () -> new IllegalStateException("신고하지 않은 게시물입니다"));
 
         reportRepository.delete(report);
     }

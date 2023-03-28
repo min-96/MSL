@@ -1,6 +1,5 @@
 package Maswillaeng.MSLback.dto.chat.request;
 import Maswillaeng.MSLback.domain.entity.Chat;
-import Maswillaeng.MSLback.domain.enums.MessageEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +21,5 @@ public class ChatMessageDto {
         this.content = chat.getContent();
         this.createdAt = chat.getCreatedAt();
     }
+
 }

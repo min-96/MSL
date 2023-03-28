@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.file.AccessDeniedException;
 
-import static Maswillaeng.MSLback.common.message.SuccessMessage.*;
-
 @RequiredArgsConstructor
 @RestController
 public class LikeController {
@@ -28,7 +26,8 @@ public class LikeController {
     public ResponseEntity<Object> savePostLike(@PathVariable Long postId) {
         likeService.savePostLike(UserContext.userData.get().getUserId(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
-                SUCCESS_SAVE_POST_LIKE));
+                "게시물 좋아요가 성공적으로 저장되었습니다"
+        ));
     }
 
     @ValidToken
@@ -37,22 +36,25 @@ public class LikeController {
     public ResponseEntity<Object> saveCommentLike(@PathVariable Long commentId) {
         likeService.saveCommentLike(UserContext.userData.get().getUserId(), commentId);
         return ResponseEntity.ok().body(ResponseDto.of(
-                SUCCESS_SAVE_COMMENT_LIKE));
+                "댓글 좋아요가 성공적으로 저장되었습니다"
+        ));
     }
 
     @ValidToken
     @DeleteMapping("/api/post-like/{postId}")
-    public ResponseEntity<Object> deletePostLike(@PathVariable Long postId) {
+    public ResponseEntity<Object> deletePostLike(@PathVariable Long postId) throws AccessDeniedException {
         likeService.deletePostLike(UserContext.userData.get().getUserId(), postId);
         return ResponseEntity.ok().body(ResponseDto.of(
-                SUCCESS_DELETE_POST_LIKE));
+                "게시물 좋아요가 성공적으로 취소되었습니다"
+        ));
     }
 
     @ValidToken
     @DeleteMapping("/api/comment-like/{commentId}")
-    public ResponseEntity<Object> deleteCommentLike(@PathVariable Long commentId) {
+    public ResponseEntity<Object> deleteCommentLike(@PathVariable Long commentId) throws AccessDeniedException {
         likeService.deleteCommentLike(UserContext.userData.get().getUserId(), commentId);
         return ResponseEntity.ok().body(ResponseDto.of(
-                SUCCESS_DELETE_COMMENT_LIKE));
+                "댓글 좋아요가 성공적으로 취소되었습니다"
+        ));
     }
 }

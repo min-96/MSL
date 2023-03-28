@@ -10,7 +10,9 @@ import Maswillaeng.MSLback.service.ChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -25,8 +27,8 @@ import java.util.Map;
 @Slf4j
 @AllArgsConstructor
 public class ChatHandler extends TextWebSocketHandler {
-    private final Map<Long,WebSocketSession> userSocketList;
 
+    private final Map<Long,WebSocketSession> userSocketList;
     private final ChatService chatService;
     private final ObjectMapper objectMapper;
     private final ChatTypeUtils chatTypeUtils;
