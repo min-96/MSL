@@ -69,9 +69,9 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request) {
 
         LoginResponseDto dto = authService.login(request);
-        ResponseCookie AccessToken = authService.getAccessTokenCookie(
+        ResponseCookie AccessToken = authService.createAccessTokenCookie(
                 dto.getTokenResponseDto().getACCESS_TOKEN());
-        ResponseCookie RefreshToken = authService.getRefreshTokenCookie(
+        ResponseCookie RefreshToken = authService.createRefreshTokenCookie(
                 dto.getTokenResponseDto().getREFRESH_TOKEN());
 
         return ResponseEntity.ok()
@@ -103,7 +103,7 @@ public class AuthController {
     public ResponseEntity<Object> updateAccessToken(@CookieValue("REFRESH_TOKEN") String refreshToken) {
 
         TokenResponseDto token = authService.updateAccessToken(refreshToken);
-        ResponseCookie AccessToken = authService.getAccessTokenCookie(
+        ResponseCookie AccessToken = authService.createAccessTokenCookie(
                 token.getACCESS_TOKEN());
 
         return ResponseEntity.ok()

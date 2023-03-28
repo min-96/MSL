@@ -23,7 +23,6 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -33,36 +32,40 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional(readOnly = true)
-    public UserInfoResponseDto getUser(Long targetId) {
+    public UserInfoResponseDto getUserInfo(Long targetId) {
         User followerListCnt = userRepository.findJoinFollowerById(targetId);
         User followingListCnt = userRepository.findJoinFollowingById(targetId);
         User UserAndPostCnt = userRepository.findByPostList(targetId);
 
         if (UserContext.userData.get() == null) {
             return new UserInfoResponseDto(followerListCnt.getFollowerList().size(), followingListCnt.getFollowingList().size(), UserAndPostCnt);
-        } else {
-            ChatRoom existChatRoom = chatService.getChatRoom(UserContext.userData.get().getUserId(), targetId);
-            boolean isFollowed =
-                    1 == followingListCnt.getFollowingList().stream().filter(follower -> follower.getFollower().getId().equals(UserContext.userData.get().getUserId())).toList().size();
-            return new UserInfoResponseDto(followerListCnt.getFollowerList().size(), followingListCnt.getFollowingList().size(), UserAndPostCnt, isFollowed, existChatRoom);
         }
+        ChatRoom existChatRoom = chatService.getChatRoom(UserContext.userData.get().getUserId(), targetId);
+        boolean isFollowed =
+                1 == followingListCnt.getFollowingList().stream().filter(follower -> follower.getFollower().getId().equals(UserContext.userData.get().getUserId())).toList().size();
+        return new UserInfoResponseDto(followerListCnt.getFollowerList().size(), followingListCnt.getFollowingList().size(), UserAndPostCnt, isFollowed, existChatRoom);
+
     }
 
+    @Transactional
     public void updateUser(Long userId, UserUpdateRequestDto requestDto) {
         User selectedUser = userRepository.findById(userId).get();
         selectedUser.update(requestDto);
     }
 
-    public void userWithdraw(Long userId) {
+    @Transactional
+    public void withdrawUser(Long userId) {
         User findUser = userRepository.findById(userId).get();
         findUser.withdraw();
     }
 
+    @Transactional(readOnly = true)
     public UserApiResponse getUserApi(Long userId) {
         User user = userRepository.findById(userId).get();
         return new UserApiResponse(user, true);
     }
 
+    @Transactional
     public Map<String, String> uploadUserImage(MultipartFile imageFile, Long userId) throws IOException {
         Map<String, String> image = postService.uploadImage(imageFile);
         User user = userRepository.findById(userId).get();
@@ -71,6 +74,7 @@ public class UserService {
         return image;
     }
 
+    @Transactional
     public void resetPassword(UserPwdResetRequestDto requestDto) {
 
         try {

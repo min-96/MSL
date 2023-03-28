@@ -19,7 +19,7 @@ public class HashTagController {
     public ResponseEntity<?> getBestHashTagName() {
         return ResponseEntity.ok().body(ResponseDto.of(
                 SUCCESS_GET_BEST_HASHTAG,
-                hashTagService.bestHashTag()));
+                hashTagService.getBestHashTag()));
     }
 
 }

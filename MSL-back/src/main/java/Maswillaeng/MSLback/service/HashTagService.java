@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class HashTagService {
     private final TagRepository tagRepository;
     private final HashTagRepository hashTagRepository;
 
+    @Transactional
     public List<HashTag> insertHashTagList(List<String> hashTagList, Post post) {
 
         List<Tag> existHashTagList = tagRepository.findByNameList(hashTagList);
@@ -36,12 +36,13 @@ public class HashTagService {
     }
 
 
+    @Transactional
     public void deleteHashTagList(List<String> removeTags, Post post) {
         hashTagRepository.deleteByName(removeTags, post.getId());
         tagRepository.deleteByIds(removeTags.stream().filter(t -> hashTagRepository.findByNames(t).size() == 0).toList());
     }
 
-
+    @Transactional
     public List<HashTag> updateHashTagList(List<String> updateHashTagList, Post post) {
         List<HashTag> oldHashTagList = hashTagRepository.findByPost(post);
         List<String> oldStringTagList = oldHashTagList.stream().map(h -> h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
@@ -61,7 +62,8 @@ public class HashTagService {
         return resultHashTagList;
     }
 
-    public List<BestTagDto> bestHashTag() {
+    @Transactional(readOnly = true)
+    public List<BestTagDto> getBestHashTag() {
         List<BestTagDto> lst = hashTagRepository.findByBestTagName();
         return lst.subList(0, Math.min(lst.size(), 5));
     }

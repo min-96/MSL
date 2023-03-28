@@ -19,13 +19,13 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
     private final PostQueryRepository postQueryRepository;
 
+    @Transactional
     public void following(Long userId, Long followingUserId) {
         //구독중인지 확인
         User user = userRepository.findJoinFollowerById(userId);
@@ -39,8 +39,8 @@ public class FollowService {
         followRepository.save(follow);
     }
 
-
-    public List<UserFollowListDto> followingList(Long userId) {
+    @Transactional(readOnly = true)
+    public List<UserFollowListDto> getFollowingList(Long userId) {
         List<Follow> followings = followRepository.getFollowingList(userId);
         return followings.stream().map(follow -> follow.getFollowing()).map(UserFollowListDto::new).toList();
     }
@@ -51,18 +51,21 @@ public class FollowService {
 
     }
 
-    public List<UserFollowListDto> followerList(Long userId) {
+    @Transactional(readOnly = true)
+    public List<UserFollowListDto> getFollowerList(Long userId) {
         List<Follow> followers = followRepository.getFollowerList(userId);
         return followers.stream().map(follow -> follow.getFollower()).map(UserFollowListDto::new).toList();
     }
 
-    public Page<PostResponseDto> followingPostList(Long userId, int page) {
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> getFollowingPostList(Long userId, int page) {
         List<Follow> followings = followRepository.getFollowingList(userId);
         return postQueryRepository.findByFollowingPost(followings.stream().map(follow -> follow.getFollowing().getId()).toList(), PageRequest.of(page - 1, 20));
 
     }
 
-    public void followingDelete(Long userId, Long followingUserId) {
+    @Transactional
+    public void unFollow(Long userId, Long followingUserId) {
         User user = userRepository.findJoinFollowerById(userId);
         if (!alreadyFollow(user, followingUserId)) {
             throw new NotExistException(Follow.class.getSimpleName());

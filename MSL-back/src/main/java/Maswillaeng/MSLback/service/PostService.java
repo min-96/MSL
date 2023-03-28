@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class PostService {
 
     private final PostRepository postRepository;
@@ -39,7 +37,8 @@ public class PostService {
     private final PostQueryRepository postQueryRepository;
     private final HashTagService hashTagService;
 
-    public void registerPost(Long userId, PostRequestDto postRequestDto) {
+    @Transactional
+    public void savePost(Long userId, PostRequestDto postRequestDto) {
         User user = userRepository.findById(userId).get();
         Post post = postRequestDto.toEntity(user);
 
@@ -56,6 +55,7 @@ public class PostService {
         return postQueryRepository.findAllPostByCategory(category);
     }
 
+    @Transactional
     public PostDetailResponseDto getPostById(Long postId) {
         Post post = postQueryRepository.findByIdFetchJoin(postId)
                 .orElseThrow(() -> new EntityNotFoundException(Post.class.getSimpleName()));
@@ -70,7 +70,7 @@ public class PostService {
 
     }
 
-
+    @Transactional
     public void updatePost(Long userId, PostUpdateDto updateDto) {
         Post selectedPost = postRepository.findById(updateDto.getPostId()).get();
 
@@ -86,10 +86,11 @@ public class PostService {
 
     }
 
+    @Transactional
     public void deletePost(Long userId, Long postId) {
         Post post = postRepository.findById(postId).get();
         if (!Objects.equals(userId, post.getUser().getId())) {
-            throw new NotAuthorizedException("접근 권한 없음");
+            throw new NotAuthorizedException(Post.class.getSimpleName());
         }
 
         List<String> deleteHashTag = post.getHashTagList().stream().map(h -> h.getTag().getName()).collect(Collectors.toCollection(ArrayList::new));
@@ -98,7 +99,6 @@ public class PostService {
 
 
     }
-
 
     @Transactional(readOnly = true)
     public Page<PostResponseDto> getUserPostList(Long userId, String category, int page) {

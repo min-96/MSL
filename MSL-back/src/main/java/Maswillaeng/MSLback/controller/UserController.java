@@ -44,7 +44,7 @@ public class UserController {
     public ResponseEntity<?> getUserInfo(@PathVariable Long userId) {
         return ResponseEntity.ok().body(ResponseDto.of(
                 SUCCESS_GET_USER_INFO,
-                userService.getUser(userId)));
+                userService.getUserInfo(userId)));
     }
 
     @ValidToken
@@ -72,7 +72,7 @@ public class UserController {
     @DeleteMapping("/api/user")
     public ResponseEntity<Object> userWithDraw() {
 
-        userService.userWithdraw(UserContext.userData.get().getUserId());
+        userService.withdrawUser(UserContext.userData.get().getUserId());
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 SUCCESS_DELETE_USER));

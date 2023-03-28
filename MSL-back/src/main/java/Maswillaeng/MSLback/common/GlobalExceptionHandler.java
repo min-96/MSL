@@ -34,37 +34,38 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(JwtTamperedException.class)
     public ResponseEntity<Object> jwtTamperedExceptionHandler(JwtTamperedException e) {
-        log.info("JwtNotValidException : " + e.getMessage());
+        log.info("JwtTamperedException : " + e.getMessage());
         return new ResponseEntity<>(e.getMessage(), JWT_TAMPERED.getStatus());
     }
 
     @ExceptionHandler(NotAuthorizedException.class)
-    public ResponseEntity<Object> jwtTamperedExceptionHandler(NotAuthorizedException e) {
+    public ResponseEntity<Object> notAuthorizedExceptionHandler(NotAuthorizedException e) {
         log.info("NotAuthorizedException : " + e.getMessage());
         return new ResponseEntity<>(e.getMessage(), NOT_AUTHORIZED.getStatus());
     }
 
     @ExceptionHandler(NotExistException.class)
-    public ResponseEntity<Object> jwtTamperedExceptionHandler(NotExistException e) {
+    public ResponseEntity<Object> notExistExceptionHandler(NotExistException e) {
         log.info("NotExistException : " + e.getMessage());
         return new ResponseEntity<>(e.getMessage(), NOT_EXIST.getStatus());
     }
 
     @ExceptionHandler(PasswordNotMatchedException.class)
-    public ResponseEntity<Object> PasswordNotMatchedExceptionHandler(PasswordNotMatchedException e) {
+    public ResponseEntity<Object> passwordNotMatchedExceptionHandler(PasswordNotMatchedException e) {
         log.info("PasswordNotMatchedException : " + e.getMessage());
         return new ResponseEntity<>(e.getMessage(), PASSWORD_NOT_MATCHED.getStatus());
     }
 
     @ExceptionHandler(UserAlreadyWithdrewException.class)
-    public ResponseEntity<Object> PasswordNotMatchedExceptionHandler(UserAlreadyWithdrewException e) {
+    public ResponseEntity<Object> userAlreadyWithdrewExceptionHandler(UserAlreadyWithdrewException e) {
         log.info("UserAlreadyWithdrewException : " + e.getMessage());
         return new ResponseEntity<>(e.getMessage(), USER_ALREADY_WITHDREW.getStatus());
     }
 
-    @ExceptionHandler(FileUploadException.class)
-    public ResponseEntity<?> FileUploadExceptionHandler(FileUploadException e){
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
+    @ExceptionHandler(S3FileUploadException.class)
+    public ResponseEntity<?> s3FileUploadExceptionHandler(S3FileUploadException e){
+        log.info("s3FileUploadExceptionHandler : " + e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), S3_FILE_UPLOAD_FAIL.getStatus());
     }
 
 }

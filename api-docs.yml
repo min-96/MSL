@@ -1,0 +1,1845 @@
+﻿---
+swagger: '2.0'
+info:
+  description: 칵테일 공유 커뮤니티 마쉴랭의 API 명세서입니다.
+  title: Maswillaeng
+tags:
+  - name: auth-controller
+    description: Auth Controller
+  - name: basic-error-controller
+    description: Basic Error Controller
+  - name: chat-controller
+    description: Chat Controller
+  - name: comment-controller
+    description: Comment Controller
+  - name: follow-controller
+    description: Follow Controller
+  - name: hash-tag-controller
+    description: Hash Tag Controller
+  - name: like-controller
+    description: Like Controller
+  - name: post-controller
+    description: Post Controller
+  - name: report-controller
+    description: Report Controller
+  - name: search-controller
+    description: Search Controller
+  - name: user-controller
+    description: User Controller
+paths:
+  "/api/best-tag":
+    get:
+      tags:
+        - hash-tag-controller
+      summary: getBestHashTagName
+      operationId: getBestHashTagNameUsingGET
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/change-format-image":
+    post:
+      tags:
+        - post-controller
+      summary: changeImageFormat
+      operationId: changeImageFormatUsingPOST
+      consumes:
+        - multipart/form-data
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: photo
+          description: photo
+          required: true
+          schema:
+            type: string
+            format: binary
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/chat-room/list":
+    get:
+      tags:
+        - chat-controller
+      summary: getChatRoomList
+      operationId: getChatRoomListUsingGET
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/chat/list/{roomId}":
+    get:
+      tags:
+        - chat-controller
+      summary: getChatList
+      operationId: getChatListUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: roomId
+          in: path
+          description: roomId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/comment":
+    post:
+      tags:
+        - comment-controller
+      summary: saveComment
+      operationId: saveCommentUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: commentRequestDto
+          description: commentRequestDto
+          required: true
+          schema:
+            "$ref": "#/definitions/CommentRequestDto"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - comment-controller
+      summary: updateComment
+      operationId: updateCommentUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: updateRequestDto
+          description: updateRequestDto
+          required: true
+          schema:
+            "$ref": "#/definitions/CommentUpdateRequestDto"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/comment-like/{commentId}":
+    post:
+      tags:
+        - like-controller
+      summary: saveCommentLike
+      operationId: saveCommentLikeUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - name: commentId
+          in: path
+          description: commentId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - like-controller
+      summary: deleteCommentLike
+      operationId: deleteCommentLikeUsingDELETE
+      produces:
+        - "*/*"
+      parameters:
+        - name: commentId
+          in: path
+          description: commentId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  "/api/comment/{commentId}":
+    delete:
+      tags:
+        - comment-controller
+      summary: deleteComment
+      operationId: deleteCommentUsingDELETE
+      produces:
+        - "*/*"
+      parameters:
+        - name: commentId
+          in: path
+          description: commentId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  "/api/create/chat-room/{targetId}":
+    post:
+      tags:
+        - chat-controller
+      summary: createRoom
+      operationId: createRoomUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - name: targetId
+          in: path
+          description: targetId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/duplicate-email":
+    post:
+      tags:
+        - auth-controller
+      summary: checkDuplicateEmail
+      operationId: checkDuplicateEmailUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: email
+          description: email
+          required: true
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/duplicate-nickname":
+    post:
+      tags:
+        - auth-controller
+      summary: checkDuplicateNickname
+      operationId: checkDuplicateNicknameUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: nickName
+          description: nickName
+          required: true
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/exist/chat-alarm":
+    get:
+      tags:
+        - chat-controller
+      summary: messageAlarm
+      operationId: messageAlarmUsingGET
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/exist/chat/{targetId}":
+    get:
+      tags:
+        - chat-controller
+      summary: existChatRoom
+      operationId: existChatRoomUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: targetId
+          in: path
+          description: targetId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/follower-list/{userId}":
+    get:
+      tags:
+        - follow-controller
+      summary: followerList
+      operationId: followerListUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: userId
+          in: path
+          description: userId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/following-list/{userId}":
+    get:
+      tags:
+        - follow-controller
+      summary: followingList
+      operationId: followingListUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: userId
+          in: path
+          description: userId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/following/{userId}":
+    post:
+      tags:
+        - follow-controller
+      summary: following
+      operationId: followingUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - name: userId
+          in: path
+          description: userId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - follow-controller
+      summary: followingDelete
+      operationId: followingDeleteUsingDELETE
+      produces:
+        - "*/*"
+      parameters:
+        - name: userId
+          in: path
+          description: userId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  "/api/login":
+    post:
+      tags:
+        - auth-controller
+      summary: login
+      operationId: loginUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            "$ref": "#/definitions/LoginRequestDto"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/logout":
+    post:
+      tags:
+        - auth-controller
+      summary: logout
+      operationId: logoutUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/new-pid":
+    get:
+      tags:
+        - follow-controller
+      summary: followingPostList
+      operationId: followingPostListUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/post":
+    get:
+      tags:
+        - post-controller
+      summary: getPostList
+      operationId: getPostListUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: category
+          in: query
+          description: category
+          required: false
+          type: string
+          enum:
+            - BAR_SNACK
+            - BEST
+            - FREE
+            - RECIPE
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - post-controller
+      summary: savePost
+      operationId: savePostUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: requestDto
+          description: requestDto
+          required: true
+          schema:
+            "$ref": "#/definitions/PostRequestDto"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - post-controller
+      summary: updatePost
+      operationId: updatePostUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: updateDto
+          description: updateDto
+          required: true
+          schema:
+            "$ref": "#/definitions/PostUpdateDto"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/post-like/{postId}":
+    post:
+      tags:
+        - like-controller
+      summary: savePostLike
+      operationId: savePostLikeUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - name: postId
+          in: path
+          description: postId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - like-controller
+      summary: deletePostLike
+      operationId: deletePostLikeUsingDELETE
+      produces:
+        - "*/*"
+      parameters:
+        - name: postId
+          in: path
+          description: postId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  "/api/post/report":
+    get:
+      tags:
+        - post-controller
+      summary: getReportedPostList
+      operationId: getReportedPostListUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/post/user":
+    get:
+      tags:
+        - post-controller
+      summary: getUserPostList
+      operationId: getUserPostListUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: category
+          in: query
+          description: category
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: page
+          required: true
+          type: integer
+          format: int32
+        - name: userId
+          in: query
+          description: userId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/post/{postId}":
+    get:
+      tags:
+        - post-controller
+      summary: getPost
+      operationId: getPostUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: postId
+          in: path
+          description: postId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - post-controller
+      summary: deletePost
+      operationId: deletePostUsingDELETE
+      produces:
+        - "*/*"
+      parameters:
+        - name: postId
+          in: path
+          description: postId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  "/api/pwd-reset-mail":
+    post:
+      tags:
+        - auth-controller
+      summary: sendPwdResetMail
+      operationId: sendPwdResetMailUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: email
+          description: email
+          required: true
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/recomment":
+    post:
+      tags:
+        - comment-controller
+      summary: saveRecomment
+      operationId: saveRecommentUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: recommentRequestDto
+          description: recommentRequestDto
+          required: true
+          schema:
+            "$ref": "#/definitions/RecommentRequestDto"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/recomment/{parentId}":
+    get:
+      tags:
+        - comment-controller
+      summary: getRecommentList
+      operationId: getRecommentListUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: parentId
+          in: path
+          description: parentId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/report/posts":
+    delete:
+      tags:
+        - report-controller
+      summary: deleteReportPosts
+      operationId: deleteReportPostsUsingDELETE
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: postList
+          description: postList
+          required: true
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/Post"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  "/api/report/{postId}":
+    post:
+      tags:
+        - report-controller
+      summary: saveReport
+      operationId: saveReportUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - name: postId
+          in: path
+          description: postId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - report-controller
+      summary: deleteReport
+      operationId: deleteReportUsingDELETE
+      produces:
+        - "*/*"
+      parameters:
+        - name: postId
+          in: path
+          description: postId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  "/api/search":
+    get:
+      tags:
+        - search-controller
+      summary: search
+      operationId: searchUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: keyword
+          in: query
+          description: keyword
+          required: true
+          type: string
+        - name: page
+          in: query
+          description: page
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/search/tag":
+    get:
+      tags:
+        - search-controller
+      summary: getPostListByHashTag
+      operationId: getPostListByHashTagUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: name
+          in: query
+          description: name
+          required: true
+          type: string
+        - name: page
+          in: query
+          description: page
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/sign":
+    post:
+      tags:
+        - auth-controller
+      summary: sign
+      operationId: signUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: userSignDto
+          description: userSignDto
+          required: true
+          schema:
+            "$ref": "#/definitions/UserJoinDto"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/update-token":
+    get:
+      tags:
+        - auth-controller
+      summary: updateAccessToken
+      operationId: updateAccessTokenUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: refreshToken
+          in: query
+          description: refreshToken
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/user":
+    get:
+      tags:
+        - user-controller
+      summary: getUserApi
+      operationId: getUserApiUsingGET
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - user-controller
+      summary: updateUserInfo
+      operationId: updateUserInfoUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: requestDto
+          description: requestDto
+          required: true
+          schema:
+            "$ref": "#/definitions/UserUpdateRequestDto"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - user-controller
+      summary: userWithDraw
+      operationId: userWithDrawUsingDELETE
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  "/api/user/image":
+    post:
+      tags:
+        - user-controller
+      summary: userImageUpdate
+      operationId: userImageUpdateUsingPOST
+      consumes:
+        - multipart/form-data
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: photo
+          description: photo
+          required: true
+          schema:
+            type: string
+            format: binary
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/user/reset-pwd":
+    put:
+      tags:
+        - user-controller
+      summary: resetPassword
+      operationId: resetPasswordUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      parameters:
+        - in: body
+          name: requestDto
+          description: requestDto
+          required: true
+          schema:
+            "$ref": "#/definitions/UserPwdResetRequestDto"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/api/userInfo/{userId}":
+    get:
+      tags:
+        - user-controller
+      summary: getUserInfo
+      operationId: getUserInfoUsingGET
+      produces:
+        - "*/*"
+      parameters:
+        - name: userId
+          in: path
+          description: userId
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  "/error":
+    get:
+      tags:
+        - basic-error-controller
+      summary: error
+      operationId: errorUsingGET
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    head:
+      tags:
+        - basic-error-controller
+      summary: error
+      operationId: errorUsingHEAD
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    post:
+      tags:
+        - basic-error-controller
+      summary: error
+      operationId: errorUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - basic-error-controller
+      summary: error
+      operationId: errorUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - basic-error-controller
+      summary: error
+      operationId: errorUsingDELETE
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    options:
+      tags:
+        - basic-error-controller
+      summary: error
+      operationId: errorUsingOPTIONS
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    patch:
+      tags:
+        - basic-error-controller
+      summary: error
+      operationId: errorUsingPATCH
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+definitions:
+  Comment:
+    type: object
+    properties:
+      commentLikeList:
+        type: array
+        items:
+          "$ref": "#/definitions/CommentLike"
+      content:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+      id:
+        type: integer
+        format: int64
+      modifiedAt:
+        type: string
+        format: date-time
+      parentId:
+        "$ref": "#/definitions/Comment"
+      post:
+        "$ref": "#/definitions/Post"
+      recommentList:
+        type: array
+        items:
+          "$ref": "#/definitions/Comment"
+      user:
+        "$ref": "#/definitions/User"
+    title: Comment
+  CommentLike:
+    type: object
+    properties:
+      comment:
+        "$ref": "#/definitions/Comment"
+      id:
+        type: integer
+        format: int64
+      user:
+        "$ref": "#/definitions/User"
+    title: CommentLike
+  CommentRequestDto:
+    type: object
+    properties:
+      content:
+        type: string
+      postId:
+        type: integer
+        format: int64
+    title: CommentRequestDto
+  CommentUpdateRequestDto:
+    type: object
+    properties:
+      commentId:
+        type: integer
+        format: int64
+      content:
+        type: string
+    title: CommentUpdateRequestDto
+  Follow:
+    type: object
+    properties:
+      follower:
+        "$ref": "#/definitions/User"
+      following:
+        "$ref": "#/definitions/User"
+      id:
+        type: integer
+        format: int64
+    title: Follow
+  HashTag:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      post:
+        "$ref": "#/definitions/Post"
+      tag:
+        "$ref": "#/definitions/Tag"
+    title: HashTag
+  LoginRequestDto:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    title: LoginRequestDto
+  ModelAndView:
+    type: object
+    properties:
+      empty:
+        type: boolean
+      model:
+        type: object
+      modelMap:
+        type: object
+        additionalProperties:
+          type: object
+      reference:
+        type: boolean
+      status:
+        type: string
+        enum:
+          - ACCEPTED
+          - ALREADY_REPORTED
+          - BAD_GATEWAY
+          - BAD_REQUEST
+          - BANDWIDTH_LIMIT_EXCEEDED
+          - CHECKPOINT
+          - CONFLICT
+          - CONTINUE
+          - CREATED
+          - DESTINATION_LOCKED
+          - EXPECTATION_FAILED
+          - FAILED_DEPENDENCY
+          - FORBIDDEN
+          - FOUND
+          - GATEWAY_TIMEOUT
+          - GONE
+          - HTTP_VERSION_NOT_SUPPORTED
+          - IM_USED
+          - INSUFFICIENT_SPACE_ON_RESOURCE
+          - INSUFFICIENT_STORAGE
+          - INTERNAL_SERVER_ERROR
+          - I_AM_A_TEAPOT
+          - LENGTH_REQUIRED
+          - LOCKED
+          - LOOP_DETECTED
+          - METHOD_FAILURE
+          - METHOD_NOT_ALLOWED
+          - MOVED_PERMANENTLY
+          - MOVED_TEMPORARILY
+          - MULTIPLE_CHOICES
+          - MULTI_STATUS
+          - NETWORK_AUTHENTICATION_REQUIRED
+          - NON_AUTHORITATIVE_INFORMATION
+          - NOT_ACCEPTABLE
+          - NOT_EXTENDED
+          - NOT_FOUND
+          - NOT_IMPLEMENTED
+          - NOT_MODIFIED
+          - NO_CONTENT
+          - OK
+          - PARTIAL_CONTENT
+          - PAYLOAD_TOO_LARGE
+          - PAYMENT_REQUIRED
+          - PERMANENT_REDIRECT
+          - PRECONDITION_FAILED
+          - PRECONDITION_REQUIRED
+          - PROCESSING
+          - PROXY_AUTHENTICATION_REQUIRED
+          - REQUESTED_RANGE_NOT_SATISFIABLE
+          - REQUEST_ENTITY_TOO_LARGE
+          - REQUEST_HEADER_FIELDS_TOO_LARGE
+          - REQUEST_TIMEOUT
+          - REQUEST_URI_TOO_LONG
+          - RESET_CONTENT
+          - SEE_OTHER
+          - SERVICE_UNAVAILABLE
+          - SWITCHING_PROTOCOLS
+          - TEMPORARY_REDIRECT
+          - TOO_EARLY
+          - TOO_MANY_REQUESTS
+          - UNAUTHORIZED
+          - UNAVAILABLE_FOR_LEGAL_REASONS
+          - UNPROCESSABLE_ENTITY
+          - UNSUPPORTED_MEDIA_TYPE
+          - UPGRADE_REQUIRED
+          - URI_TOO_LONG
+          - USE_PROXY
+          - VARIANT_ALSO_NEGOTIATES
+      view:
+        "$ref": "#/definitions/View"
+      viewName:
+        type: string
+    title: ModelAndView
+  Post:
+    type: object
+    properties:
+      category:
+        type: string
+        enum:
+          - BAR_SNACK
+          - BEST
+          - FREE
+          - RECIPE
+      commentList:
+        type: array
+        uniqueItems: true
+        items:
+          "$ref": "#/definitions/Comment"
+      content:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+      disabled:
+        type: integer
+        format: int32
+      hashTagList:
+        type: array
+        items:
+          "$ref": "#/definitions/HashTag"
+      hits:
+        type: integer
+        format: int64
+      id:
+        type: integer
+        format: int64
+      modifiedAt:
+        type: string
+        format: date-time
+      postLikeList:
+        type: array
+        uniqueItems: true
+        items:
+          "$ref": "#/definitions/PostLike"
+      reportList:
+        type: array
+        items:
+          "$ref": "#/definitions/Report"
+      thumbnail:
+        type: string
+      title:
+        type: string
+      user:
+        "$ref": "#/definitions/User"
+    title: Post
+  PostLike:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      post:
+        "$ref": "#/definitions/Post"
+      user:
+        "$ref": "#/definitions/User"
+    title: PostLike
+  PostRequestDto:
+    type: object
+    required:
+      - content
+      - title
+    properties:
+      category:
+        type: string
+      content:
+        type: string
+      hashTagList:
+        type: array
+        items:
+          type: string
+      thumbnail:
+        type: string
+      title:
+        type: string
+    title: PostRequestDto
+  PostUpdateDto:
+    type: object
+    required:
+      - content
+      - title
+    properties:
+      category:
+        type: string
+        enum:
+          - BAR_SNACK
+          - BEST
+          - FREE
+          - RECIPE
+      content:
+        type: string
+      hashTagList:
+        type: array
+        items:
+          type: string
+      postId:
+        type: integer
+        format: int64
+      thumbnail:
+        type: string
+      title:
+        type: string
+    title: PostUpdateDto
+  RecommentRequestDto:
+    type: object
+    properties:
+      content:
+        type: string
+      parentId:
+        type: integer
+        format: int64
+    title: RecommentRequestDto
+  Report:
+    type: object
+    properties:
+      post:
+        "$ref": "#/definitions/Post"
+      user:
+        "$ref": "#/definitions/User"
+    title: Report
+  Tag:
+    type: object
+    properties:
+      name:
+        type: string
+    title: Tag
+  User:
+    type: object
+    properties:
+      commentList:
+        type: array
+        items:
+          "$ref": "#/definitions/Comment"
+      createdAt:
+        type: string
+        format: date-time
+      email:
+        type: string
+      followerList:
+        type: array
+        uniqueItems: true
+        items:
+          "$ref": "#/definitions/Follow"
+      followingList:
+        type: array
+        uniqueItems: true
+        items:
+          "$ref": "#/definitions/Follow"
+      id:
+        type: integer
+        format: int64
+      introduction:
+        type: string
+      modifiedAt:
+        type: string
+        format: date-time
+      nickName:
+        type: string
+      password:
+        type: string
+      postList:
+        type: array
+        uniqueItems: true
+        items:
+          "$ref": "#/definitions/Post"
+      refreshToken:
+        type: string
+      role:
+        type: string
+        enum:
+          - ADMIN
+          - USER
+      userImage:
+        type: string
+      withdrawAt:
+        type: string
+        format: date-time
+      withdrawYn:
+        type: integer
+        format: int32
+    title: User
+  UserJoinDto:
+    type: object
+    properties:
+      email:
+        type: string
+      nickName:
+        type: string
+      password:
+        type: string
+      userImage:
+        type: string
+    title: UserJoinDto
+  UserPwdResetRequestDto:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      token:
+        type: string
+    title: UserPwdResetRequestDto
+  UserUpdateRequestDto:
+    type: object
+    properties:
+      introduction:
+        type: string
+      nickName:
+        type: string
+      userImage:
+        type: string
+    title: UserUpdateRequestDto
+  View:
+    type: object
+    properties:
+      contentType:
+        type: string
+    title: View

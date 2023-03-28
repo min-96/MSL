@@ -23,7 +23,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
@@ -33,23 +32,26 @@ public class ChatService {
     private final UserRepository userRepository;
     private final ChatRoomQueryRepository chatRoomQueryRepository;
 
+    @Transactional
     public CreateRoomResponseDto createRoom(Long userId, Long targetId) {
         User user = userRepository.findById(userId).get();
         User targetUser = userRepository.findById(targetId).orElseThrow(
                 () -> new EntityNotFoundException(User.class.getSimpleName()));
-        ChatRoom chatRoom = new ChatRoom(user,targetUser);
-        if(getChatRoom(userId,targetId)!= null){
+        ChatRoom chatRoom = new ChatRoom(user, targetUser);
+        if (getChatRoom(userId, targetId) != null) {
             throw new AlreadyExistException(ChatRoom.class.getSimpleName());
         }
         ChatRoom createRoom = chatRoomRepository.save(chatRoom);
-         return new CreateRoomResponseDto(createRoom);
+        return new CreateRoomResponseDto(createRoom);
     }
 
 
+    @Transactional(readOnly = true)
     public List<ChatRoomResponseDto> getChatRoomList(Long userId) {
         return chatRoomQueryRepository.findAllByUserId(userId);
     }
 
+    @Transactional
     public ChatResponseDto saveMessage(ChatMessageDto chat) {
         ChatRoom chatRoom = getChatRoom(chat.getSenderId(), chat.getRecipientId());
         Chat chatMessage = Chat.builder().id(chat.getChatId()).chatRoom(chatRoom).senderId(chat.getSenderId()).recipientId(chat.getRecipientId()).content(chat.getContent()).state(false).build();
@@ -57,6 +59,7 @@ public class ChatService {
         return new ChatResponseDto(chatResponse);
     }
 
+    @Transactional
     public ChatMessageListResponseDto getChatList(Long roomId) {
         Long userId = UserContext.userData.get().getUserId();
         chatRepository.updateStateByRoomIdAndUserId(roomId, userId);
@@ -66,16 +69,17 @@ public class ChatService {
         return new ChatMessageListResponseDto(partner, chatMessageDtoList);
     }
 
+    @Transactional
     public boolean stateUpdate(Long chatId) {
         chatRepository.updateState(chatId);
         return true;
     }
 
-    public ChatRoom getChatRoom(Long senderId , Long recipientId){
-        return chatRoomRepository.findByOwnerAndInvited( senderId,recipientId);
+    public ChatRoom getChatRoom(Long senderId, Long recipientId) {
+        return chatRoomRepository.findByOwnerAndInvited(senderId, recipientId);
     }
 
-
+    @Transactional(readOnly = true)
     public boolean existChatMessage(Long userId) {
         return chatRepository.findByChatMessage(userId) != null;
     }

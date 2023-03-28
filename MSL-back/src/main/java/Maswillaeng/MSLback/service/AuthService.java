@@ -18,18 +18,19 @@ import static Maswillaeng.MSLback.jwt.JwtTokenProvider.REFRESH_TOKEN_VALID_TIME;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AESEncryption aesEncryption;
 
+    @Transactional
     public void sign(User user) {
         String encryptPwd = aesEncryption.encrypt(user.getPassword());
         user.resetPassword(encryptPwd);
         userRepository.save(user);
     }
 
+    @Transactional
     public LoginResponseDto login(LoginRequestDto requestDto) {
         User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException(User.class.getSimpleName()));
@@ -54,25 +55,26 @@ public class AuthService {
                 .build();
     }
 
-    public TokenResponseDto updateAccessToken(String refresh_token){
+    @Transactional
+    public TokenResponseDto updateAccessToken(String refresh_token) {
         String updateAccessToken;
 
-           User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
-           String OriginalRefreshToken = user.getRefreshToken();
-           if (OriginalRefreshToken.equals(refresh_token)) {
-               updateAccessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
-           } else {
-               user.destroyRefreshToken();
-               userRepository.save(user);
-               throw new JwtTamperedException();
-           }
+        User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
+        String OriginalRefreshToken = user.getRefreshToken();
+        if (OriginalRefreshToken.equals(refresh_token)) {
+            updateAccessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getRole());
+        } else {
+            user.destroyRefreshToken();
+            userRepository.save(user);
+            throw new JwtTamperedException();
+        }
 
         return TokenResponseDto.builder()
                 .ACCESS_TOKEN(updateAccessToken)
                 .build();
     }
 
-    public ResponseCookie getAccessTokenCookie(String accessToken){
+    public ResponseCookie createAccessTokenCookie(String accessToken) {
         return ResponseCookie.from(
                         "ACCESS_TOKEN", accessToken)
                 .path("/")
@@ -82,7 +84,7 @@ public class AuthService {
                 .build();
     }
 
-    public ResponseCookie getRefreshTokenCookie(String refreshToken){
+    public ResponseCookie createRefreshTokenCookie(String refreshToken) {
         return ResponseCookie.from(
                         "REFRESH_TOKEN", refreshToken)
                 .path("/api/update-token")
@@ -92,6 +94,7 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public void checkDuplicateUser(User user) {
         if (userRepository.existsByNickName(user.getNickName()) ||
                 userRepository.existsByEmail(user.getEmail())) {
@@ -99,6 +102,7 @@ public class AuthService {
         }
     }
 
+    @Transactional
     public void removeRefreshToken(Long userId) {
         User user = userRepository.findById(userId).get();
         user.destroyRefreshToken();

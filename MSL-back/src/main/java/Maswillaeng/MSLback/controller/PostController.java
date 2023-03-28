@@ -4,7 +4,6 @@ import Maswillaeng.MSLback.domain.enums.Category;
 import Maswillaeng.MSLback.dto.common.ResponseDto;
 import Maswillaeng.MSLback.dto.post.request.PostRequestDto;
 import Maswillaeng.MSLback.dto.post.request.PostUpdateDto;
-import Maswillaeng.MSLback.service.HashTagService;
 import Maswillaeng.MSLback.service.PostService;
 import Maswillaeng.MSLback.utils.auth.AuthCheck;
 import Maswillaeng.MSLback.utils.auth.UserContext;
@@ -17,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 
 import static Maswillaeng.MSLback.common.message.SuccessMessage.*;
 
@@ -42,7 +40,7 @@ public class PostController {
     @PostMapping("/api/post")
     public ResponseEntity<?> savePost(@RequestBody @Valid PostRequestDto requestDto) {
 
-        postService.registerPost(UserContext.userData.get().getUserId(), requestDto);
+        postService.savePost(UserContext.userData.get().getUserId(), requestDto);
 
         return ResponseEntity.ok().body(ResponseDto.of(
                 SUCCESS_SAVE_POST));

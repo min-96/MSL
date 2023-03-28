@@ -10,17 +10,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+
 public class SearchService {
 
     private final PostQueryRepository postQueryRepository;
 
-
+    @Transactional(readOnly = true)
     public Page<PostResponseDto> searchByKeyword(String keyword, int page) {
         return postQueryRepository.findByKeyword(keyword, PageRequest.of(page - 1, 20));
 
     }
 
+    @Transactional(readOnly = true)
     public Page<PostResponseDto> searchPostByHashTag(String tagName, int page){
         return postQueryRepository.findByHashTagNam(tagName, PageRequest.of(page-1,20));
     }

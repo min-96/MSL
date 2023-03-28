@@ -27,7 +27,7 @@ public class FollowController { // TODO : 메서드 명 변경
     @ValidToken
     @DeleteMapping("api/following/{userId}")
     public ResponseEntity<?> followingDelete(@PathVariable Long userId) {
-        followService.followingDelete(UserContext.userData.get().getUserId(), userId);
+        followService.unFollow(UserContext.userData.get().getUserId(), userId);
         return ResponseEntity.ok().body(ResponseDto.of(
                 SUCCESS_UNFOLLOW_USER));
     }
@@ -37,7 +37,7 @@ public class FollowController { // TODO : 메서드 명 변경
     public ResponseEntity<?> followingList(@PathVariable Long userId) {
         return ResponseEntity.ok().body(ResponseDto.of(
                 SUCCESS_GET_FOLLOWING_LIST,
-                followService.followingList(userId)));
+                followService.getFollowingList(userId)));
     }
 
     @ValidToken
@@ -45,7 +45,7 @@ public class FollowController { // TODO : 메서드 명 변경
     public ResponseEntity<?> followerList(@PathVariable Long userId) {
         return ResponseEntity.ok().body(ResponseDto.of(
                 SUCCESS_GET_FOLLOWER_LIST,
-                followService.followerList(userId)));
+                followService.getFollowerList(userId)));
     }
 
     @ValidToken
@@ -53,7 +53,7 @@ public class FollowController { // TODO : 메서드 명 변경
     public ResponseEntity<?> followingPostList(@RequestParam int page) {
         return ResponseEntity.ok().body(ResponseDto.of(
                 SUCCESS_GET_FOLLOWING_POST_LIST,
-                followService.followingPostList(UserContext.userData.get().getUserId(), page)));
+                followService.getFollowingPostList(UserContext.userData.get().getUserId(), page)));
     }
 
 }

@@ -12,6 +12,7 @@ import Maswillaeng.MSLback.domain.repository.UserRepository;
 import Maswillaeng.MSLback.utils.auth.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -22,6 +23,7 @@ public class ReportService {
     private final PostRepository postRepository;
 
 
+    @Transactional
     public void saveReport(Long postId) {
         User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
         Post post = postRepository.findById(postId).orElseThrow(
@@ -38,6 +40,7 @@ public class ReportService {
         reportRepository.save(report);
     }
 
+    @Transactional
     public void deleteReport(Long postId) {
         User user = userRepository.findById(UserContext.userData.get().getUserId()).get();
         Post post = postRepository.findById(postId).orElseThrow(

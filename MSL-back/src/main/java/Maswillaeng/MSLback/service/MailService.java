@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.MimeMessage;
 
@@ -22,6 +23,7 @@ public class MailService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public void sendPasswordResetMail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException(User.class.getSimpleName())

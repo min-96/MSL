@@ -21,12 +21,12 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
 
+    @Transactional
     public void registerComment(Long userId, CommentRequestDto dto) {
         Post post = postRepository.findById(dto.getPostId()).orElseThrow(
                 () -> new EntityNotFoundException(Post.class.getSimpleName())
@@ -41,6 +41,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    @Transactional
     public void updateComment(CommentUpdateRequestDto dto) {
         Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(
                 () -> new EntityNotFoundException(Comment.class.getSimpleName())
@@ -49,6 +50,7 @@ public class CommentService {
         comment.updateComment(dto.getContent());
     }
 
+    @Transactional
     public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new EntityNotFoundException(Comment.class.getSimpleName())
@@ -63,6 +65,7 @@ public class CommentService {
         }
     }
 
+    @Transactional
     public void registerRecomment(Long userId, RecommentRequestDto dto) {
         Comment parentComment = commentRepository.findById(dto.getParentId()).orElseThrow(
                 () -> new EntityNotFoundException(Comment.class.getSimpleName())
@@ -77,6 +80,7 @@ public class CommentService {
         commentRepository.save(recomment);
     }
 
+    @Transactional(readOnly = true)
     public List<CommentResponseDto> getRecommentList(Long parentId) {
         List<Comment> recommentList = commentRepository.findByParentId(parentId);
 
@@ -85,6 +89,7 @@ public class CommentService {
                     comment -> new CommentResponseDto(
                             comment, comment.getCommentLikeList().size())).toList();
         }
+
         Long userId = UserContext.userData.get().getUserId();
         return recommentList.stream().map(
                 comment -> new CommentResponseDto(
