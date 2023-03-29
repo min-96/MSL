@@ -49,6 +49,8 @@ dependencies {
 	// AWS
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
 
+	implementation 'org.jsoup:jsoup:1.14.3'
+
 	// queryDSL 설정
 	implementation "com.querydsl:querydsl-jpa"
 	implementation "com.querydsl:querydsl-core"
