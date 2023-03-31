@@ -2,8 +2,6 @@
 
 ## **📍**Overview
 
-{마쉴랭 로고}
-
 ### 📜프로젝트 소개
 
 - 술에 진심인 사람들을 위한 칵테일 레시피 공유 커뮤니티
@@ -55,10 +53,6 @@
 
 ## **💻**기술 스택
 
-### 프론트엔드
-
-- 
-
 ### 백엔드
 
 - Java : 17
@@ -69,6 +63,19 @@
 - Test : Junit5
 - DB : MySQL
 - IDE : Intellij IDEA
+
+### CI/CD
+- github actions
+- docker
+- docker compose
+- AWS codedeploy
+- AWS S3
+
+### 인프라
+- AWS EC2
+- AWS ELB
+- AWS Route 53
+- AWS RDS
 
 ## 🎯ERD
 
