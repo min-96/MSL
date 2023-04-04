@@ -84,65 +84,63 @@
 
 ## 📃페이지
 ### 게시글 전체조회 
-* * *
+
 
 ![Pasted Graphic](https://user-images.githubusercontent.com/67457956/229806689-6c796222-d963-4f34-8380-b5ba8ef64d3b.png)
 
-* * * 
+
 
 ### 게시글 상세조회
-* * * 
+
 
 ![Pasted Graphic 1](https://user-images.githubusercontent.com/67457956/229808232-ab716863-a3de-4d40-81de-1f722e5a14f8.png)
 
-* * * 
+
 
 ### 댓글 조회
-* * *
+
 
 ![Pasted Graphic 2](https://user-images.githubusercontent.com/67457956/229808716-4babb640-f7f1-4a4c-9e6a-078c10f37bbb.png)
 
-* * * 
+
 
 ### 유저 프로필 
-* * *
+
 
 ![image](https://user-images.githubusercontent.com/67457956/229809273-a8e145fc-de74-4791-aa4e-23ff73b6afae.png)
 
-* * *
+
 
 ### 해쉬태그 검색
-* * *
 
 ![Pasted Graphic 4](https://user-images.githubusercontent.com/67457956/229809397-0625eced-6b56-4534-83e1-251eec625c0f.png)
 
-* * *
+
 
 ### 게시글 검색
-* * *
+
 
 ![Pasted Graphic 5](https://user-images.githubusercontent.com/67457956/229809569-b80b274f-74e2-4d6b-80ad-96c410f5c5f5.png)\
 
-* * *
+
 
 ### 팔로잉 뉴스피드
-* * *
+
 
 ![Pasted Graphic 6](https://user-images.githubusercontent.com/67457956/229809835-2eb355d9-1612-4e37-8b88-f8afe32cc79f.png)
 
-* * *
+
 
 ### 팔로잉 팔로워 조회
-* * *
 
 ![image](https://user-images.githubusercontent.com/67457956/229810850-89e0b58c-953f-41ad-9c02-842a488efb34.png)
 
-* * *
+
    
 ### 채팅
-* * *
+
 ![image](https://user-images.githubusercontent.com/67457956/229811170-498bb32a-2847-44df-8ee8-a23f19732bf3.png)
-* * *
+
 
 
 
