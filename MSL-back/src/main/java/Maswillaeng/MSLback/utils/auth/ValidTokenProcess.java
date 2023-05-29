@@ -17,7 +17,7 @@ public class ValidTokenProcess {
         String refreshToken = new String();
 
         Cookie[] cookies = req.getCookies();
-        if (cookies != null) { // 쿠키가 존재한다면
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
                 switch (cookie.getName()) {
                     case "ACCESS_TOKEN":
@@ -29,7 +29,7 @@ public class ValidTokenProcess {
             }
         }
 
-        if (!refreshToken.equals("")) { // 리프레시 토큰이 있다면
+        if (!refreshToken.equals("")) {
             try {
                 Claims claims = jwtTokenProvider.getClaims(refreshToken);
                 UserContext.userData.set(new TokenUserData(claims));
@@ -37,7 +37,7 @@ public class ValidTokenProcess {
                 res.sendRedirect("/api/login");
                 return false;
             }
-            // TODO : 나중에 Exception Handler JwtException, NullPointerException 로 관리 (401)
+
 
         } else if (!accessToken.equals("")) {
             try {
@@ -47,7 +47,7 @@ public class ValidTokenProcess {
                 res.setStatus(401);  // 에러 만들기
                 return false;
             }
-            // TODO : 나중에 Exception Handler JwtException, NullPointerException 로 관리
+
         }
         return true;
     }
