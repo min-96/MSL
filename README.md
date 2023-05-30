@@ -68,7 +68,6 @@
 - Spring Data JPA
 - QueryDsl
 - Build : Gradle
-- Test : Postman
 - DB : MySQL
 
 ### 인프라
