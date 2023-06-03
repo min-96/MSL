@@ -1,6 +1,7 @@
 # 마쉴랭
 
-![image](https://github.com/min-96/MSL/assets/67457956/b017b501-0ac3-460d-8835-93f8f45667f2)
+![image](https://github.com/min-96/MSL/assets/67457956/abb9c240-8cd9-407b-b21c-e4b01d5c4e1a)
+
 
 
 ## 📜프로젝트 소개
